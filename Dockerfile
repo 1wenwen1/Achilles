@@ -20,12 +20,16 @@ RUN apt-get update \
     && apt-get install -y emacs psmisc jq iproute2
 
 # install a newer version of openssl
-RUN wget https://www.openssl.org/source/openssl-1.1.1i.tar.gz \
-    && tar -xvzf openssl-1.1.1i.tar.gz \
-    && cd openssl-1.1.1i \
+RUN wget https://www.openssl.org/source/openssl-1.1.1t.tar.gz --no-check-certificate\
+    && tar -xvzf openssl-1.1.1t.tar.gz \
+    && cd openssl-1.1.1t \
     && ./config --prefix=/usr no-mdc2 no-idea \
     && make \
     && make install
+
+RUN apt-get install -y gnutls-bin
+RUN git config --global http.sslVerify false
+RUN git config --global http.postBuffer 1048576000
 
 # clone sgx sdk
 RUN mkdir /opt/intel \
