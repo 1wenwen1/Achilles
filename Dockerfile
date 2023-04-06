@@ -27,6 +27,7 @@ RUN wget https://www.openssl.org/source/openssl-1.1.1t.tar.gz --no-check-certifi
     && make \
     && make install
 
+RUN apt-get update
 RUN apt-get install -y gnutls-bin
 RUN git config --global http.sslVerify false
 RUN git config --global http.postBuffer 1048576000
