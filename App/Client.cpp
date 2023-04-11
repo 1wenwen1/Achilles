@@ -291,7 +291,7 @@ int main(int argc, char const *argv[]) {
 
   numNodes = (constFactor*numFaults)+1;
   qsize = numNodes-numFaults;
-  std::string confFile = "server";
+  std::string confFile = "servers";
   Nodes nodes(confFile,numNodes);
   //numInstancesPerNode = numInstances / numNodes;
   //numInstances = numInstancesPerNode * numNodes;

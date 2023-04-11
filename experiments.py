@@ -56,7 +56,7 @@ numNonChCls  = 1     # number of clients for the non-chained versions
 numChCls     = 1     # number of clients for the chained versions
 numClTrans   = 1     # number of transactions sent by each clients
 sleepTime    = 0     # time clients sleep between 2 sends (in microseconds)
-timeout      = 5     # timeout before changing changing leader (in seconds)
+timeout      = 10    # timeout before changing changing leader (in seconds)
 #
 numTrans      = 400    # number of transactions
 payloadSize   = 0 #256 #0 #256 #128      # total size of a transaction
@@ -2696,6 +2696,7 @@ def makeAliInstances(servers, protocol):
         server_info = server_item.split(" ")
         sshAdr = "root@" + server_info[1].split(":")[1]
         subprocess.run(["scp","-i",pem,"-o",sshOpt1,params,sshAdr+":/root/damysus_updated/App/"])
+        subprocess.run(["scp","-i",pem,"-o",sshOpt1,"servers","clients",sshAdr+":/root/damysus_updated"])
         cmd = "\"\"" + srcsgx + " && cd damysus_updated && make clean && " + make + "\"\""
         p      = Popen(["ssh","-i",pem,"-o",sshOpt1,"-ntt",sshAdr,cmd])
         print("the commandline is {}".format(p.args))
