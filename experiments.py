@@ -178,7 +178,7 @@ combChCOL = "magenta"
 
 ## AWS parameters
 instType = "t2.micro"
-pem      = "aws.pem"
+pem      = "TShard"
 
 # Region - North Virginia (us-east-1)
 region_USEAST1      = "us-east-1"
@@ -3861,6 +3861,7 @@ elif args.aws:
     runAWS()
 elif args.ali:
     print("lauching Ali experiment")
+    runComb = True
     runAli()
 elif args.cluster:
     print("lauching cluster experiment")
