@@ -1,0 +1,8 @@
+enclave.signed.so
+enclave.so
+enclave.token
+sgxclient
+sgxserver
+sgxkeys
+stats/
+openssl-1.1.1t/
