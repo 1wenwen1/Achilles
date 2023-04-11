@@ -86,7 +86,7 @@ int main(int argc, char const *argv[]) {
 
 
   unsigned int numNodes = (constFactor*numFaults)+1;
-  std::string confFile = "config";
+  std::string confFile = "server";
   Nodes nodes(confFile,numNodes);
 
 

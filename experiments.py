@@ -93,7 +93,7 @@ displayApp   = "shotwell"
 logScale     = True
 
 # to recompile the code
-recompile = True
+recompile = False
 
 # To set some plotting parameters for specific experiments
 whichExp = ""
@@ -2692,10 +2692,10 @@ def makeAliInstances(servers, protocol):
     procs = []
     make0  = "make -j "+str(ncores)
     make   = make0 + " SGX_MODE="+sgxmode if needsSGX(protocol) else make0 + " server client"
-    for server in servers:
-        server_info = server.split(" ")
+    for server_item in servers:
+        server_info = server_item.split(" ")
         sshAdr = "root@" + server_info[1].split(":")[1]
-        subprocess.run(["scp","-i",pem,"-o",sshOpt1,params,sshAdr+":/home/root/damysus_updated/App/"])
+        subprocess.run(["scp","-i",pem,"-o",sshOpt1,params,sshAdr+":/root/damysus_updated/App/"])
         cmd = "\"\"" + srcsgx + " && cd damysus_updated && make clean && " + make + "\"\""
         p      = Popen(["ssh","-i",pem,"-o",sshOpt1,"-ntt",sshAdr,cmd])
         print("the commandline is {}".format(p.args))
@@ -2704,9 +2704,98 @@ def makeAliInstances(servers, protocol):
     for (tag,sshAdr,p) in procs:
         while (p.poll() is None):
             time.sleep(1)
-        print("process done:",i)
+        print("process done:",sshAdr)
 
     print("all instances are made")
+
+def executeAliInstances(servers,clients,protocol,constFactor,numClTrans,sleepTime,numViews,cutOffBound,numFaults,instance):
+    print(">> connecting to",str(len(servers)),"replica instance(s)")
+    print(">> connecting to",str(len(clients)),"client instance(s)")
+    procsRep   = []
+    procsCl    = []
+    newtimeout = int(math.ceil(timeout+math.log(numFaults,2)))
+    server     = "./sgxserver" if needsSGX(protocol) else "./server"
+    client     = "./sgxclient" if needsSGX(protocol) else "./client"
+    for server_item in servers:
+        server_info = server_item.split(" ")
+        sshAdr = "root@" + server_info[1].split(":")[1]
+        server_id = int(server_info[0].split(":")[1])
+        # we give some time for the nodes to connect gradually
+        if (server_id%10 == 5):
+            time.sleep(2)
+        srun2  = server + " " + str(server_id) + " " + str(numFaults) + " " + str(constFactor) + " " + str(numViews) + " " + str(newtimeout)
+        srun   = "screen -d -m " + srun2
+        cmd    = "\"\"" + srcsgx + " && cd damysus_updated && rm -f stats/* && " + srun2 + "\"\""
+        p      = Popen(["ssh","-i",pem,"-o",sshOpt1,"-ntt",sshAdr,cmd])
+        print("the commandline is {}".format(p.args))
+        procsRep.append(("R",server_id,sshAdr,p))
+
+    print("started", len(procsRep), "replicas")
+
+    wait = 5 + int(math.ceil(math.log(numFaults,2)))
+    time.sleep(wait)
+
+    for client_item in clients:
+        client_info = client_item.split(" ")
+        client_id = int(client_info[0].split(":")[1])
+        sshAdr = "root@" + client_info[1].split(":")[1]
+        crun2  = client + " " + str(client_id) + " " + str(numFaults) + " " + str(constFactor) + " " + str(numClTrans) + " " + str(sleepTime) + " " + str(instance)
+        crun   = "screen -d -m " + crun2
+        cmd    = "\"\"" + srcsgx + " && cd damysus_updated && rm -f stats/* && " + crun2 + "\"\""
+        p      = Popen(["ssh","-i",pem,"-o",sshOpt1,"-ntt",sshAdr,cmd])
+        print("the commandline is {}".format(p.args))
+        procsCl.append(("C",client_id,sshAdr,p))
+
+    print("started", len(procsCl), "clients")
+
+    totalTime = 0
+
+    if expmode == "TVL":
+        print("Not available at this moment")
+    else:
+        n = 0
+        # we stop processes using Python instead of inside the C++ code
+        remaining = procsRep.copy()
+        while 0 < len(remaining) and totalTime < cutOffBound:
+            print("remaining processes at time (", totalTime, "):", remaining)
+            rem = remaining.copy()
+            for (tag,server_id,sshAdr,p) in rem:
+                cmdF = "find damysus_updated/" + statsdir + " -name done-" + str(server_id) + "* | wc -l"
+                addr = "root@" + sshAdr
+                outF = int(subprocess.run("ssh -i " + pem + " -o " + sshOpt1 + " -ntt " + addr + " " + cmdF, shell=True, capture_output=True, text=True).stdout)
+                #print("attempting to retrieve 'done' file for" , str(n), ":", outF)
+                if 0 < int(outF):
+                    print("process done:" , str(n))
+                    remaining.remove((tag,server_id,sshAdr,p))
+                    n += 1
+                    if (p.poll() is None):
+                        p.kill()
+            #time.sleep(1)
+            totalTime += len(rem)
+
+    global completeRuns
+    global abortedRuns
+    global aborted
+
+    if totalTime < cutOffBound:
+        completeRuns += 1
+        print("all", len(procsRep)+len(procsCl), "all processes are done")
+    else:
+        abortedRuns += 1
+        conf = (protocol,numFaults,instance)
+        aborted.append(conf)
+        f = open(abortedFile, 'a')
+        f.write(str(conf)+"\n")
+        f.close()
+        print("------ reached cutoff bound ------")
+
+    ## cleanup
+    for (tag,nodeid,sshAdr,p) in procsRep + procsCl:
+        # we print the nodes that haven't finished yet
+        if (p.poll() is None):
+            print("killing process still running:",(tag,nodeid,sshAdr,p.poll()))
+            p.kill()
+
 
 def executeAli(recompile,protocol,constFactor,numClTrans,sleepTime,numViews,cutOffBound,numFaults,numRepeats):
     print("<<<<<<<<<<<<<<<<<<<<",
@@ -2717,10 +2806,27 @@ def executeAli(recompile,protocol,constFactor,numClTrans,sleepTime,numViews,cutO
           "[complete-runs="+str(completeRuns),"aborted-runs="+str(abortedRuns)+"]")
     print("aborted runs so far:", aborted)
     numReps = (constFactor * numFaults) + 1
+    numClients = 1
     mkParams(protocol,constFactor,numFaults,numTrans,payloadSize)
     with open("servers") as input_file:
         servers = [next(input_file) for _ in range(numReps)]
-    makeAliInstances(servers, protocol)
+    with open("clients") as input_file:
+        clients = [next(input_file) for _ in range(numClients)]
+    if recompile:
+        makeAliInstances(servers+clients, protocol)
+    for instance in range(repeats):
+        #inst = instance * instance2
+        #reps = repeats * repeatsL2
+        clearStatsDir()
+        # execute the experiment
+        executeAliInstances(servers,clients,protocol,constFactor,numClTrans,sleepTime,numViews,cutOffBound,numFaults,instance)
+        # copy the stats over
+        for server_item in servers:
+            server_info = server_item.split(" ")
+            sshAdr = "root@" + server_info[1].split(":")[1]
+            subprocess.run(["scp","-i",pem,"-o",sshOpt1,sshAdr+":/root/damysus_updated/stats/*","stats/"])
+        (throughputView,latencyView,handle,cryptoSign,cryptoVerif,cryptoNumSign,cryptoNumVerif) = computeStats(protocol,numFaults,instance,repeats)
+
 
 
 def runAli():
