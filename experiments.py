@@ -2684,6 +2684,46 @@ def runExperiments():
     createPlot(pointsFile)
 # End of runExperiments
 
+def makeAliInstances(servers, protocol):
+    ncores = 1
+    if useMultiCores:
+        ncores = numMakeCores
+    print(">> making instance(s) using",str(ncores),"core(s)")
+    procs = []
+    make0  = "make -j "+str(ncores)
+    make   = make0 + " SGX_MODE="+sgxmode if needsSGX(protocol) else make0 + " server client"
+    for server in servers:
+        sshAdr = server.split(" ")[1].split(":")[1]
+        # subprocess.run(["scp","-i",pem,"-o",sshOpt1,params,sshAdr+":/home/root/damysus_updated/App/"])
+        cmd = "\"\"" + srcsgx + " && cd damysus_updated && make clean && " + make + "\"\""
+        print(cmd)
+
+def executeAli(recompile,protocol,constFactor,numClTrans,sleepTime,numViews,cutOffBound,numFaults,numRepeats):
+    print("<<<<<<<<<<<<<<<<<<<<",
+          "protocol="+protocol.value,
+          ";payload="+str(payloadSize),
+          "(factor="+str(constFactor)+")",
+          "#faults="+str(numFaults),
+          "[complete-runs="+str(completeRuns),"aborted-runs="+str(abortedRuns)+"]")
+    print("aborted runs so far:", aborted)
+    numReps = (constFactor * numFaults) + 1
+    mkParams(protocol,constFactor,numFaults,numTrans,payloadSize)
+    with open("servers") as input_file:
+        servers = [next(input_file) for _ in range(numReps)]
+    makeAliInstances(servers, protocol)
+
+
+def runAli():
+    print("Running alibaba cloud test")
+    Path(statsdir).mkdir(parents=True, exist_ok=True)
+
+    printNodePointParams()
+
+    for numFaults in faults:
+        if runComb:
+            executeAli(recompile,protocol=Protocol.COMB,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
+        else:
+            print("fault exeucte function")
 
 def printClientPoint(protocol,sleepTime,numFaults,throughput,latency,numPoints):
     f = open(clientsFile, 'a')
