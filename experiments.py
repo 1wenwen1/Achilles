@@ -2693,10 +2693,20 @@ def makeAliInstances(servers, protocol):
     make0  = "make -j "+str(ncores)
     make   = make0 + " SGX_MODE="+sgxmode if needsSGX(protocol) else make0 + " server client"
     for server in servers:
-        sshAdr = server.split(" ")[1].split(":")[1]
-        # subprocess.run(["scp","-i",pem,"-o",sshOpt1,params,sshAdr+":/home/root/damysus_updated/App/"])
+        server_info = server.split(" ")
+        sshAdr = "root@" + server_info[1].split(":")[1]
+        subprocess.run(["scp","-i",pem,"-o",sshOpt1,params,sshAdr+":/home/root/damysus_updated/App/"])
         cmd = "\"\"" + srcsgx + " && cd damysus_updated && make clean && " + make + "\"\""
-        print(cmd)
+        p      = Popen(["ssh","-i",pem,"-o",sshOpt1,"-ntt",sshAdr,cmd])
+        print("the commandline is {}".format(p.args))
+        procs.append(("R",sshAdr,p))
+
+    for (tag,sshAdr,p) in procs:
+        while (p.poll() is None):
+            time.sleep(1)
+        print("process done:",i)
+
+    print("all instances are made")
 
 def executeAli(recompile,protocol,constFactor,numClTrans,sleepTime,numViews,cutOffBound,numFaults,numRepeats):
     print("<<<<<<<<<<<<<<<<<<<<",
@@ -3549,6 +3559,7 @@ parser.add_argument("--tvl",        action="store_true")     # throughput vs. la
 parser.add_argument("--tvlaws",     action="store_true")     # throughput vs. latency experiments on AWS
 parser.add_argument("--launch",     type=int, default=0)     # launch EC2 instances
 parser.add_argument("--aws",        action="store_true")     # run AWS
+parser.add_argument("--ali",        action="store_true")     # run AWS
 parser.add_argument("--cluster",    action="store_true")     # run cluster
 parser.add_argument("--prepare",    action="store_true")     # prepare cluster
 parser.add_argument("--containers", type=int, default=0)     # launch Docker instances
@@ -3848,6 +3859,9 @@ elif args.awstest:
 elif args.aws:
     print("lauching AWS experiment")
     runAWS()
+elif args.ali:
+    print("lauching Ali experiment")
+    runAli()
 elif args.cluster:
     print("lauching cluster experiment")
     runCluster()
