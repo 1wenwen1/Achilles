@@ -1,3 +1,4 @@
+//#include <stdlib.h>
 #include "EnclaveShare.h"
 
 
@@ -10,15 +11,14 @@ Phase1 phase = PH1_NEWVIEW;   // current phase
 bool initialized = false;
 
 
-
 // increments the (view,phase) pair
 void increment() {
   if(!initialized) {
-    system("tpm2_nvundefine 0x1500016 > /dev/null 2>&1");
-    system("tpm2_nvdefine -C o -s 8 -a \"ownerread|authread|authwrite|nt=1\" 0x1500016 -p index");
+    //system("tpm2_nvundefine 0x1500016 > /dev/null 2>&1");
+    //system("tpm2_nvdefine -C o -s 8 -a \"ownerread|authread|authwrite|nt=1\" 0x1500016 -p index");
     initialized = true;
   }
-  system("tpm2_nvincrement -C 0x1500016 0x1500016 -P \"index\" > /dev/null 2>&1");
+  //system("tpm2_nvincrement -C 0x1500016 0x1500016 -P \"index\" > /dev/null 2>&1");
   if (phase == PH1_NEWVIEW) {
     phase = PH1_PREPARE;
   } else if (phase == PH1_PREPARE) {

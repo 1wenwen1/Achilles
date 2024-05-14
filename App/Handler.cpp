@@ -39,6 +39,16 @@ Stats stats;                   // To collect statistics
 
 std::string Handler::nfo() { return "[" + std::to_string(this->myid) + "]"; }
 
+bool initialized = false;
+
+void incCounter() {
+  if(!initialized) {
+    system("tpm2_nvundefine 0x1500016 > /dev/null 2>&1");
+    system("tpm2_nvdefine -C o -s 8 -a \"ownerread|authread|authwrite|nt=1\" 0x1500016 -p index");
+    initialized = true;
+  }
+  system("tpm2_nvincrement -C 0x1500016 0x1500016 -P \"index\" > /dev/null 2>&1");
+}
 
 
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
@@ -1062,6 +1072,7 @@ void Handler::sendMsgLdrPrepareChComb(MsgLdrPrepareChComb msg, Peers recipients)
 
 
 Just Handler::callTEEsign() {
+  incCounter();
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
@@ -1080,6 +1091,7 @@ Just Handler::callTEEsign() {
 
 
 Just Handler::callTEEprepare(Hash h, Just j) {
+  incCounter();
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
@@ -1102,6 +1114,7 @@ Just Handler::callTEEprepare(Hash h, Just j) {
 
 
 Just Handler::callTEEstore(Just j) {
+  incCounter();
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
