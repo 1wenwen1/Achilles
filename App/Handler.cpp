@@ -42,12 +42,12 @@ std::string Handler::nfo() { return "[" + std::to_string(this->myid) + "]"; }
 bool initialized = false;
 
 void incCounter() {
-  if(!initialized) {
-    system("tpm2_nvundefine 0x1500016 > /dev/null 2>&1");
-    system("tpm2_nvdefine -C o -s 8 -a \"ownerread|authread|authwrite|nt=1\" 0x1500016 -p index");
-    initialized = true;
-  }
-  system("tpm2_nvincrement -C 0x1500016 0x1500016 -P \"index\" > /dev/null 2>&1");
+ // if(!initialized) {
+ //   system("tpm2_nvundefine 0x1500016 > /dev/null 2>&1");
+ //   system("tpm2_nvdefine -C o -s 8 -a \"ownerread|authread|authwrite|nt=1\" 0x1500016 -p index");
+ //   initialized = true;
+ // }
+ // system("tpm2_nvincrement -C 0x1500016 0x1500016 -P \"index\" > /dev/null 2>&1");
 }
 
 
@@ -1234,11 +1234,11 @@ Accum Handler::callTEEaccumCombSp(just_t just) {
 }
 
 Just Handler::callTEEsignComb() {
-  incCounter();
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
   sgx_status_t ret;
+  incCounter();
   sgx_status_t status = COMB_TEEsign(global_eid, &ret, &jout);
   Just just = getJust(&jout);
 #else
@@ -1252,9 +1252,9 @@ Just Handler::callTEEsignComb() {
 }
 
 Just Handler::callTEEprepareComb(Hash h, Accum acc) {
-  incCounter();
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
+  incCounter();
   just_t jout;
   accum_t ain;
   setAccum(acc,&ain);
@@ -1274,9 +1274,9 @@ Just Handler::callTEEprepareComb(Hash h, Accum acc) {
 }
 
 Just Handler::callTEEstoreComb(Just j) {
-  incCounter();
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
+  incCounter();
   just_t jout;
   just_t jin;
   setJust(j,&jin);
