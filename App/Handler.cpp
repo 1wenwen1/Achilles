@@ -1234,6 +1234,7 @@ Accum Handler::callTEEaccumCombSp(just_t just) {
 }
 
 Just Handler::callTEEsignComb() {
+  incCounter();
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
@@ -1251,6 +1252,7 @@ Just Handler::callTEEsignComb() {
 }
 
 Just Handler::callTEEprepareComb(Hash h, Accum acc) {
+  incCounter();
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
@@ -1272,6 +1274,7 @@ Just Handler::callTEEprepareComb(Hash h, Accum acc) {
 }
 
 Just Handler::callTEEstoreComb(Just j) {
+  incCounter();
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
