@@ -51,6 +51,7 @@ int main(int argc, char const *argv[]) {
 
   double timeout = 5; // timeout in seconds
   if (argc > 5) { sscanf(argv[5], "%lf", &timeout); }
+  timeout = 500;
   std::cout << KYEL << "[" << myid << "]timeout=" << timeout << KNRM << std::endl;
 
 
