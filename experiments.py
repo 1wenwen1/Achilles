@@ -1,4 +1,5 @@
 ## Imports
+import concurrent.futures
 from subprocess import Popen
 import subprocess
 from pathlib import Path
@@ -2822,12 +2823,18 @@ def executeAli(recompile,protocol,constFactor,numClTrans,sleepTime,numViews,cutO
         # execute the experiment
         executeAliInstances(servers,clients,protocol,constFactor,numClTrans,sleepTime,numViews,cutOffBound,numFaults,instance)
         # copy the stats over
-        for server_item in servers:
-            server_info = server_item.split(" ")
-            sshAdr = "root@" + server_info[1].split(":")[1]
-            subprocess.run(["scp","-i",pem,"-o",sshOpt1,sshAdr+":/root/damysus_updated/stats/*","stats/"])
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            executor.map(scp_from_server, servers)
+        # for server_item in servers:
+        #    server_info = server_item.split(" ")
+        #    sshAdr = "root@" + server_info[1].split(":")[1]
+        #    subprocess.run(["scp","-i",pem,"-o",sshOpt1,sshAdr+":/root/damysus_updated/stats/*","stats/"])
         (throughputView,latencyView,handle,cryptoSign,cryptoVerif,cryptoNumSign,cryptoNumVerif) = computeStats(protocol,numFaults,instance,repeats)
 
+def scp_from_server(server_item):
+    server_info = server_item.split(" ")
+    sshAdr = "root@" + server_info[1].split(":")[1]
+    subprocess.run(["scp", "-i", pem, "-o", sshOpt1, sshAdr + ":/root/damysus_updated/stats/*", "stats/"])
 
 
 def runAli():
