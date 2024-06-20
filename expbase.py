@@ -2844,8 +2844,8 @@ def runAli():
     printNodePointParams()
 
     for numFaults in faults:
-        if runChComb:
-            executeAli(recompile,protocol=Protocol.CHCOMB,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
+        if runComb:
+            executeAli(recompile,protocol=Protocol.COMB,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
         else:
             print("fault exeucte function")
 
@@ -3976,11 +3976,11 @@ elif args.aws:
     runAWS()
 elif args.ali:
     print("lauching Ali experiment")
-    runChComb = True
+    runComb = True
     runAli()
 elif args.mkp:
     print("lauching Ali experiment")
-    mkParams(Protocol.CHCOMB,2,faults[0],numTrans,payloadSize)
+    mkParams(Protocol.COMB,2,faults[0],numTrans,payloadSize)
 elif args.cluster:
     print("lauching cluster experiment")
     runCluster()
