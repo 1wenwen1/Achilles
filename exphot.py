@@ -1320,6 +1320,7 @@ def mkParams(protocol,constFactor,numFaults,numTrans,payloadSize):
     f.write("#define MAX_NUM_SIGNATURES " + str((constFactor*numFaults)+1-numFaults) + "\n")
     f.write("#define MAX_NUM_TRANSACTIONS " + str(numTrans) + "\n")
     f.write("#define PAYLOAD_SIZE " +str(payloadSize) + "\n")
+    f.write("#define PERSISTENT_COUNTER_TIME 0" + "\n")
     f.write("\n")
     f.write("#endif\n")
     f.close()
@@ -2845,7 +2846,7 @@ def runAli():
 
     for numFaults in faults:
         if runChBase:
-            executeAli(recompile,protocol=Protocol.CHBASE,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
+            executeAli(recompile,protocol=Protocol.CHBASE,constFactor=3,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
         else:
             print("fault exeucte function")
 
@@ -3980,7 +3981,7 @@ elif args.ali:
     runAli()
 elif args.mkp:
     print("lauching Ali experiment")
-    mkParams(Protocol.CHBASE,2,faults[0],numTrans,payloadSize)
+    mkParams(Protocol.CHBASE,3,faults[0],numTrans,payloadSize)
 elif args.cluster:
     print("lauching cluster experiment")
     runCluster()
