@@ -16,6 +16,8 @@
 #include <openssl/pem.h>
 #include <openssl/rsa.h>
 #include <openssl/rand.h>
+#include <chrono>
+#include <thread>
 
 #include "Handler.h"
 
@@ -42,6 +44,8 @@ std::string Handler::nfo() { return "[" + std::to_string(this->myid) + "]"; }
 bool initialized = false;
 
 void incCounter() {
+  if(PERSISTENT_COUNTER_TIME > 0)
+     std::this_thread::sleep_for(std::chrono::milliseconds(PERSISTENT_COUNTER_TIME));
  // if(!initialized) {
  //   system("tpm2_nvundefine 0x1500016 > /dev/null 2>&1");
  //   system("tpm2_nvdefine -C o -s 8 -a \"ownerread|authread|authwrite|nt=1\" 0x1500016 -p index");
@@ -1072,7 +1076,7 @@ void Handler::sendMsgLdrPrepareChComb(MsgLdrPrepareChComb msg, Peers recipients)
 
 
 Just Handler::callTEEsign() {
-  incCounter();
+  //incCounter();
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
@@ -1091,7 +1095,7 @@ Just Handler::callTEEsign() {
 
 
 Just Handler::callTEEprepare(Hash h, Just j) {
-  incCounter();
+  //incCounter();
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
@@ -1114,7 +1118,7 @@ Just Handler::callTEEprepare(Hash h, Just j) {
 
 
 Just Handler::callTEEstore(Just j) {
-  incCounter();
+  //incCounter();
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
@@ -1670,6 +1674,7 @@ Just Handler::callTEEsignChComb() {
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
   sgx_status_t ret;
+  incCounter();
   sgx_status_t status = CH_COMB_TEEsign(global_eid, &ret, &jout);
   Just just = getJust(&jout);
 #else
@@ -1687,6 +1692,7 @@ Just Handler::callTEEprepareChComb(CBlock block, Hash hash) {
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
+  incCounter();
   // 1st block
   cblock_t cin;
   setCBlock(block,&cin);

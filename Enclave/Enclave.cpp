@@ -1,7 +1,6 @@
 //#include <stdlib.h>
 #include "EnclaveShare.h"
 
-
 hash_t lockh = newHash();     // hash of the last locked block
 View   lockv = 0;             // lockh's view
 hash_t preph = newHash();     // hash of the last prepared block
@@ -10,6 +9,16 @@ View   view  = 0;             // current view
 Phase1 phase = PH1_NEWVIEW;   // current phase
 bool initialized = false;
 
+
+/* uint64_t get_current_time_ns() {
+  sgx_time_t current_time;
+  sgx_time_source_nonce_t nonce;
+  sgx_status_t status = sgx_get_trusted_time(&current_time, &nonce);
+  if (status == SGX_SUCCESS) {
+    return static_cast<uint64_t>(current_time) * 1000000000; 
+  }					   
+  return 0; 
+}*/
 
 // increments the (view,phase) pair
 void increment() {
@@ -29,6 +38,7 @@ void increment() {
     phase = PH1_NEWVIEW;
     view++;
   }
+
 }
 
 

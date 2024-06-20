@@ -50,7 +50,7 @@ repeats      = 100 #10 #50 #5 #100 #2     # number of times to repeat each exper
 repeatsL2    = 1
 #
 numViews     = 30     # number of views in each run
-cutOffBound  = 60     # stop experiment after some time
+cutOffBound  = 600    # stop experiment after some time
 #
 numClients   = 1     # number of clients
 numNonChCls  = 1     # number of clients for the non-chained versions
