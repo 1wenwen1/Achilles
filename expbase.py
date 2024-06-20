@@ -95,6 +95,7 @@ logScale     = True
 
 # to recompile the code
 recompile = False
+pct = 0
 
 # To set some plotting parameters for specific experiments
 whichExp = ""
@@ -1310,7 +1311,7 @@ def clearStatsDir():
 # End of clearStatsDir
 
 
-def mkParams(protocol,constFactor,numFaults,numTrans,payloadSize):
+def mkParams(protocol,constFactor,numFaults,numTrans,payloadSize,pct):
     f = open(params, 'w')
     f.write("#ifndef PARAMS_H\n")
     f.write("#define PARAMS_H\n")
@@ -1320,6 +1321,7 @@ def mkParams(protocol,constFactor,numFaults,numTrans,payloadSize):
     f.write("#define MAX_NUM_SIGNATURES " + str((constFactor*numFaults)+1-numFaults) + "\n")
     f.write("#define MAX_NUM_TRANSACTIONS " + str(numTrans) + "\n")
     f.write("#define PAYLOAD_SIZE " +str(payloadSize) + "\n")
+    f.write("#define PERSISTENT_COUNTER_TIME "+str(pct) + "\n")
     f.write("\n")
     f.write("#endif\n")
     f.close()
@@ -3689,6 +3691,7 @@ parser.add_argument("--repeats2",   type=int, default=0,   help="number of repea
 parser.add_argument("--faults",     type=str, default="",  help="the number of faults to test, separated by commas: 1,2,3,etc.")
 parser.add_argument("--test",       action="store_true",   help="to stop after checking the arguments")
 parser.add_argument("--payload",    type=int, default=0,   help="size of payloads in Bytes")
+parser.add_argument("--pct",    type=int, default=0,   help="persistent counter time")
 parser.add_argument("--p1",         action="store_true",   help="sets runBase to True (base protocol, i.e., HotStuff)")
 parser.add_argument("--p2",         action="store_true",   help="sets runCheap to True (Damysus-C)")
 parser.add_argument("--p3",         action="store_true",   help="sets runQuick to True (Damysus-A)")
@@ -3771,7 +3774,10 @@ if args.netvar >= 0:
 if args.payload >= 0:
     payloadSize = args.payload
     print("SUCCESSFULLY PARSED ARGUMENT - the payload size will be:", payloadSize)
-
+    
+if args.pct >= 0:
+    pct = args.pct
+    print("SUCCESSFULLY PARSED ARGUMENT - the pct will be:", pct)
 
 if args.docker:
     runDocker = True
@@ -3980,7 +3986,7 @@ elif args.ali:
     runAli()
 elif args.mkp:
     print("lauching Ali experiment")
-    mkParams(Protocol.COMB,2,faults[0],numTrans,payloadSize)
+    mkParams(Protocol.COMB,2,faults[0],numTrans,payloadSize,pct)
 elif args.cluster:
     print("lauching cluster experiment")
     runCluster()
