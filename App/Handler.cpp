@@ -24,7 +24,7 @@
 
 // To stop the processes once they have delivered enough messages
 // - deprecated as processes are now stopped from the Python script
-bool hardStop = false;
+bool hardStop = true;
 
 std::mutex mu_trans;
 std::mutex mu_handle;
@@ -1949,6 +1949,7 @@ void Handler::startNewView() {
   // increment the view
   // *** THE NODE HAS NOW MOVED TO THE NEW-VIEW ***
   this->view++;
+  std::cout<<"view++ -------A" <<std::endl;
 
   // We start the timer
   setTimer();
@@ -2093,6 +2094,9 @@ bool Handler::timeToStop() {
   bool b = this->maxViews > 0 && this->maxViews <= this->view+1;
   if (DEBUG) { std::cout << KBLU << nfo() << "timeToStop=" << b << ";maxViews=" << this->maxViews << ";viewsWithoutNewTrans=" << this->viewsWithoutNewTrans << ";pending-transactions=" << this->transactions.size() << KNRM << std::endl; }
   if (DEBUG1) { if (b) { std::cout << KBLU << nfo() << "maxViews=" << this->maxViews << ";viewsWithoutNewTrans=" << this->viewsWithoutNewTrans << ";pending-transactions=" << this->transactions.size() << KNRM << std::endl; } }
+
+  //std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  std::cout<<"this->maxViews: " << this->maxViews << " this->view: " << this->view << " timetostop ret: " << b << std::endl;
   return b;
 }
 
@@ -2112,8 +2116,10 @@ void Handler::executeRData(RData rdata) {
   //if (this->view%100 == 0) { std::cout << KRED << nfo() << "R-EXECUTE(" << this->view << "/" << this->maxViews << ":" << time << ")" << stats.toString() << KNRM << std::endl; }
   //if (this->view%100 == 0) { printClientInfo(); }
   replyHash(rdata.getProph());
+    
 
   if (timeToStop()) {
+    std::cout<< "A__" << std::endl;
     recordStats();
   } else {
     startNewView();
@@ -2724,6 +2730,7 @@ void Handler::handleEarlierMessagesAcc() {
 // TODO: also trigger new-views when there is a timeout
 void Handler::startNewViewAcc() {
   this->view++;
+  std::cout<<"view++ -------B" <<std::endl;
 
   // We start the timer
   setTimer();
@@ -2759,6 +2766,7 @@ void Handler::executeCData(CData<Hash,Void> cdata) {
   replyHash(cdata.getBlock());
 
   if (timeToStop()) {
+    std::cout<< "B__" << std::endl;
     recordStats();
   } else {
     startNewViewAcc();
@@ -3279,6 +3287,7 @@ void Handler::startNewViewComb() {
   // increment the view
   // *** THE NODE HAS NOW MOVED TO THE NEW-VIEW ***
   this->view++;
+  std::cout<<"view++ -------C" <<std::endl;
 
   // We start the timer
   setTimer();
@@ -3323,6 +3332,7 @@ void Handler::executeComb(RData data) {
   replyHash(data.getProph());
 
   if (timeToStop()) {
+    std::cout<< "C__" << std::endl;
     recordStats();
   } else {
     startNewViewComb();
@@ -3798,6 +3808,7 @@ void Handler::startNewViewFree() {
   // increment the view
   // *** THE NODE HAS NOW MOVED TO THE NEW-VIEW ***
   this->view++;
+  std::cout<<"view++ -------D" <<std::endl;
 
   // We start the timer
   setTimer();
@@ -3842,6 +3853,7 @@ void Handler::executeFree(FData data) {
   replyHash(data.getJusth());
 
   if (timeToStop()) {
+    std::cout<< "D__" << std::endl;
     recordStats();
   } else {
     startNewViewFree();
@@ -4001,6 +4013,7 @@ void Handler::startNewViewOnTimeoutOP() {
   if (DEBUG1) std::cout << KBLU << nfo() << "starting a new view on timeout" << KNRM << std::endl;
 
   this->view++;
+  std::cout<<"view++ -------E" <<std::endl;
 
   // We restart the timer
   setTimer();
@@ -4045,6 +4058,7 @@ void Handler::startNewViewOP() {
   // increment the view
   // *** THE NODE HAS NOW MOVED TO THE NEW-VIEW ***
   this->view++;
+  std::cout<<"view++ -------F" <<std::endl;
 
   // We start the timer
   setTimer();
@@ -4677,6 +4691,7 @@ void Handler::executeOP(OPprepare cert) {
   replyHash(cert.getHash());
 
   if (timeToStop()) {
+    std::cout<< "E__" << std::endl;
     recordStats();
   } else {
     startNewViewOP();
@@ -4914,7 +4929,10 @@ void Handler::tryExecuteCh(JBlock block, JBlock block0, JBlock block1) {
       if (DEBUG1) std::cout << KBLU << nfo() << "sent replies" << KNRM << std::endl;
     }
 
-    if (timeToStop()) { recordStats(); }
+    if (timeToStop()) {
+      std::cout<< "F__" << std::endl;
+      recordStats(); 
+    }
   }
 }
 
@@ -4928,6 +4946,7 @@ void Handler::checkNewJustCh(RData data) {
     this->justNV = Just(data,signs);
     // increment the view
     this->view++;
+    std::cout<<"view++ -------G" <<std::endl;
     // reset the timer
     setTimer();
    // start the new view
@@ -4972,6 +4991,7 @@ void Handler::startNewViewCh() {
 
     // increment the view
     this->view++;
+    std::cout<<"view++ -------H" <<std::endl;
     // start the timer
     setTimer();
 
@@ -5045,6 +5065,7 @@ void Handler::voteCh(JBlock block) {
           else {
             // increment the view
             this->view++;
+            std::cout<<"view++ -------I" <<std::endl;
             // reset the timer
             setTimer();
             // try to handler already received messages
@@ -5320,7 +5341,10 @@ void Handler::tryExecuteChComb(CBlock blockL, CBlock block0) {
       if (DEBUG1) std::cout << KBLU << nfo() << "sent replies" << KNRM << std::endl;
     }
 
-    if (timeToStop()) { recordStats(); }
+    if (timeToStop()) {
+      std::cout<< "G__" << std::endl;
+      recordStats(); 
+    }
   }
 }
 
@@ -5336,6 +5360,7 @@ void Handler::checkNewJustChComb(RData data) {
     this->caprep.setCert(cert);
     // increment the view
     this->view++;
+    std::cout<<"view++ -------J" <<std::endl;
     // start the new view
     prepareChComb();
   }
@@ -5379,6 +5404,7 @@ void Handler::startNewViewChComb() {
 
     // increment the timer
     this->view++;
+    std::cout<<"view++ -------L" <<std::endl;
     // start the timer
     setTimer();
 
@@ -5446,6 +5472,7 @@ void Handler::voteChComb(CBlock block) {
         if (amLeaderOf(this->view+1)) { checkNewJustChComb(justPrep.getRData()); }
         else {
           this->view++;
+          std::cout<<"view++ -------M" <<std::endl;
           handleEarlierMessagesChComb();
         }
       }
