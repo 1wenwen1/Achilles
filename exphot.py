@@ -50,7 +50,7 @@ repeats      = 100 #10 #50 #5 #100 #2     # number of times to repeat each exper
 repeatsL2    = 1
 #
 numViews     = 300     # number of views in each run
-cutOffBound  = 60     # stop experiment after some time
+cutOffBound  = 100     # stop experiment after some time
 #
 numClients   = 1     # number of clients
 numNonChCls  = 1     # number of clients for the non-chained versions
@@ -3982,6 +3982,11 @@ elif args.ali:
 elif args.mkp:
     print("lauching Ali experiment")
     mkParams(Protocol.CHBASE,3,faults[0],numTrans,payloadSize)
+    os.system("bash setup.sh")
+    time.sleep(30)
+    runChBase = True
+    runAli()
+    os.system("bash close.sh")
 elif args.cluster:
     print("lauching cluster experiment")
     runCluster()
