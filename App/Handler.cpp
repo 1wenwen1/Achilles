@@ -18,6 +18,8 @@
 #include <openssl/rand.h>
 #include <chrono>
 #include <thread>
+#include <ctime>
+#include <iomanip>
 
 #include "Handler.h"
 
@@ -42,6 +44,27 @@ Stats stats;                   // To collect statistics
 std::string Handler::nfo() { return "[" + std::to_string(this->myid) + "]"; }
 
 bool initialized = false;
+
+std::string get_current_time() {
+    auto now = std::chrono::system_clock::now();
+    auto now_us = std::chrono::time_point_cast<std::chrono::microseconds>(now);
+    auto epoch = now_us.time_since_epoch();
+    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(epoch);
+    auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(epoch) % 1000000;
+
+    std::time_t now_time = std::chrono::system_clock::to_time_t(now);
+    std::tm local_tm = *std::localtime(&now_time);
+
+    std::stringstream ss;
+    ss << std::put_time(&local_tm, "%H:%M:%S")
+       << '.' << std::setfill('0') << std::setw(6) << microseconds.count();
+    return ss.str();
+}
+
+void dlog(const std::string& message) {
+    std::string log_message = get_current_time() + ": " + message;
+    std::cout << log_message << std::endl;
+}
 
 void incCounter() {
   if(PERSISTENT_COUNTER_TIME > 0)
@@ -2006,6 +2029,7 @@ void Handler::recordStats() {
 #else
   double latencyView = (totv.tot/totv.n / 1000)/* milli-seconds spent on views */;
 #endif
+  double latencyView2 = (stats.getExecTimeAvg() / 1000)/* milli-seconds spent on views */;
 
   // Handle
   double handle = (toth.tot / 1000); /* milli-seconds spent on handling messages */
@@ -2016,15 +2040,31 @@ void Handler::recordStats() {
   double ctimeV  = stats.getCryptoVerifTime();
   double cryptoV = (ctimeV / 1000); /* milli-seconds spent on crypto */
 
+
+  std::cout<<"END ------------ latency1: " << latencyView << " lantency2: " << latencyView2 << std::endl;
+ 
+#if defined (BASIC_CHEAP_AND_QUICK)
   std::ofstream fileVals(statsVals);
   fileVals << std::to_string(throughputView)
            << " " << std::to_string(latencyView)
+           << " " << std::to_string(latencyView2)
            << " " << std::to_string(handle)
            << " " << std::to_string(stats.getCryptoSignNum())
            << " " << std::to_string(cryptoS)
            << " " << std::to_string(stats.getCryptoVerifNum())
            << " " << std::to_string(cryptoV);
   fileVals.close();
+#else
+  std::ofstream fileVals(statsVals);
+  fileVals << std::to_string(throughputView)
+           << " " << std::to_string(latencyView2)
+           << " " << std::to_string(handle)
+           << " " << std::to_string(stats.getCryptoSignNum())
+           << " " << std::to_string(cryptoS)
+           << " " << std::to_string(stats.getCryptoVerifNum())
+           << " " << std::to_string(cryptoV);
+  fileVals.close();
+#endif
 
   // Done
   std::ofstream fileDone(statsDone);
@@ -2095,7 +2135,7 @@ bool Handler::timeToStop() {
   if (DEBUG) { std::cout << KBLU << nfo() << "timeToStop=" << b << ";maxViews=" << this->maxViews << ";viewsWithoutNewTrans=" << this->viewsWithoutNewTrans << ";pending-transactions=" << this->transactions.size() << KNRM << std::endl; }
   if (DEBUG1) { if (b) { std::cout << KBLU << nfo() << "maxViews=" << this->maxViews << ";viewsWithoutNewTrans=" << this->viewsWithoutNewTrans << ";pending-transactions=" << this->transactions.size() << KNRM << std::endl; } }
 
-  //std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  //std::this_thread::sleep_for(std::chrono::milliseconds(3000));
   std::cout<<"this->maxViews: " << this->maxViews << " this->view: " << this->view << " timetostop ret: " << b << std::endl;
   return b;
 }
@@ -3045,6 +3085,8 @@ void Handler::prepareComb() {
     if (acc.isSet()) {
       // New block
       Block block = createNewBlock(acc.getPreph());
+     	 
+      stats.startExecTime(this->view,std::chrono::steady_clock::now());
 
       // This one we'll store, and wait until we have this->qsize of them
       Just justPrep = callTEEprepareComb(block.hash(),acc);
@@ -3064,6 +3106,9 @@ void Handler::prepareComb() {
           // This one goes to the backups
           MsgLdrPrepareComb msgLdrPrep(acc,block,sig);
           Peers recipients = remove_from_peers(this->myid);
+
+          dlog("ph 1: leader sends propose to backups" + std::to_string(this->view));
+
           sendMsgLdrPrepareComb(msgLdrPrep,recipients);
 
           auto end = std::chrono::steady_clock::now();
@@ -3213,10 +3258,12 @@ void Handler::handlePrepareComb(MsgPrepareComb msg) {
     if (amLeaderOf(v)) {
       // Beginning of pre-commit phase, we store messages until we get enough of them to start pre-committing
       if (this->log.storePrepComb(msg) == this->qsize) {
+        dlog("ph 3: leader sends precommit");
         preCommitComb(data);
       }
     } else {
       // Backups wait for a MsgPrepareAcc message from the leader that contains qsize signatures in the pre-commit phase
+      dlog("ph 2: vote for prepare");
       respondToPrepareComb(msg);
     }
   } else {
@@ -3322,6 +3369,10 @@ void Handler::executeComb(RData data) {
   startView = endView;
   stats.incExecViews();
   stats.addTotalViewTime(time);
+  
+  stats.endExecTime(this->view,endView);
+  dlog("ph 6: execute");
+
   if (this->transactions.empty()) { this->viewsWithoutNewTrans++; } else { this->viewsWithoutNewTrans = 0; }
 
   // Execute
@@ -3383,10 +3434,12 @@ void Handler::handlePreCommitComb(MsgPreCommitComb msg) {
     if (amLeaderOf(v)) {
       // Beginning of decide phase, we store messages until we get enough of them to start deciding
       if (this->log.storePcComb(msg) == this->qsize) {
+  	dlog("ph 5: leader decide");
         decideComb(data);
       }
     } else {
       // Backups wait for a MsgPreCommitComb message from the leader that contains qsize signatures in the decide phase
+      dlog("ph 4: RE precommit");
       respondToPreCommitComb(msg);
     }
   } else {
@@ -5329,6 +5382,9 @@ void Handler::tryExecuteChComb(CBlock blockL, CBlock block0) {
       stats.incExecViews();
       stats.addTotalViewTime(time);
       this->viewsWithoutNewTrans++;
+
+
+      dlog("endExecTime " + std::to_string(block2.getView()));
       stats.endExecTime(view2,endView);
       //if (this->transactions.empty()) { this->viewsWithoutNewTrans++; } else { this->viewsWithoutNewTrans = 0; }
 
@@ -5422,6 +5478,8 @@ void Handler::voteChComb(CBlock block) {
 
   //if (DEBUG0) std::cout << KBLU << nfo() << "inserting vote " << this->view << " " << block.getView() << KNRM << std::endl;
   this->cblocks[this->view]=block;
+
+  dlog("startExecTime" + std::to_string(block.getView()));
   stats.startExecTime(this->view,std::chrono::steady_clock::now());
 
   View view0 = block.getCert().getView();
@@ -5450,18 +5508,23 @@ void Handler::voteChComb(CBlock block) {
         MsgLdrPrepareChComb msgPrep(block,sigPrep);
         Peers recipientsPrep = remove_from_peers(this->myid);
         sendMsgLdrPrepareChComb(msgPrep,recipientsPrep);
+        dlog("sent vote as leader" + std::to_string(block.getView()));
       } else { // not the leader of the current view
         MsgPrepareChComb msgPrep(justPrep.getRData(),sigPrep);
         // If we're the leader of the next view, we store the message, otherwise we send it
+        dlog("sent vote as backup" + std::to_string(block.getView()));
         if (amLeaderOf(this->view+1)) { this->log.storePrepChComb(msgPrep); }
         else { sendMsgPrepareChComb(msgPrep,recipientsNL); }
       }
+
+      dlog("sent vote" + std::to_string(block.getView()));
       if (DEBUG1) std::cout << KBLU << nfo() << "sent vote" << KNRM << std::endl;
 
       if (justNv2.getSigns().getSize() == 1) {
         Sign sigNv = justNv2.getSigns().get(0);
         MsgNewViewChComb msgNv(justNv2.getRData(),sigNv);
         // If we're the leader of the next view, we store the message, otherwise we send it
+        dlog("send new view (or store) " + std::to_string(block.getView()));
         if (amLeaderOf(this->view+1)) { this->log.storeNvChComb(msgNv); }
         else { sendMsgNewViewChComb(msgNv,recipientsNL); }
 
@@ -5544,6 +5607,8 @@ void Handler::prepareChComb() {
   //if (DEBUG0) { std::cout << KLBLU << nfo() << "leader created new block with cert's hash: " << block.getCert().getHash().toString() << KNRM << std::endl; }
   //if (DEBUG0) { std::cout << KLBLU << nfo() << "leader created new block: " << block.prettyPrint() << KNRM << std::endl; }
   //this->cblocks[this->view]=block; // Done in voteChComb
+
+  dlog(" ---  leader create block" + std::to_string(this->view));
 
   voteChComb(block);
 }

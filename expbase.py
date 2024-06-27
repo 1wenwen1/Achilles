@@ -49,8 +49,8 @@ faults       = [1] #[1,2,4,10] #[1,2,4,10,20,30,40] #[1,2,4,6,8,10,12,14,20,30] 
 repeats      = 100 #10 #50 #5 #100 #2     # number of times to repeat each experiment
 repeatsL2    = 1
 #
-numViews     = 20     # number of views in each run
-cutOffBound  = 5    # stop experiment after some time
+numViews     = 300     # number of views in each run
+cutOffBound  = 60    # stop experiment after some time
 #
 numClients   = 1     # number of clients
 numNonChCls  = 1     # number of clients for the non-chained versions
@@ -1579,8 +1579,12 @@ def computeStats(protocol,numFaults,instance,repeats):
     # Computing throughput and latency
     throughputViewVal=0.0
     throughputViewNum=0
+
     latencyViewVal=0.0
     latencyViewNum=0
+
+    latencyViewVal2=0.0
+    latencyViewNum2=0
 
     handleVal=0.0
     handleNum=0
@@ -1604,7 +1608,7 @@ def computeStats(protocol,numFaults,instance,repeats):
         if filename.startswith(statsdir+"/vals"):
             f = open(filename, "r")
             s = f.read()
-            [thru,lat,hdl,signNum,signTime,verifNum,verifTime] = s.split(" ")
+            [thru,lat,lat2,hdl,signNum,signTime,verifNum,verifTime] = s.split(" ")
 
             valT = float(thru)
             throughputViewNum += 1
@@ -1615,6 +1619,11 @@ def computeStats(protocol,numFaults,instance,repeats):
             latencyViewNum += 1
             latencyViewVal += valL
             printNodePoint(protocol,numFaults,"latency-view",valL)
+
+            valL2 = float(lat2)
+            latencyViewNum2 += 1
+            latencyViewVal2 += valL2
+            printNodePoint(protocol,numFaults,"latency-view2",valL2)
 
             valH = float(hdl)
             handleNum += 1
@@ -1643,6 +1652,7 @@ def computeStats(protocol,numFaults,instance,repeats):
 
     throughputView = throughputViewVal/throughputViewNum if throughputViewNum > 0 else 0.0
     latencyView    = latencyViewVal/latencyViewNum       if latencyViewNum > 0    else 0.0
+    latencyView2    = latencyViewVal2/latencyViewNum2       if latencyViewNum2 > 0    else 0.0
     handle         = handleVal/handleNum                 if handleNum > 0         else 0.0
     cryptoSign     = cryptoSignVal/cryptoSignNum         if cryptoSignNum > 0     else 0.0
     cryptoVerif    = cryptoVerifVal/cryptoVerifNum       if cryptoVerifNum > 0    else 0.0
@@ -1651,13 +1661,14 @@ def computeStats(protocol,numFaults,instance,repeats):
 
     print("throughput-view:",  throughputView, "out of", throughputViewNum)
     print("latency-view:",     latencyView,    "out of", latencyViewNum)
+    print("latency-view2:",     latencyView2,    "out of", latencyViewNum2)
     print("handle:",           handle,         "out of", handleNum)
     print("crypto-sign:",      cryptoSign,     "out of", cryptoSignNum)
     print("crypto-verif:",     cryptoVerif,    "out of", cryptoVerifNum)
     print("crypto-num-sign:",  cryptoNumSign,  "out of", cryptoNumSignNum)
     print("crypto-num-verif:", cryptoNumVerif, "out of", cryptoNumVerifNum)
 
-    return (throughputView, latencyView, handle, cryptoSign, cryptoVerif, cryptoNumSign, cryptoNumVerif)
+    return (throughputView, latencyView, latencyView2, handle, cryptoSign, cryptoVerif, cryptoNumSign, cryptoNumVerif)
 ## End of computeStats
 
 
@@ -2831,7 +2842,7 @@ def executeAli(recompile,protocol,constFactor,numClTrans,sleepTime,numViews,cutO
         #    server_info = server_item.split(" ")
         #    sshAdr = "root@" + server_info[1].split(":")[1]
         #    subprocess.run(["scp","-i",pem,"-o",sshOpt1,sshAdr+":/root/damysus_updated/stats/*","stats/"])
-        (throughputView,latencyView,handle,cryptoSign,cryptoVerif,cryptoNumSign,cryptoNumVerif) = computeStats(protocol,numFaults,instance,repeats)
+        (throughputView,latencyView,latencyView2,handle,cryptoSign,cryptoVerif,cryptoNumSign,cryptoNumVerif) = computeStats(protocol,numFaults,instance,repeats)
 
 def scp_from_server(server_item):
     server_info = server_item.split(" ")
@@ -3987,11 +3998,11 @@ elif args.ali:
 elif args.mkp:
     print("lauching Ali experiment")
     mkParams(Protocol.COMB,2,faults[0],numTrans,payloadSize,pct)
+    os.system("bash close.sh")
     os.system("bash setup.sh")
     time.sleep(30)
     runComb = True
     runAli()
-    os.system("bash close.sh")
 elif args.cluster:
     print("lauching cluster experiment")
     runCluster()
