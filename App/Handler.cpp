@@ -3162,6 +3162,7 @@ bool Handler::verifyLdrPrepareComb(MsgLdrPrepareComb msg) {
 
 // For backups to respond to correct MsgLdrPrepareComb messages received from leaders
 void Handler::respondToLdrPrepareComb(Block block, Accum acc) {
+  stats.startExecTime(this->view,std::chrono::steady_clock::now());
   Just justPrep = callTEEprepareComb(block.hash(),acc);
   if (justPrep.isSet()) {
     if (DEBUG1) std::cout << KBLU << nfo() << "storing block for view=" << this->view << ":" << block.prettyPrint() << KNRM << std::endl;
