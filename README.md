@@ -1,14 +1,21 @@
 
 
 `raw_ip_list` 填入可用服务器ip
+
 `python gen_ip.py n m` 生成servers配置文件，n为总结点数，m为单个节点复用数 如`python gen_ip.py 3 3`三个总节点，每个机器复用3个
+
 `python experiment.py --faults 1 --repeats 1 --mkp` 为重编译并运行
+
 `python experiment.py --faults 1 --repeats 1 --ali` 为直接运行 
 
 `bash run.sh n` 为本地tmux运行，用于debug，n为faults number。然后要运行一个servers和一个client。
+
 如:
+
 `bash run.sh 1`
+
 `./sgxserver 2 1 2 30 10`
+
 `./sgxclient 0 1 2 1 0 0`
 
 
