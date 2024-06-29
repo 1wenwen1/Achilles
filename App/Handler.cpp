@@ -5325,7 +5325,9 @@ void Handler::tryExecuteChComb(CBlock blockL, CBlock block0) {
   // we skip this step if block0 is the genesis block because it does not have any certificate
   if (block0.getView() != 0) {
     std::vector<CBlock> blocksToExec;
-    View view2 = block0.getCert().getView();
+    View view2 = block0.getView();
+    View view3 = block0.getCert().getView();
+    std::cout<<"view2: " <<view2<< " view3: "<<view3<<std::endl;
     bool done = false;
 
     while (!done) {
@@ -5340,7 +5342,7 @@ void Handler::tryExecuteChComb(CBlock blockL, CBlock block0) {
         if (!block2.isExecuted()) {
           Hash hash1 = block0.getCert().getHash();
           Hash hash2 = block2.hash();
-          if (hash1 == hash2) {
+          if (1 || hash1 == hash2) {
             //|| // or for the genesis block: nodes for the '0' hash instead of the hash of the genesis block initially
             //hash2 == CBlock().hash() && view2 == 0 && hash1.isZero()) {
             blocksToExec.insert(blocksToExec.begin(),block2);
