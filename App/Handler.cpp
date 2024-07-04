@@ -5523,7 +5523,9 @@ void Handler::voteChComb(CBlock block) {
         // If we're the leader of the next view, we store the message, otherwise we send it
         dlog("sent vote as backup" + std::to_string(block.getView()));
         if (amLeaderOf(this->view+1)) { this->log.storePrepChComb(msgPrep); }
-        else { sendMsgPrepareChComb(msgPrep,recipientsNL); }
+        else { 
+	  dlog("REPLICA SENT PREPARE TO LDR");
+	  sendMsgPrepareChComb(msgPrep,recipientsNL); }
       }
 
       dlog("sent vote" + std::to_string(block.getView()));
@@ -5718,9 +5720,12 @@ void Handler::handlePrepareChComb(MsgPrepareChComb msg) {
 
   RData data = msg.data;
   View v = data.getPropv();
+  if (DEBUG1) std::cout << KMAG << nfo() << "VIEW NUMBER:" << v << this->view << msg.prettyPrint() << KNRM << std::endl;
   if (v == this->view) {
+    if (DEBUG1) std::cout << KMAG << nfo() << "VIEW NUMBER:" << v << this->view << msg.prettyPrint() << KNRM << std::endl;
     if (amLeaderOf(v+1)) {
       // Beginning of pre-commit phase, we store messages until we get enough of them to start pre-committing
+      if (DEBUG1) std::cout << KMAG << nfo() << (this->log.storePrepChComb(msg) == this->qsize) << ":" << (this->cblocks.find(this->view) != this->cblocks.end()) << KNRM << std::endl;
       if (this->log.storePrepChComb(msg) == this->qsize
           && this->cblocks.find(this->view) != this->cblocks.end()) {
         checkNewJustChComb(data);

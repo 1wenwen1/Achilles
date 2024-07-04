@@ -6,7 +6,7 @@ cblock_t GENblock = new_cblock_t();
 //hash_t CHCOMBpreph = newHash();     // hash of the last prepared block
 hash_t CHCOMBpreph = hashCBlock(&GENblock);     // hash of the last prepared block
 View   CHCOMBprepv = 0;             // preph's view
-View   CHCOMBview  = 0;             // current view
+View   CHCOMBview  = 1;             // current view
 Phase1 CHCOMBphase = PH1_NEWVIEW;   // current phase
 
 
@@ -28,8 +28,8 @@ just_t CHCOMBsign(hash_t h1, hash_t h2, View v2) {
   sign_t sign = signString(rdata2string(rdata));
   signs_t signs; signs.size = 1; signs.signs[0] = sign;
   just_t j; j.set = 1; j.rdata = rdata; j.signs = signs;
-
-  CHCOMBincrement();
+  CHCOMBview++;
+  //CHCOMBincrement();
 
   return j;
 }
@@ -80,9 +80,9 @@ sgx_status_t CH_COMB_TEEprepare(cblock_t *block, hash_t *hash, just_t *res) {
 //    //ocall_print((nfo() + "block to hash:" + cblock2string(block)).c_str());
 //    //ocall_print((nfo() + "block to CAtag:" + std::to_string((block->cert).tag)).c_str());
 //    //ocall_print((nfo() + "block to hash (ca 1st sign):" + sign2string(getN(ca2signs(block->cert)))).c_str());
-//    hash_t hash2 = hashCBlock(block);
+    hash_t hash2 = hashCBlock(block);
 //    //ocall_print((nfo() + "new hash:" + hash2string(hash2)).c_str());
-//    *res = CHCOMBsign(hash2,newHash(),0);
+    *res = CHCOMBsign(hash2,newHash(),0);
 //  } else {
 //    ocall_print(("TEEprepare failed " + std::to_string(vb) + " " + std::to_string(vv)).c_str());
 //    res->set=false;
