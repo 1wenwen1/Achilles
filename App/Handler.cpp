@@ -4999,6 +4999,7 @@ void Handler::tryExecuteCh(JBlock block, JBlock block0, JBlock block1) {
 void Handler::checkNewJustCh(RData data) {
   Signs signs = (this->log).getPrepareCh(data.getPropv(),this->qsize);
   // We should not need to check the size of 'signs' as this function should only be called, when this is possible
+  dlog("in checknewjustch, signs.getsize = " + std::to_string(signs.getSize()));
   if (signs.getSize() == this->qsize) {
     // create the new justification
     this->justNV = Just(data,signs);
@@ -5545,7 +5546,7 @@ void Handler::voteChComb(CBlock block) {
         tryExecuteChComb(block,block0);
 
         // The leader of the next view stays in this view until it has received enough votes or timed out
-        if (amLeaderOf(this->view+1)) { checkNewJustChComb(justPrep.getRData()); }
+        if (amLeaderOf(this->view+1)) { dlog("call 2"); checkNewJustChComb(justPrep.getRData()); }
         else {
           this->view++;
           std::cout<<"view++ -------M" <<std::endl;
@@ -5726,9 +5727,11 @@ void Handler::handlePrepareChComb(MsgPrepareChComb msg) {
     if (DEBUG1) std::cout << KMAG << nfo() << "VIEW NUMBER:" << v << this->view << msg.prettyPrint() << KNRM << std::endl;
     if (amLeaderOf(v+1)) {
       // Beginning of pre-commit phase, we store messages until we get enough of them to start pre-committing
-      if (DEBUG1) std::cout << KMAG << nfo() << (this->log.storePrepChComb(msg) == this->qsize) << ":" << (this->cblocks.find(this->view) != this->cblocks.end()) << KNRM << std::endl;
-      if (this->log.storePrepChComb(msg) == this->qsize
+      int x = this->log.storePrepChComb(msg);
+      if (DEBUG1) std::cout << KMAG << nfo() << (x  == this->qsize) << ":" << (this->cblocks.find(this->view) != this->cblocks.end()) << KNRM << std::endl;
+      if (x == this->qsize
           && this->cblocks.find(this->view) != this->cblocks.end()) {
+	dlog("call 1");
         checkNewJustChComb(data);
       }
     }
