@@ -12,14 +12,13 @@
 
 // Round Data
 class RData {
- private:
+ public:
   Hash   proph;
   View   propv = 0;
   Hash   justh;
   View   justv = 0;
   Phase1 phase;
-
- public:
+ //public: 
   RData(Hash proph, View propv, Hash justh, View justv, Phase1 phase);
   RData(salticidae::DataStream &data);
   RData();

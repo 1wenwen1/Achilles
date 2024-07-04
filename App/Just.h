@@ -10,12 +10,13 @@
 
 class Just {
 
- private:
+ //private:
+ public:
   bool set = false;
   RData rdata; // round data
   Signs signs; // signature
 
- public:
+ //public:
   Just();
   Just(RData rdata, Sign sign);
   Just(RData rdata, Signs signs);

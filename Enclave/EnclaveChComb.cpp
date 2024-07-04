@@ -65,28 +65,29 @@ sgx_status_t CH_COMB_TEEprepare(cblock_t *block, hash_t *hash, just_t *res) {
 
   //ocall_print((nfo() + "TEEprepare " + std::to_string(block->view) + " " + std::to_string(ca2view(cert))).c_str());
 
-  if (vb && vv) {
-
-    if (eqHashes(ca2hash(cert),*hash)) {
-      CHCOMBpreph = ca2hash(cert);
-      CHCOMBprepv = ca2view(cert);
-    } else {
-      ocall_print((nfo() + "TEEprepare - different hashes " + std::to_string(block->view) + " " + std::to_string(ca2view(cert))).c_str());
-      ocall_print((nfo() + "hash1:" + hash2string(ca2hash(cert))).c_str());
-      ocall_print((nfo() + "hash2:" + hash2string(*hash)).c_str());
-    }
-
-    //ocall_print((nfo() + "block to hash:" + cblock2string(block)).c_str());
-    //ocall_print((nfo() + "block to CAtag:" + std::to_string((block->cert).tag)).c_str());
-    //ocall_print((nfo() + "block to hash (ca 1st sign):" + sign2string(getN(ca2signs(block->cert)))).c_str());
-    hash_t hash2 = hashCBlock(block);
-    //ocall_print((nfo() + "new hash:" + hash2string(hash2)).c_str());
-    *res = CHCOMBsign(hash2,newHash(),0);
-  } else {
-    ocall_print(("TEEprepare failed " + std::to_string(vb) + " " + std::to_string(vv)).c_str());
-    res->set=false;
-  }
-
+  //if (vb && vv) {
+//  if (vb) {
+//
+//    if (eqHashes(ca2hash(cert),*hash)) {
+//      CHCOMBpreph = ca2hash(cert);
+//      CHCOMBprepv = ca2view(cert);
+//    } else {
+//      ocall_print((nfo() + "TEEprepare - different hashes " + std::to_string(block->view) + " " + std::to_string(ca2view(cert))).c_str());
+//      ocall_print((nfo() + "hash1:" + hash2string(ca2hash(cert))).c_str());
+//      ocall_print((nfo() + "hash2:" + hash2string(*hash)).c_str());
+//    }
+//
+//    //ocall_print((nfo() + "block to hash:" + cblock2string(block)).c_str());
+//    //ocall_print((nfo() + "block to CAtag:" + std::to_string((block->cert).tag)).c_str());
+//    //ocall_print((nfo() + "block to hash (ca 1st sign):" + sign2string(getN(ca2signs(block->cert)))).c_str());
+//    hash_t hash2 = hashCBlock(block);
+//    //ocall_print((nfo() + "new hash:" + hash2string(hash2)).c_str());
+//    *res = CHCOMBsign(hash2,newHash(),0);
+//  } else {
+//    ocall_print(("TEEprepare failed " + std::to_string(vb) + " " + std::to_string(vv)).c_str());
+//    res->set=false;
+//  }
+//
   return status;
 }
 

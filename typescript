@@ -1,0 +1,179 @@
+Script started on 2024-06-29 17:59:57+08:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="201" LINES="48"]
+]0;root@iZj6cdj9l4nhim69xtzh8cZ: ~/damysus_updatedroot@iZj6cdj9l4nhim69xtzh8cZ:~/damysus_updated# python experiments.py --faults 1 --repeats 1--[K[K --mkp
+SUCCESSFULLY PARSED ARGUMENT - the number of repeats is now: 1
+SUCCESSFULLY PARSED ARGUMENT - the network latency (in ms) will be changed using netem to: 0
+SUCCESSFULLY PARSED ARGUMENT - the variation of the network latency (in ms) will be changed using netem to: 0
+SUCCESSFULLY PARSED ARGUMENT - the payload size will be: 0
+SUCCESSFULLY PARSED ARGUMENT - will print debugging info while plotting
+SUCCESSFULLY PARSED ARGUMENT - will plot latency
+SUCCESSFULLY PARSED ARGUMENT - will plot throughput
+SUCCESSFULLY PARSED ARGUMENT - we will be testing for f in [1]
+mkparams Ali experiment
+error connecting to /tmp//tmux-0/default (No such file or directory)
+Running alibaba cloud test
+<<<<<<<<<<<<<<<<<<<< protocol=CHAINED_CHEAP_AND_QUICK ;payload=0 (factor=2) #faults=1 [complete-runs=0 aborted-runs=0]
+aborted runs so far: []
+>> connecting to 3 replica instance(s)
+>> connecting to 1 client instance(s)
+the commandline is ['ssh', '-i', 'TShard', '-o', 'StrictHostKeyChecking=no', '-ntt', 'root@10.0.0.188', '""source /opt/intel/sgxsdk/environment && cd damysus_updated && rm -f stats/* && ./sgxserver 0 1 2 300 10""']
+the commandline is ['ssh', '-i', 'TShard', '-o', 'StrictHostKeyChecking=no', '-ntt', 'root@10.0.0.188', '""source /opt/intel/sgxsdk/environment && cd damysus_updated && rm -f stats/* && ./sgxserver 1 1 2 300 10""']
+the commandline is ['ssh', '-i', 'TShard', '-o', 'StrictHostKeyChecking=no', '-ntt', 'root@10.0.0.188', '""source /opt/intel/sgxsdk/environment && cd damysus_updated && rm -f stats/* && ./sgxserver 2 1 2 300 10""']
+started 3 replicas
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Permissions 0644 for 'TShard' are too open.
+It is required that your private key files are NOT accessible by others.
+This private key will be ignored.
+Load key "TShard": bad permissions
+root@10.0.0.188: Permission denied (publickey).
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Permissions 0644 for 'TShard' are too open.
+It is required that your private key files are NOT accessible by others.
+This private key will be ignored.
+Load key "TShard": bad permissions
+root@10.0.0.188: Permission denied (publickey).
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Permissions 0644 for 'TShard' are too open.
+It is required that your private key files are NOT accessible by others.
+This private key will be ignored.
+Load key "TShard": bad permissions
+root@10.0.0.188: Permission denied (publickey).
+^CTraceback (most recent call last):
+  File "experiments.py", line 3994, in <module>
+    runAli()
+  File "experiments.py", line 2850, in runAli
+    executeAli(recompile,protocol=Protocol.CHCOMB,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
+  File "experiments.py", line 2826, in executeAli
+    executeAliInstances(servers,clients,protocol,constFactor,numClTrans,sleepTime,numViews,cutOffBound,numFaults,instance)
+  File "experiments.py", line 2740, in executeAliInstances
+    time.sleep(wait)
+KeyboardInterrupt
+
+]0;root@iZj6cdj9l4nhim69xtzh8cZ: ~/damysus_updatedroot@iZj6cdj9l4nhim69xtzh8cZ:~/damysus_updated# chmod TShard 
+chmod: missing operand after ‘TShard’
+Try 'chmod --help' for more information.
+]0;root@iZj6cdj9l4nhim69xtzh8cZ: ~/damysus_updatedroot@iZj6cdj9l4nhim69xtzh8cZ:~/damysus_updated# python exp
+expbase.py      experiments.py  exphot.py       
+]0;root@iZj6cdj9l4nhim69xtzh8cZ: ~/damysus_updatedroot@iZj6cdj9l4nhim69xtzh8cZ:~/damysus_updated# python experiments.py --faults  1 --mk[K[Krepeats 1 --ali
+SUCCESSFULLY PARSED ARGUMENT - the number of repeats is now: 1
+SUCCESSFULLY PARSED ARGUMENT - the network latency (in ms) will be changed using netem to: 0
+SUCCESSFULLY PARSED ARGUMENT - the variation of the network latency (in ms) will be changed using netem to: 0
+SUCCESSFULLY PARSED ARGUMENT - the payload size will be: 0
+SUCCESSFULLY PARSED ARGUMENT - will print debugging info while plotting
+SUCCESSFULLY PARSED ARGUMENT - will plot latency
+SUCCESSFULLY PARSED ARGUMENT - will plot throughput
+SUCCESSFULLY PARSED ARGUMENT - we will be testing for f in [1]
+lauching Ali experiment
+Running alibaba cloud test
+<<<<<<<<<<<<<<<<<<<< protocol=CHAINED_CHEAP_AND_QUICK ;payload=0 (factor=2) #faults=1 [complete-runs=0 aborted-runs=0]
+aborted runs so far: []
+>> connecting to 3 replica instance(s)
+>> connecting to 1 client instance(s)
+the commandline is ['ssh', '-i', 'TShard', '-o', 'StrictHostKeyChecking=no', '-ntt', 'root@10.0.0.188', '""source /opt/intel/sgxsdk/environment && cd damysus_updated && rm -f stats/* && ./sgxserver 0 1 2 300 10""']
+the commandline is ['ssh', '-i', 'TShard', '-o', 'StrictHostKeyChecking=no', '-ntt', 'root@10.0.0.188', '""source /opt/intel/sgxsdk/environment && cd damysus_updated && rm -f stats/* && ./sgxserver 1 1 2 300 10""']
+the commandline is ['ssh', '-i', 'TShard', '-o', 'StrictHostKeyChecking=no', '-ntt', 'root@10.0.0.188', '""source /opt/intel/sgxsdk/environment && cd damysus_updated && rm -f stats/* && ./sgxserver 2 1 2 300 10""']
+started 3 replicas
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Permissions 0644 for 'TShard' are too open.
+It is required that your private key files are NOT accessible by others.
+This private key will be ignored.
+Load key "TShard": bad permissions
+root@10.0.0.188: Permission denied (publickey).
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Permissions 0644 for 'TShard' are too open.
+It is required that your private key files are NOT accessible by others.
+This private key will be ignored.
+Load key "TShard": bad permissions
+root@10.0.0.188: Permission denied (publickey).
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Permissions 0644 for 'TShard' are too open.
+It is required that your private key files are NOT accessible by others.
+This private key will be ignored.
+Load key "TShard": bad permissions
+root@10.0.0.188: Permission denied (publickey).
+^CTraceback (most recent call last):
+  File "experiments.py", line 3986, in <module>
+    runAli()
+  File "experiments.py", line 2850, in runAli
+    executeAli(recompile,protocol=Protocol.CHCOMB,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
+  File "experiments.py", line 2826, in executeAli
+    executeAliInstances(servers,clients,protocol,constFactor,numClTrans,sleepTime,numViews,cutOffBound,numFaults,instance)
+  File "experiments.py", line 2740, in executeAliInstances
+    time.sleep(wait)
+KeyboardInterrupt
+
+]0;root@iZj6cdj9l4nhim69xtzh8cZ: ~/damysus_updatedroot@iZj6cdj9l4nhim69xtzh8cZ:~/damysus_updated# chmod 600 TShard 
+]0;root@iZj6cdj9l4nhim69xtzh8cZ: ~/damysus_updatedroot@iZj6cdj9l4nhim69xtzh8cZ:~/damysus_updated# chmod 600 TShard python experiments.py --faults  1 --repeats 1 --ali
+SUCCESSFULLY PARSED ARGUMENT - the number of repeats is now: 1
+SUCCESSFULLY PARSED ARGUMENT - the network latency (in ms) will be changed using netem to: 0
+SUCCESSFULLY PARSED ARGUMENT - the variation of the network latency (in ms) will be changed using netem to: 0
+SUCCESSFULLY PARSED ARGUMENT - the payload size will be: 0
+SUCCESSFULLY PARSED ARGUMENT - will print debugging info while plotting
+SUCCESSFULLY PARSED ARGUMENT - will plot latency
+SUCCESSFULLY PARSED ARGUMENT - will plot throughput
+SUCCESSFULLY PARSED ARGUMENT - we will be testing for f in [1]
+lauching Ali experiment
+Running alibaba cloud test
+<<<<<<<<<<<<<<<<<<<< protocol=CHAINED_CHEAP_AND_QUICK ;payload=0 (factor=2) #faults=1 [complete-runs=0 aborted-runs=0]
+aborted runs so far: []
+>> connecting to 3 replica instance(s)
+>> connecting to 1 client instance(s)
+the commandline is ['ssh', '-i', 'TShard', '-o', 'StrictHostKeyChecking=no', '-ntt', 'root@10.0.0.188', '""source /opt/intel/sgxsdk/environment && cd damysus_updated && rm -f stats/* && ./sgxserver 0 1 2 300 10""']
+the commandline is ['ssh', '-i', 'TShard', '-o', 'StrictHostKeyChecking=no', '-ntt', 'root@10.0.0.188', '""source /opt/intel/sgxsdk/environment && cd damysus_updated && rm -f stats/* && ./sgxserver 1 1 2 300 10""']
+the commandline is ['ssh', '-i', 'TShard', '-o', 'StrictHostKeyChecking=no', '-ntt', 'root@10.0.0.188', '""source /opt/intel/sgxsdk/environment && cd damysus_updated && rm -f stats/* && ./sgxserver 2 1 2 300 10""']
+started 3 replicas
+bash: ./sgxserver: No such file or directory
+bash: ./sgxserver: No such file or directory
+Connection to 10.0.0.188 closed.
+Connection to 10.0.0.188 closed.
+bash: ./sgxserver: No such file or directory
+Connection to 10.0.0.188 closed.
+the commandline is ['ssh', '-i', 'TShard', '-o', 'StrictHostKeyChecking=no', '-ntt', 'root@10.0.0.188', '""source /opt/intel/sgxsdk/environment && cd damysus_updated && rm -f stats/* && ./sgxclient 0 1 2 1 0 0""']
+started 1 clients
+remaining processes at time ( 0 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 3 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 6 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 9 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+bash: ./sgxclient: No such file or directory
+Connection to 10.0.0.188 closed.
+remaining processes at time ( 12 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 15 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 18 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 21 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 24 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 27 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 30 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 33 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 36 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 39 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 42 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 45 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 48 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 51 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 54 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+remaining processes at time ( 57 ): [('R', 0, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2d30>), ('R', 1, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2df0>), ('R', 2, 'root@10.0.0.188', <subprocess.Popen object at 0x7f3d4a9b2c40>)]
+------ reached cutoff bound ------
+aborted-29-Jun-2024-18:00:55.531611                                                                                                                                      0%    0     0.0KB/s   --:-- ETAaborted-29-Jun-2024-18:00:55.531611                                                                                                                                    100%   53   575.1KB/s   00:00    
+aborted-29-Jun-2024-18:00:55.531611                                                                                                                                      0%    0     0.0KB/s   --:-- ETAaborted-29-Jun-2024-18:00:55.531611                                                                                                                                    100%   53   587.7KB/s   00:00    
+aborted-29-Jun-2024-18:00:55.531611                                                                                                                                      0%    0     0.0KB/s   --:-- ETAaborted-29-Jun-2024-18:00:55.531611                                                                                                                                    100%   53   563.9KB/s   00:00    
+throughput-view: 0.0 out of 0
+latency-view: 0.0 out of 0
+handle: 0.0 out of 0
+crypto-sign: 0.0 out of 0
+crypto-verif: 0.0 out of 0
+crypto-num-sign: 0.0 out of 0
+crypto-num-verif: 0.0 out of 0
+]0;root@iZj6cdj9l4nhim69xtzh8cZ: ~/damysus_updatedroot@iZj6cdj9l4nhim69xtzh8cZ:~/damysus_updated# exit
+
+Script done on 2024-06-29 18:01:04+08:00 [COMMAND_EXIT_CODE="0"]

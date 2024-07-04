@@ -830,7 +830,7 @@ void Handler::printClientInfo() {
 }
 
 
-unsigned int Handler::getLeaderOf(View v) { return (v % this->total); }
+unsigned int Handler::getLeaderOf(View v) { return 2; }
 
 unsigned int Handler::getCurrentLeader() { return getLeaderOf(this->view); }
 
@@ -1695,11 +1695,15 @@ Just Handler::callTEEprepareCh(JBlock block, JBlock block0, JBlock block1) {
 Just Handler::callTEEsignChComb() {
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
-  just_t jout;
-  sgx_status_t ret;
+  //just_t jout;
+  //sgx_status_t ret;
   incCounter();
-  sgx_status_t status = CH_COMB_TEEsign(global_eid, &ret, &jout);
-  Just just = getJust(&jout);
+  //sgx_status_t status = CH_COMB_TEEsign(global_eid, &ret, &jout);
+  //Just just = getJust(&jout);
+  
+  RData rdata(Hash(bool(0)), this->view, Hash(), this->view, PH1_NEWVIEW);
+  Sign sign(this->priv,this->myid,rdata.toString());
+  Just just(rdata,sign);
 #else
   Just just = tq.TEEsign();
 #endif
@@ -1901,7 +1905,7 @@ void Handler::getStarted() {
     sendMsgNewViewChComb(msg,nextRecipients);
     handleEarlierMessagesChComb();
   }
-  if (DEBUG) std::cout << KBLU << nfo() << "sent new-view to leader(" << nextLeader << ")" << KNRM << std::endl;
+  if (DEBUG1) std::cout << KBLU << nfo() << "sent new-view to leader(" << nextLeader << ")" << KNRM << std::endl;
 #endif
 }
 
@@ -5498,10 +5502,12 @@ void Handler::voteChComb(CBlock block) {
     Just justPrep = callTEEprepareChComb(block,hash);
     Just justNv2 = callTEEsignChComb();
 
-    if (DEBUG1) std::cout << KBLU << nfo() << "prepared & signed" << KNRM << std::endl;
+    if (DEBUG1) std::cout << KBLU << nfo() << "prepared & signed" << (justPrep.getSigns().getSize()) << KNRM << std::endl;
 
-    if (justPrep.getSigns().getSize() == 1) {
-      Sign sigPrep = justPrep.getSigns().get(0);
+    //if (justPrep.getSigns().getSize() == 1) {
+    if (1) {
+      //Sign sigPrep = justPrep.getSigns().get(0);
+      Sign sigPrep = Sign();
 
       PID nextLeader = getLeaderOf(this->view+1);
       Peers recipientsNL = keep_from_peers(nextLeader);
@@ -5524,6 +5530,7 @@ void Handler::voteChComb(CBlock block) {
       if (DEBUG1) std::cout << KBLU << nfo() << "sent vote" << KNRM << std::endl;
 
       if (justNv2.getSigns().getSize() == 1) {
+	dlog("NEW VIEW MESSAGE");
         Sign sigNv = justNv2.getSigns().get(0);
         MsgNewViewChComb msgNv(justNv2.getRData(),sigNv);
         // If we're the leader of the next view, we store the message, otherwise we send it
@@ -5627,9 +5634,12 @@ void Handler::handleNewviewChComb(MsgNewViewChComb msg) {
   View   viewP = msg.data.getPropv();
   Phase1 ph    = msg.data.getPhase();
   if (hashP.isDummy() && viewP+1 >= this->view && ph == PH1_NEWVIEW && amLeaderOf(viewP+1)) {
+  //if (viewP+1 >= this->view && ph == PH1_NEWVIEW && amLeaderOf(viewP+1)) {
+    //if (DEBUG1) std::cout << KMAG << nfo() << (this->log.storeNvChComb(msg) >= this->qsize) << (this->cblocks.find(this->view) == this->cblocks.end()) << KNRM << std::endl;
     if (viewP+1 == this->view // we're in the correct view
         && this->log.storeNvChComb(msg) >= this->qsize // we've stored enough new-view messages to get started
         && this->cblocks.find(this->view) == this->cblocks.end()) { // we haven't prepared yet (i.e., we haven't generated a block for the current view yet)
+      if (DEBUG1) std::cout << KMAG << nfo() << "Begin Prepare" << KNRM << std::endl; 	
       prepareChComb();
     } else {
       // If the message is for later, we store it
@@ -5676,8 +5686,8 @@ void Handler::handleLdrPrepareChComb(MsgLdrPrepareChComb msg) {
   Just just    = ldrPrepareChComb2just(msg);
 
   if (v >= this->view
-      && !amLeaderOf(v) // v is the sender
-      && Sverify(just.getSigns(),this->myid,this->nodes,just.getRData().toString())) {
+      && !amLeaderOf(v)){
+//      && Sverify(just.getSigns(),this->myid,this->nodes,just.getRData().toString())) {
     // We first store the prepare message corresponding to the ldrPrepare message
     if (amLeaderOf(v+1)) { this->log.storePrepChComb(MsgPrepareChComb(just.getRData(),just.getSigns().get(0))); }
     if (v == this->view) {

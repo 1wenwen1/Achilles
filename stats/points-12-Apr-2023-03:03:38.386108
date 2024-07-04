@@ -1,2 +1,0 @@
-##params cpus=0 mem=0 lat=0 payload=0 repeats1=1 repeats2=1 views=30 regions=one
-# protocol=BASIC_CHEAP_AND_QUICK regions=one payload=0 faults=1 instance=0 repeats=1

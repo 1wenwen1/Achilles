@@ -11,6 +11,7 @@ b=$1
 
 # 计算n
 n=$((2 * b - 1))
+f=$((2 * b))
 
 # 定义其他参数
 c=2
@@ -27,4 +28,9 @@ done
 # tmux new-session -d -s sgxclient "./sgxclient 0 $b $c 1 0 0"
 
 echo "All tmux sessions created and commands executed."
+
+(sleep 5 && ./sgxclient 0 $b $c 1 0 0) &
+
+# 运行并显示./sgxserver 2 1 2 30 10
+./sgxserver $f $b $c $d $e
 
