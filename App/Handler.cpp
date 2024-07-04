@@ -5416,6 +5416,7 @@ void Handler::tryExecuteChComb(CBlock blockL, CBlock block0) {
 // For leaders to check whether they can create a new (this->qsize)-justification
 void Handler::checkNewJustChComb(RData data) {
   Signs signs = (this->log).getPrepareChComb(data.getPropv(),this->qsize);
+  if (DEBUG1) std::cout << KBLU << nfo() << "getSIGN" << signs.getSize() << KNRM << std::endl;
   // We should not need to check the size of 'signs' as this function should only be called, when this is possible
   if (signs.getSize() == this->qsize) {
     // create the new certificate
@@ -5504,10 +5505,10 @@ void Handler::voteChComb(CBlock block) {
 
     if (DEBUG1) std::cout << KBLU << nfo() << "prepared & signed" << (justPrep.getSigns().getSize()) << KNRM << std::endl;
 
-    //if (justPrep.getSigns().getSize() == 1) {
-    if (1) {
-      //Sign sigPrep = justPrep.getSigns().get(0);
-      Sign sigPrep = Sign();
+    if (justPrep.getSigns().getSize() == 1) {
+    //if (1) {
+      Sign sigPrep = justPrep.getSigns().get(0);
+      //Sign sigPrep = Sign();
 
       PID nextLeader = getLeaderOf(this->view+1);
       Peers recipientsNL = keep_from_peers(nextLeader);
