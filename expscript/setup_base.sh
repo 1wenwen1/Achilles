@@ -19,10 +19,6 @@ while IFS= read -r ip; do
     # 在tmux session中运行scp和ssh命令
     tmux send-keys -t "$session_name" "ssh -i $SSH_KEY -o StrictHostKeyChecking=no $ip 'cd damysus_updated && git stash && git checkout main" C-m
     sleep 1
-    tmux send-keys -t "$session_name" "scp -i $SSH_KEY -o StrictHostKeyChecking=no App/params.h $ip:damysus_updated/App/" C-m
-    tmux send-keys -t "$session_name" "scp -i $SSH_KEY -o StrictHostKeyChecking=no -r servers $ip:damysus_updated/" C-m
-    tmux send-keys -t "$session_name" "scp -i $SSH_KEY -o StrictHostKeyChecking=no -r clients $ip:damysus_updated/" C-m
-    tmux send-keys -t "$session_name" "ssh -i $SSH_KEY -o StrictHostKeyChecking=no $ip 'cd damysus_updated && make clean && make -j $CPU_CORES SGX_MODE=SIM server client'" C-m
 done < "$IP_FILE"
 
 
