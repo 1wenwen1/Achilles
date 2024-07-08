@@ -17,7 +17,7 @@ while IFS= read -r ip; do
     tmux new-session -d -s "$session_name"
     
     # 在tmux session中运行scp和ssh命令
-    tmux send-keys -t "$session_name" "ssh -i $SSH_KEY -o StrictHostKeyChecking=no $ip 'cd damysus_updated && git checkout flexi'" C-m
+    tmux send-keys -t "$session_name" "ssh -i $SSH_KEY -o StrictHostKeyChecking=no $ip 'cd damysus_updated && git stash && git checkout flexi'" C-m
 done < "$IP_FILE"
 
 
