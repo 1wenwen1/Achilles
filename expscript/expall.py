@@ -2849,7 +2849,7 @@ def runAli(factor):
         if runChComb:
             executeAli(recompile,protocol=Protocol.CHCOMB,constFactor=factor,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
         if runChBase:
-            executeAli(recompile,protocol=Protocol.CHCOMB,constFactor=factor,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
+            executeAli(recompile,protocol=Protocol.CHBASE,constFactor=factor,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
         else:
             print("fault exeucte function")
 
@@ -4020,9 +4020,16 @@ elif args.mkp:
     elif args.p <= 7:
         os.system("bash setup_damysus.sh")
     else:
-        os.system("bash setup_base.sh")
+        os.system("bash setup_damysus.sh")
 
     mkParams(PRO,const_factor,faults[0],numTrans,payloadSize,pct)
+
+    time.sleep(1)
+
+    if args.p <= 7:
+        os.system("bash setup.sh")
+    else:
+        os.system("bash setuphot.sh")
 
     time.sleep(30)
 
