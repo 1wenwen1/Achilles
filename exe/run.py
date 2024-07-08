@@ -44,7 +44,7 @@ def scp_to_node(ip, files):
     ssh.connect(ip, username='root', key_filename='./TShard')
     with SCPClient(ssh.get_transport()) as scp:
         for file in files:
-            remote_path = f'{file}'  # 假设你的远程用户是 root，修改为实际的远程路径前缀
+            remote_path = f'/root/damysus_updated'  # 假设你的远程用户是 root，修改为实际的远程路径前缀
             scp.put(file, remote_path=remote_path)
     ssh.close()
 
@@ -53,7 +53,7 @@ def ssh_exec_server_non_blocking(id, host, port1, port2, extra_params, completio
     ssh = SSHClient()
     ssh.set_missing_host_key_policy(AutoAddPolicy())
     ssh.connect(host, username='root', key_filename='./TShard')
-    cmd = f"export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/sgxsdk/sdk_libs && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib && cd /root/damysus_updated && rm stats/* && ./sgxserver {id} {faults} {factor} {views} {timeout}"
+    cmd = f"export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/sgxsdk/sdk_libs && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib && cd /root/damysus_updated && rm -rf stats/* && ./sgxserver {id} {faults} {factor} {views} {timeout}"
     stdin, stdout, stderr = ssh.exec_command(cmd)
 
     # 非阻塞地监控命令执行状态
@@ -209,16 +209,77 @@ def calculate_mean_of_values(directory):
     if total_count > 0:
         mean_first = sum_first / total_count
         mean_second = sum_second / total_count
+        return (mean_first, mean_second)
         print(f"Mean of the first number across all vals files: {mean_first}")
         print(f"Mean of the second number across all vals files: {mean_second}")
     else:
         print("No vals files found or no valid data.")
+        return 0
 
-if __name__ == "__main__":
+def make_instance(protocol, batchsize, payload, faults, pro_dir):
+    p = 0
+    if(protocol == 'achillies'):
+        cmd = "git stash && git checkout achillies"
+        p = 0
+    elif(protocol == 'flex'):
+        cmd = "git stash && git checkout flexi"
+        p = 1
+
+    process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = process.communicate()
+    output = stdout.decode()
+    error = stderr.decode()
+    print(f"Stop checkout output:\n{output}")
+    print(f"Stop checkout error:\n{error}")
+
+
+    folder_path = pro_dir
+    if not os.path.exists(folder_path):
+    # 如果文件夹不存在，则创建
+        os.makedirs(folder_path)
+        print(f"Folder '{folder_path}' created.")
+    else:
+        print(f"Folder '{folder_path}' already exists.")
+    
+
+    file_name = "sgxserver"
+
+# 构建完整的文件路径
+    file_path = os.path.join(folder_path, file_name)
+
+    cmd_sgxserver = f"make sgxserver -j8 && cp sgxserver {pro_dir}/"
+
+# 检查文件是否存在
+    if os.path.isfile(file_path):
+    # 执行命令x
+        command = 'echo "File exists"'
+        cmd_sgxserver = f"cp {file_path} ./"
+        print(command)
+    else:
+    # 执行命令y
+        command = 'echo "File does not exist"'
+        print(command)
+
+    print(f'exec {cmd_sgxserver}')
+
+    cmd = f"python expmkp.py --faults {faults} --payload {payload} --p {p} --mkpp && make clean && make enclave.so enclave.signed.so sgxclient sgxkeys -j8 && {cmd_sgxserver}"
+    process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = process.communicate()
+    output = stdout.decode()
+    error = stderr.decode()
+    print(f"Stop expmkp output:\n{output}")
+    print(f"Stop expmkp error:\n{error}")
+
+def start_one_exp(protocol, batchsize, payload, faults):
+
+    pro_dir = f'{protocol}_{faults}_{payload}_{batchsize}_0'
+
     ip_list = read_ip_list('ip_list')
     servers = read_servers('servers')
 
-    files_to_copy = [
+    make_instance(protocol, batchsize, payload, faults, pro_dir)
+
+    files_to_copy2 = [
         os.path.expanduser('~/damysus_updated/sgxserver'), 
         os.path.expanduser('~/damysus_updated/servers'),
         os.path.expanduser('~/damysus_updated/sgxclient'),
@@ -227,14 +288,24 @@ if __name__ == "__main__":
         os.path.expanduser('~/damysus_updated/sgxkeys')
     ]  # 修改为实际的文件列表
 
+ 
+
+   # files_to_copy = [
+   #     os.path.expanduser('~/damysus_updated/servers'), 
+   #     os.path.expanduser(f'~/damysus_updated/exe/{pro_dir}/sgxserver'),
+   #     os.path.expanduser(f'~/damysus_updated/exe/{pro_dir}/sgxclient'),
+   #     os.path.expanduser(f'~/damysus_updated/exe/{pro_dir}/sgxkeys')
+   #  ]  # 修改为实际的文件列表
+
     extra_params = '--other_param value'  # 补充实际的其它参数
 
     # 多线程 SCP 文件到节点
-    # scp_files_to_nodes(ip_list, files_to_copy)
+    scp_files_to_nodes(ip_list, files_to_copy2)
 
     # 多线程 SSH 执行 sgxserver
 
     completion_set, lock = start_all_sgxservers(servers, "--additional_params")
+    print("start")
 
     time.sleep(5 + math.log(len(servers), 2))
 
@@ -254,7 +325,13 @@ if __name__ == "__main__":
     stats_directory = '/root/damysus_updated/stats/'
 
     # 计算所有 vals 文件的第一个数和第二个数的均值
-    calculate_mean_of_values(stats_directory)
+    r1, r2 = calculate_mean_of_values(stats_directory)
+
+    print(pro_dir, r1, r2)
+
+    with open('stats.txt', 'a') as f:
+        f.write(f'{pro_dir}, {r1}, {r2}\n')
+
 
     # 等待并在 id:0 的主机上执行 sgxclient
     # ssh_exec_client_on_id0(servers, extra_params)
@@ -262,3 +339,17 @@ if __name__ == "__main__":
     # 多线程 SCP 从节点到本地
     # scp_files_from_nodes(ip_list)
 
+if __name__ == "__main__":
+
+    #ip_list = read_ip_list('ip_list')
+
+    #files_to_copy2 = [
+    #    os.path.expanduser('~/damysus_updated/servers'),
+    #    os.path.expanduser('~/damysus_updated/enclave.so'),
+    #    os.path.expanduser('~/damysus_updated/enclave.signed.so'),
+    #]  # 修改为实际的文件列表
+
+    #scp_files_to_nodes(ip_list, files_to_copy2)
+
+    start_one_exp("achillies", 400, 0, 1)
+    start_one_exp("flex", 400, 0, 1)
