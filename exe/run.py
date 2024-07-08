@@ -216,7 +216,10 @@ def calculate_mean_of_values(directory):
         print("No vals files found or no valid data.")
         return 0
 
-def make_instance(protocol, batchsize, payload, faults, pro_dir):
+def make_instance(protocol, batchsize, payload, faults, pct):
+
+    pro_dir = f'exe/{protocol}_{faults}_{payload}_{batchsize}_{pct}'
+
     p = 0
     if(protocol == 'achillies'):
         cmd = "git stash && git checkout achillies"
@@ -224,6 +227,9 @@ def make_instance(protocol, batchsize, payload, faults, pro_dir):
     elif(protocol == 'flex'):
         cmd = "git stash && git checkout flexi"
         p = 1
+    elif(protocol == 'damysus'):
+        cmd = "git stash && git checkout flexi"
+        p = 4
 
     process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
     stdout, stderr = process.communicate()
@@ -270,14 +276,14 @@ def make_instance(protocol, batchsize, payload, faults, pro_dir):
     print(f"Stop expmkp output:\n{output}")
     print(f"Stop expmkp error:\n{error}")
 
-def start_one_exp(protocol, batchsize, payload, faults):
+def start_one_exp(protocol, batchsize, payload, faults, pct):
 
-    pro_dir = f'{protocol}_{faults}_{payload}_{batchsize}_0'
+    pro_dir = f'exe/{protocol}_{faults}_{payload}_{batchsize}_{pct}'
 
     ip_list = read_ip_list('ip_list')
     servers = read_servers('servers')
 
-    make_instance(protocol, batchsize, payload, faults, pro_dir)
+    make_instance(protocol, batchsize, payload, faults, pct)
 
     files_to_copy2 = [
         os.path.expanduser('~/damysus_updated/sgxserver'), 
@@ -337,7 +343,100 @@ def start_one_exp(protocol, batchsize, payload, faults):
     # ssh_exec_client_on_id0(servers, extra_params)
 
     # 多线程 SCP 从节点到本地
-    # scp_files_from_nodes(ip_list)
+    # scp_files_from_nodes(ip_list)o
+
+def only_make_instance(protocol, batchsize, payload, faults, pct):
+
+    pro_dir = f'exe/{protocol}_{faults}_{payload}_{batchsize}_{pct}'
+
+    p = 0
+    if(protocol == 'achillies'):
+        cmd = "git stash && git checkout achillies"
+        p = 0
+    elif(protocol == 'flex'):
+        cmd = "git stash && git checkout flexi"
+        p = 1
+    elif(protocol == 'damysus'):
+        cmd = "git stash && git checkout flexi"
+        p = 4
+
+    process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = process.communicate()
+    output = stdout.decode()
+    error = stderr.decode()
+    print(f"Stop checkout output:\n{output}")
+    print(f"Stop checkout error:\n{error}")
+
+
+    folder_path = pro_dir
+    if not os.path.exists(folder_path):
+    # 如果文件夹不存在，则创建
+        os.makedirs(folder_path)
+        print(f"Folder '{folder_path}' created.")
+    else:
+        print(f"Folder '{folder_path}' already exists.")
+    
+
+    file_name = "sgxserver"
+
+# 构建完整的文件路径
+    file_path = os.path.join(folder_path, file_name)
+
+    cmd_sgxserver = f"make sgxserver -j8 && cp sgxserver {pro_dir}/ && cp App/params.h {pro_dir}/"
+
+# 检查文件是否存在
+    if os.path.isfile(file_path):
+    # 执行命令x
+        command = 'echo "File exists"'
+        cmd_sgxserver = f"cp {file_path} ./"
+        print(command)
+    else:
+    # 执行命令y
+        command = 'echo "File does not exist"'
+        print(command)
+
+    print(f'exec {cmd_sgxserver}')
+
+    cmd = f"python expmkp.py --faults {faults} --payload {payload} --p {p} --mkpp && make clean && make enclave.so enclave.signed.so sgxclient sgxkeys -j8 && {cmd_sgxserver}"
+    process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = process.communicate()
+    output = stdout.decode()
+    error = stderr.decode()
+    print(f"Stop expmkp output:\n{output}")
+    print(f"Stop expmkp error:\n{error}")
+
+def make_instances():
+    ps = [0, 256, 500]
+    ts = [0, 20, 80]
+    bs = [200, 400, 600]
+    fs = [1, 2, 4, 10, 20, 30]
+    b = 400
+    p = 256
+    t = 0
+    f = 10
+
+    for p in ps:
+        for t in ts:
+            only_make_instance("flex", b, p, f, t)
+            only_make_instance("damysus", b, p, f, t)
+        only_make_instance("achillies", b, p, f, t)
+
+    for b in bs:
+        for t in ts:
+            only_make_instance("flex", b, p, f, t)
+            only_make_instance("damysus", b, p, f, t)
+        only_make_instance("achillies", b, p, f, t)
+
+    for f in fs:
+        for t in ts:
+            only_make_instance("flex", b, p, f, t)
+            only_make_instance("damysus", b, p, f, t)
+        only_make_instance("achillies", b, p, f, t)
+
+
+
+
+
 
 if __name__ == "__main__":
 
@@ -350,6 +449,7 @@ if __name__ == "__main__":
     #]  # 修改为实际的文件列表
 
     #scp_files_to_nodes(ip_list, files_to_copy2)
+    make_instances()
 
-    start_one_exp("achillies", 400, 0, 1)
-    start_one_exp("flex", 400, 0, 1)
+    # jstart_one_exp("achillies", 400, 0, 1)
+    #start_one_exp("flex", 400, 0, 1)
