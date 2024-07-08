@@ -4011,7 +4011,6 @@ elif args.mkp:
         runChBase = True
 
     print("mkparams Ali experiment")
-    mkParams(PRO,const_factor,faults[0],numTrans,payloadSize,pct)
     os.system("bash close.sh")
 
     if args.p == 0:
@@ -4021,7 +4020,9 @@ elif args.mkp:
     elif args.p <= 7:
         os.system("bash setup_damysus.sh")
     else:
-        os.system("bash setupbase.sh")
+        os.system("bash setup_base.sh")
+
+    mkParams(PRO,const_factor,faults[0],numTrans,payloadSize,pct)
 
     time.sleep(30)
 
