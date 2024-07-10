@@ -46,6 +46,7 @@ private:
   double totalPrepTime   = 0.0; /* time leaders spend preparing */
   double totalNvTime     = 0.0; /* time leaders handling new-views */
   std::map<View,std::tuple<bool,Time,Time>> execTime; // true iff ended
+  std::map<View,std::tuple<bool,Time,Time>> execTime1; // true iff ended
 
 public:
   Stats();
@@ -71,6 +72,10 @@ public:
   void startExecTime(View v, Time t);
   void endExecTime(View v, Time t);
   double getExecTimeAvg();
+
+  void startExecTime1(View v, Time t);
+  void endExecTime1(View v, Time t);
+  double getExecTimeAvg1();
 
   unsigned int getCryptoSignNum();
   unsigned int getCryptoVerifNum();

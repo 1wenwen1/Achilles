@@ -1,4 +1,5 @@
 #include "Stats.h"
+#include <iostream>
 #include <sstream>
 
 Stats::Stats() {
@@ -137,6 +138,34 @@ Times Stats::getTotalNvTime(unsigned int quant) {
 }
 
 void Stats::incExecViews() { this->execViews++; }
+
+void Stats::startExecTime1(View v, Time t) {
+  this->execTime1[v] = std::make_tuple(false,t,t);
+}
+
+void Stats::endExecTime1(View v, Time t) {
+  std::map<View,std::tuple<bool,Time,Time>>::iterator it = this->execTime1.find(v);
+  if (it != this->execTime1.end()) {
+    std::tuple<bool,Time,Time> p = (std::tuple<bool,Time,Time>)it->second;
+    this->execTime1[v] = std::make_tuple(true, std::get<1>(p), t);
+  }
+}
+
+double Stats::getExecTimeAvg1() {
+  unsigned int i = 0;
+  double total = 0;
+  for (std::map<View,std::tuple<bool,Time,Time>>::iterator it = this->execTime1.begin(); it != this->execTime1.end(); ++it) {
+    std::tuple<bool,Time,Time> p = (std::tuple<bool,Time,Time>)it->second;
+    if (std::get<0>(p)) {
+      i++;
+      double x = std::chrono::duration_cast<std::chrono::microseconds>(std::get<2>(p) - std::get<1>(p)).count();
+      //std::cout << x << std::endl;
+      total += x;
+    }
+  }
+  return (total / i);
+}
+
 
 void Stats::startExecTime(View v, Time t) {
   this->execTime[v] = std::make_tuple(false,t,t);

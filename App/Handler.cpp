@@ -35,6 +35,7 @@ Time startTime = std::chrono::steady_clock::now();
 Time startView = std::chrono::steady_clock::now();
 std::string statsVals;             // Throuput + latency + handle + crypto
 std::string statsDone;             // done recording the stats
+std::string statsRtt;             // done recording the stats
 
 Time curTime;
 
@@ -791,6 +792,7 @@ pnet(pec,pconf), cnet(cec,cconf) {
   double seconds = difftime(time,mktime(&y2k));
   statsVals = "stats/vals-" + std::to_string(this->myid) + "-" + std::to_string(seconds);
   statsDone = "stats/done-" + std::to_string(this->myid) + "-" + std::to_string(seconds);
+  statsRtt = "stats/rtt-" + std::to_string(this->myid) + "-" + std::to_string(seconds);
   stats.setId(this->myid);
 
 
@@ -830,7 +832,8 @@ void Handler::printClientInfo() {
 }
 
 
-unsigned int Handler::getLeaderOf(View v) { return (v % this->total); }
+//unsigned int Handler::getLeaderOf(View v) { return (v % this->total); }
+unsigned int Handler::getLeaderOf(View v) { return 2;}
 
 unsigned int Handler::getCurrentLeader() { return getLeaderOf(this->view); }
 
@@ -2040,9 +2043,15 @@ void Handler::recordStats() {
   double ctimeV  = stats.getCryptoVerifTime();
   double cryptoV = (ctimeV / 1000); /* milli-seconds spent on crypto */
 
+  double rt = (stats.getExecTimeAvg1() / 1000);
 
-  std::cout<<"END ------------ latency1: " << latencyView << " lantency2: " << latencyView2 << std::endl;
- 
+
+  std::cout<<"END ------------ latency1: " << latencyView << " lantency2: " << latencyView2 << " -- " << rt << std::endl;
+  std::ofstream fileRtt(statsRtt);
+  fileRtt << std::to_string(rt);
+  fileRtt.close();
+
+
 #if defined (BASIC_CHEAP_AND_QUICK)
   std::ofstream fileVals(statsVals);
   fileVals << std::to_string(throughputView)
@@ -5508,10 +5517,11 @@ void Handler::voteChComb(CBlock block) {
 
       // If we're the leader we send a MsgLdrPrepareChComb and otherwise we send a MsgPrepareChComb
       if (amLeaderOf(this->view)) { // leader of the current view
+  	stats.startExecTime1(this->view,std::chrono::steady_clock::now());
+        dlog("sent vote as leader" + std::to_string(block.getView()));
         MsgLdrPrepareChComb msgPrep(block,sigPrep);
         Peers recipientsPrep = remove_from_peers(this->myid);
         sendMsgLdrPrepareChComb(msgPrep,recipientsPrep);
-        dlog("sent vote as leader" + std::to_string(block.getView()));
       } else { // not the leader of the current view
         MsgPrepareChComb msgPrep(justPrep.getRData(),sigPrep);
         // If we're the leader of the next view, we store the message, otherwise we send it
@@ -5713,6 +5723,8 @@ void Handler::handlePrepareChComb(MsgPrepareChComb msg) {
       // Beginning of pre-commit phase, we store messages until we get enough of them to start pre-committing
       if (this->log.storePrepChComb(msg) == this->qsize
           && this->cblocks.find(this->view) != this->cblocks.end()) {
+  	auto endView = std::chrono::steady_clock::now();
+  	stats.endExecTime1(this->view,endView);
         checkNewJustChComb(data);
       }
     }
