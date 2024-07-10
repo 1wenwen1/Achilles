@@ -17,7 +17,7 @@
 // to print 'EXECUTE' messages
 #define DEBUGE  true
 // to print client messages
-#define DEBUGC  false
+#define DEBUGC  true
 
 
 #define NO_SOCKET          -1
