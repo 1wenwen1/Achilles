@@ -67,6 +67,7 @@ void dlog(const std::string& message) {
 }
 
 void incCounter() {
+  if(!amLeaderOf(this->view)) return;
   if(PERSISTENT_COUNTER_TIME > 0)
      std::this_thread::sleep_for(std::chrono::milliseconds(PERSISTENT_COUNTER_TIME));
  // if(!initialized) {
@@ -1697,7 +1698,7 @@ Just Handler::callTEEsignChComb() {
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   //just_t jout;
   //sgx_status_t ret;
-  incCounter();
+  //incCounter();
   //sgx_status_t status = CH_COMB_TEEsign(global_eid, &ret, &jout);
   //Just just = getJust(&jout);
   
