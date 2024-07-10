@@ -66,7 +66,7 @@ void dlog(const std::string& message) {
     std::cout << log_message << std::endl;
 }
 
-void Handler::incCounter() {
+void incCounter() {
   if(PERSISTENT_COUNTER_TIME > 0)
      std::this_thread::sleep_for(std::chrono::milliseconds(PERSISTENT_COUNTER_TIME));
  // if(!initialized) {
