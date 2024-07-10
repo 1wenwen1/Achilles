@@ -66,8 +66,7 @@ void dlog(const std::string& message) {
     std::cout << log_message << std::endl;
 }
 
-void incCounter() {
-  if(!amLeaderOf(this->view)) return;
+void Handler::incCounter() {
   if(PERSISTENT_COUNTER_TIME > 0)
      std::this_thread::sleep_for(std::chrono::milliseconds(PERSISTENT_COUNTER_TIME));
  // if(!initialized) {
@@ -1720,7 +1719,8 @@ Just Handler::callTEEprepareChComb(CBlock block, Hash hash) {
   auto start = std::chrono::steady_clock::now();
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
   just_t jout;
-  incCounter();
+  if(amLeaderOf(this->view))
+      incCounter();
   // 1st block
   cblock_t cin;
   setCBlock(block,&cin);
