@@ -143,6 +143,7 @@ void printStats() {
   double latency = avg / allLatencies.size(); /* avg of milliseconds spent on a transaction */
   if (DEBUGC) std::cout << KMAG << cnfo() << "latency=" << latency << KNRM << std::endl;
 
+  std::cout << std::to_string(throughput) << " " << std::to_string(latency) << std::endl;
   std::ofstream f(statsThroughputLatency);
   f << std::to_string(throughput) << " " << std::to_string(latency);
   f.close();
