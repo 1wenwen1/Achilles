@@ -1705,6 +1705,7 @@ Just Handler::callTEEsignChComb() {
   Just just = getJust(&jout);
 #else
   Just just = tq.TEEsign();
+  // if (DEBUG1) std::cout << KLRED << "TEEsign" << just.prettyPrint() << KNRM << std::endl;
 #endif
   auto end = std::chrono::steady_clock::now();
   double time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
@@ -1733,6 +1734,8 @@ Just Handler::callTEEprepareChComb(CBlock block, Hash hash) {
   Just just = getJust(&jout);
 #else
   Just just = tq.TEEprepare(stats,this->nodes,block,hash);
+  if (DEBUG1) std::cout << KLRED << "TEEsign" << just.prettyPrint() << KNRM << std::endl;
+  if (DEBUG1) std::cout << KLRED << "this view" << this->view << "block"<< block.prettyPrint() << KNRM << std::endl;
 #endif
   auto end = std::chrono::steady_clock::now();
   double time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
