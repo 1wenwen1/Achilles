@@ -1,8 +1,7 @@
-# DAMYSUS: Streamlined BFT Consensus Leveraging Trusted Components
+# Achilles: Efficient TEE-Assisted BFT Consensus via Rollback  Resilient Recovery
 
-This is the accompanying code to the paper "DAMYSUS: Streamlined BFT
-Consensus Leveraging Trusted Components" which was accepted to EuroSys
-2022. A technical report is available
+This is the accompanying code to the paper "Achilles: Efficient TEE-Assisted BFT Consensus via Rollback  Resilient Recovery" which was accepted to EuroSys
+2025. A technical report is available
 [here](https://github.com/vrahli/damysus/blob/main/doc/damysus-extended.pdf).
 
 ## Current status
