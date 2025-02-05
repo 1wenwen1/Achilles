@@ -27,3 +27,5 @@ setup.sh
 setuphot.sh
 stats.txt
 transfer.py
+client_stats
+clientoutput
