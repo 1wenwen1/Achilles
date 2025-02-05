@@ -31,3 +31,7 @@ stats.txt
 transfer.py
 client_stats
 clientoutput
+close.sh
+close.py
+close_noTEE.py
+conn.sh
