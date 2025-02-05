@@ -8,3 +8,4 @@ openssl-1.1.1t/
 App/*.o
 Enclave/*.o
 params.h
+clients
