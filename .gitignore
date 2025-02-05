@@ -30,7 +30,8 @@ clientoutput
 close.sh
 close.py
 close_noTEE.py
-conn.shApp/*.o
+conn.sh
+App/*.o
 Enclave/*.o
 clients
 experiments.py
