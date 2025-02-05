@@ -5,6 +5,7 @@ sgxclient
 sgxserver
 sgxkeys
 openssl-1.1.1t/
+exe/
 exe1/
 exe2/
 exen1/
