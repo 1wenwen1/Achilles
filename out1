@@ -1,0 +1,41 @@
+[49m[33m[id=1][0m
+[49m[33m[1]#faults=1[0m
+[49m[33m[1]constFactor=2[0m
+[49m[33m[1]#views=100[0m
+[49m[33m[1]timeout=500[0m
+[49m[33mchecking private key[0m
+[49m[33mchecked private key (sign size=72)[0m
+[49m[33m[1]sizes:newview=280:prepare=280:ldrprepare=106088:precommit=280:commit=280:transaction=376:newviewacc=328:ldrprepareacc=105896:prepareacc=240:precommitacc=240:newviewcomb=200:ldrpreparecomb=105888:preparecomb=280:precommitcomb=280:newviewfree=120:ldrpreparefree=105800:bckpreparefree=80:preparefree=200:precommitfree=120[0m
+[49m[33m[1]max-msg-size=105936[0m
+[49m[33m[1]starting handler[0m
+[49m[34m[1]starting handler[0m
+[49m[34m[1]qsize=2[0m
+[49m[34m[1]connecting...[0m
+[49m[34m[1]added peer:0[0m
+[49m[34m[1]added peer:2[0m
+[49m[34m[1]dispatching[0m
+[49m[91m[1]TEEsign[0m
+[49m[34m[1]initial just:JUST[1,RDATA[#0,0,#1,0,PH_NEWVIEW],SIGNS[-1-:S[1,1]:]][0m
+[49m[34m[1]starting with:NEWVIEW[RDATA[#0,0,#1,0,PH_NEWVIEW],S[1,1]][0m
+[49m[34m[1]initial block is:JBLOCK[1,0,0,CERT[0,#0,SIGNS[-0-:]],0,{}][0m
+[49m[34m[1]sending:NEWVIEW[RDATA[#0,0,#1,0,PH_NEWVIEW],S[1,1]]->2;[0m
+[49m[34m[1]handling:TRANSACTION[TR[0,1,-],S[0,0]][0m
+[49m[34m[1]pushing transaction:TR[0,1,-][0m
+[49m[34m[1]handling:TRANSACTION[TR[0,4,-],S[0,0]][0m
+[49m[34m[1]pushing transaction:TR[0,4,-][0m
+[49m[34m[1]handling:LDRPREPARE[JBLOCK[1,0,1,ACCUM[1,0,0,#1,2,S[1,2]],0,{}],S[1,2]][0m
+[49m[34m[1]voting for JBLOCK[1,0,1,ACCUM[1,0,0,#1,2,S[1,2]],0,{}][0m
+10:22:31.812379: startExecTime1
+[49m[34m[1]retriving block for view 0[0m
+[49m[34m[1]block for view 0 retrieved[0m
+[49m[34m[1]block is: JBLOCK[1,0,0,CERT[0,#0,SIGNS[-0-:]],0,{}][0m
+[49m[91m[1]TEEsign[0m
+[49m[34m[1]prepared & signed[0m
+10:22:31.812583: sent vote as backup1
+[49m[34m[1]sending:PREPARE[RDATA[#1,1,#1,0,PH_PREPARE],S[1,1]]->2;[0m
+10:22:31.812600: sent vote1
+[49m[34m[1]sent vote[0m
+10:22:31.812606: send new view (or store) 1
+[49m[34m[1]sending:NEWVIEW[RDATA[#0,1,#1,0,PH_NEWVIEW],S[1,1]]->2;[0m
+view++ -------M
+[49m[34m[1]handling:LDRPREPARE[JBLOCK[1,0,1,ACCUM[1,0,0,#1,2,S[1,2]],0,{}],S[1,2]][0m

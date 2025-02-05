@@ -1,0 +1,26 @@
+[C-id=0][0m
+[C0]#faults=1[0m
+[C0]constFactor=2[0m
+[C0]numInstances=1[0m
+[C0]sleepTime=0[0m
+[C0]instance=0[0m
+[49m[35mnode id: 0[0m
+[49m[35mnode id: 1[0m
+[49m[35mnode id: 2[0m
+[C0]connecting...[0m
+[C0]connecting to 0[0m
+[C0]connecting to 1[0m
+[C0]connecting to 2[0m
+[C0]sending start to all[0m
+[C0]dispatch[0m
+[C0]sending transaction(1) to 1[0m
+[C0]slept for 0; transid=1[0m
+[C0]received 1/2 replies for transaction 1[0m
+[C0]received 2/2 replies for transaction 1[0m
+[C0]received all 2 replies for transaction 1[0m
+[C0]received:1/1[0m
+[C0]received replies for all 1 transactions...stopping...[0m
+[49m[35m[C0]numInstances=1;Kops=0.001;secs=0.00911[0m
+[49m[35m[C0]tid=1;time=9083[0m
+[49m[35m[C0]latency=9.083[0m
+[49m[35m[C0]#before=1;#after=1[0m

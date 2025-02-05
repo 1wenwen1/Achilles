@@ -94,8 +94,8 @@ displayApp   = "shotwell"
 logScale     = True
 
 # to recompile the code
-recompile = False
-pct = 0
+recompile = True
+Pct = 0
 
 # To set some plotting parameters for specific experiments
 whichExp = ""
@@ -114,7 +114,7 @@ quantileSize = 20
 statsdir     = "stats"        # stats directory (don't change, hard coded in C++)
 params       = "App/params.h" # (don't change, hard coded in C++)
 config       = "App/config.h" # (don't change, hard coded in C++)
-addresses    = "config"       # (don't change, hard coded in C++)
+addresses    = "servers"       # (don't change, hard coded in C++)
 ipsOfNodes   = {}             # dictionnary mapping node ids to IPs
 
 # to copy all files to AWS instances
@@ -1244,7 +1244,7 @@ def runCluster():
         # ------
         # Chained Cheap&Quick
         if runChComb:
-            executeCluster(info=info,protocol=Protocol.CHCOMB,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults)
+            executeCluster(info=info,protocol=Protocol.CHCOMB,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults, pct = Pct)
         # ------
         # Chained Cheap&Quick - debug version
         if runChCombDbg:
@@ -1328,13 +1328,13 @@ def mkParams(protocol,constFactor,numFaults,numTrans,payloadSize,pct):
 # End of mkParams
 
 
-def mkApp(protocol,constFactor,numFaults,numTrans,payloadSize):
+def mkApp(protocol,constFactor,numFaults,numTrans,payloadSize,pct):
     ncores = 1
     if useMultiCores:
         ncores = numMakeCores
     print(">> making using",str(ncores),"core(s)")
 
-    mkParams(protocol,constFactor,numFaults,numTrans,payloadSize)
+    mkParams(protocol,constFactor,numFaults,numTrans,payloadSize,pct)
 
     if runDocker:
         numReps = (constFactor * numFaults) + 1
@@ -1735,7 +1735,7 @@ def stopContainers(numReps,numClients):
 
 
 # if 'recompile' is true, the application will be recompiled (default=true)
-def computeAvgStats(recompile,protocol,constFactor,numClTrans,sleepTime,numViews,cutOffBound,numFaults,numRepeats):
+def computeAvgStats(recompile,protocol,constFactor,numClTrans,sleepTime,numViews,cutOffBound,numFaults,numRepeats,pct):
     print("<<<<<<<<<<<<<<<<<<<<",
           "protocol="+protocol.value,
           ";regions="+regions[0],
@@ -1760,7 +1760,7 @@ def computeAvgStats(recompile,protocol,constFactor,numClTrans,sleepTime,numViews
 
     # building App with correct parameters
     if recompile:
-        mkApp(protocol,constFactor,numFaults,numTrans,payloadSize)
+        mkApp(protocol,constFactor,numFaults,numTrans,payloadSize,pct)
 
     goodValues = 0
 
@@ -2658,25 +2658,25 @@ def runExperiments():
         # ------
         # Onep
         if runOnep:
-            computeAvgStats(recompile,protocol=Protocol.ONEP,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
+            computeAvgStats(recompile,protocol=Protocol.ONEP,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats, pct = Pct)
         else:
             (0.0,0.0,0.0,0.0)
         # ------
         # Chained HotStuff-like baseline
         if runChBase:
-            computeAvgStats(recompile,protocol=Protocol.CHBASE,constFactor=3,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
+            computeAvgStats(recompile,protocol=Protocol.CHBASE,constFactor=3,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats, pct = Pct)
         else:
             (0.0,0.0,0.0,0.0)
         # ------
         # Chained Cheap&Quick
         if runChComb:
-            computeAvgStats(recompile,protocol=Protocol.CHCOMB,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
+            computeAvgStats(recompile,protocol=Protocol.CHCOMB,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats, pct = Pct)
         else:
             (0.0,0.0,0.0,0.0)
         # ------
         # Chained Cheap&Quick - debug version
         if runChCombDbg:
-            computeAvgStats(recompile,protocol=Protocol.CHCOMBDBG,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats)
+            computeAvgStats(recompile,protocol=Protocol.CHCOMBDBG,constFactor=2,numClTrans=numClTrans,sleepTime=sleepTime,numViews=numViews,cutOffBound=cutOffBound,numFaults=numFaults,numRepeats=repeats, pct = Pct)
         else:
             (0.0,0.0,0.0,0.0)
 
@@ -3776,8 +3776,8 @@ if args.payload >= 0:
     print("SUCCESSFULLY PARSED ARGUMENT - the payload size will be:", payloadSize)
 
 if args.pct > 0:
-    pct = args.pct
-    print("pct ", pct)
+    Pct = args.pct
+    print("pct ", Pct)
 
 if args.docker:
     runDocker = True
@@ -3875,7 +3875,8 @@ if args.p5:
     print("SUCCESSFULLY PARSED ARGUMENT - testing chained base protocol")
 
 if args.p6:
-    runChComb = True
+    # runChComb = True
+    runChCombDbg = True
     print("SUCCESSFULLY PARSED ARGUMENT - testing chained Damysus")
 
 if args.p7:

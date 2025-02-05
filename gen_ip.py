@@ -58,6 +58,7 @@ def main():
     server_lines, used_ips = generate_servers(ip_list, n, m)
     
     write_servers('servers', server_lines)
+    write_servers('config', server_lines)
     write_ip_list('ip_list', used_ips)
     write_clients('clients', server_lines[0])
 

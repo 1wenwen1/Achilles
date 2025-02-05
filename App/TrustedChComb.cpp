@@ -29,11 +29,13 @@ TrustedChComb::TrustedChComb(PID id, KEY priv, unsigned int q) {
 
 // increments the (view,phase) pair
 void TrustedChComb::increment() {
+  if (DEBUG) { std::cout << KMAG << "incre this view"<< this->view << KNRM << std::endl; }
   if (this->phase == PH1_PREPARE) {
     this->phase = PH1_NEWVIEW;
   } else if (this->phase == PH1_NEWVIEW) {
     this->phase = PH1_PREPARE;
     this->view++;
+    if (DEBUG) { std::cout << KMAG << "incre this view"<< this->view << KNRM << std::endl; }
   }
 }
 
@@ -42,14 +44,14 @@ Just TrustedChComb::sign(Hash h1, Hash h2, View v2) {
   RData rdata(h1,this->view,h2,v2,this->phase);
   Sign sign(this->priv,this->id,rdata.toString());
   Just just(rdata,sign);
-
+  // if (DEBUG1) std::cout << KLRED << "TEEsign" << just.prettyPrint() << KNRM << std::endl;
   increment();
-
   return just;
 }
 
 
 Just TrustedChComb::TEEsign() {
+  if (DEBUG) { std::cout << KMAG << "TEE SIGN" << this->view << KNRM << std::endl; }
   return sign(Hash(false),this->preph,this->prepv);
 }
 
@@ -69,6 +71,8 @@ bool verify(Stats &stats, PID id, Nodes nodes, CA cert) {
 
 Just TrustedChComb::TEEprepare(Stats &stats, Nodes nodes, CBlock block, Hash hash) {
   CA cert = block.getCert();
+  if (DEBUG) { std::cout << KMAG << "TEE Prepare" << this->view << KNRM << std::endl; }
+  
   bool vb = verify(stats,this->id,nodes,cert);
   if (vb
       && this->view == cert.getCView()+1) {
