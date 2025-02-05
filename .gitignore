@@ -5,3 +5,5 @@ sgxclient
 sgxserver
 sgxkeys
 openssl-1.1.1t/
+App/*.o
+Enclave/*.o
