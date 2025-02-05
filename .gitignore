@@ -34,4 +34,5 @@ clientoutput
 close.sh
 close.py
 close_noTEE.py
-conn.sh
+conn.shApp/*.o
+Enclave/*.o
