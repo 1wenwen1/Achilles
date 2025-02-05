@@ -1,3 +1,4 @@
 id:0 host:10.0.0.199 port:8760 port:9760
-id:1 host:10.0.0.198 port:8760 port:9760
-id:2 host:10.0.0.200 port:8760 port:9760
+id:1 host:10.0.0.199 port:8761 port:9761
+id:2 host:10.0.0.198 port:8760 port:9760
+id:3 host:10.0.0.198 port:8761 port:9761
