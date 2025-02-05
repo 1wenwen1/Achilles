@@ -1,25 +1,4 @@
-
-
-`raw_ip_list` 填入可用服务器ip
-
-`python gen_ip.py n m` 生成servers配置文件，n为总结点数，m为单个节点复用数 如`python gen_ip.py 3 3`三个总节点，每个机器复用3个
-
-`python experiment.py --faults 1 --repeats 1 --mkp` 为重编译并运行
-
-`python experiment.py --faults 1 --repeats 1 --ali` 为直接运行 
-
-`bash run.sh n` 为本地tmux运行，用于debug，n为faults number。然后要运行一个servers和一个client。
-
-如:
-
-`bash run.sh 1`
-
-`./sgxserver 2 1 2 30 10`
-
-`./sgxclient 0 1 2 1 0 0`
-
-
-# DAMYSUS: Streamlined BFT Consensus Leveraging Trusted Components
+# Achilles: Efficient TEE-Assisted BFT Consensus via Rollback Resilient Recovery
 
 This is the accompanying code to the paper "DAMYSUS: Streamlined BFT
 Consensus Leveraging Trusted Components" which was accepted to EuroSys
@@ -186,58 +165,6 @@ value between 2 and 10 to get an idea of the results you will obtain.
 `python3 experiments.py --docker --pall --netlat 100 --payload 256 --faults 1,2,4,10 --repeats 100`
 
 
-### Cluster
-
-As mentioned above, you can use the `--cluster` option to start distributed experiments. You will need to do this:
-- Generate an `id_rsa.damysus` key using for example:
-  ```
-    ssh-keygen -t rsa -b 4096 -f id_rsa.damysus
-  ```
-- Copy this key to all the nodes in your cluster as follows:
-  ```
-    ssh-copy-id -i id_rsa.damysus.pub USER@TARGET
-  ```
-  where `TARGET` is one of your hostnames, and `USER` your username for that host
-- List the nodes that are in your cluster in a `nodes` file as
-  follows (add as many entries are you like---the cluster here
-  contains 2 nodes):
-  ```
-    {
-      "nodes": [
-        { "node" : "node1",
-          "user" : "vince",
-          "host" : "192.168.0.1",
-          "dir"  : "/home/vince/damysus-test",
-          "key"  : "id_rsa.damysus"
-        },
-        { "node" : "node2",
-          "user" : "vince",
-          "host" : "192.168.0.2",
-          "dir"  : "/home/vince/damysus-test",
-          "key"  : "id_rsa.damysus"
-        }
-      ]
-    }
-  ```
-  where `"node"` specifies the name of the node (pick whatever you want), `"user"` is your
-  username for that node, `"host"` is the hostname of that node,
-  `"dir"` is a working directory on that node that will be used to
-  store temporary files, and `"key"` is the name of the key that will
-  be used to access the node remotely without password.
-  Note that you can have more replicas than nodes, which will result
-  on multiple replicas being deployed on the same node.
-- You need to make sure that `python`, `docker`, `git` and `jq`
-  are installed on all the machines in your cluster, as well as on the
-  machine that you will use to start the experiments
-- You will need to generate the `damysus` Docker image on all your
-  nodes. You can do that automatically by running:
-  ```
-    python3 experiments.py --prepare
-  ```
-- You can now try an experiment as follows:
-  ```
-    python3 experiments.py --cluster --p1 --repeats 1 --faults 1
-  ```
 
 
 ### AWS
@@ -266,16 +193,3 @@ can ssh the address, and do whatever you want there.
 
 
 
-# Acknowledgments
-
-Jiangshan Yu was partially supported by the Australian Research Council
-(ARC) under project DE210100019.
-
-
-# Contact
-
-Feel free to contact any of the authors if you have questions:
-[Jeremie Decouchant](https://www.tudelft.nl/ewi/over-de-faculteit/afdelingen/software-technology/distributed-systems/people/jeremie-decouchant),
-David Kozhaya,
-[Vincent Rahli](https://www.cs.bham.ac.uk/~rahliv/),
-and [Jiangshan Yu](https://research.monash.edu/en/persons/jiangshan-yu).

@@ -32,3 +32,6 @@ close.py
 close_noTEE.py
 conn.shApp/*.o
 Enclave/*.o
+clients
+experiments.py
+expbase.py
