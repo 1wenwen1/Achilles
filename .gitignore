@@ -6,3 +6,5 @@ sgxserver
 sgxkeys
 openssl-1.1.1t/
 App/params.h
+App/*.o
+Enclave/*.o
