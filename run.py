@@ -16,15 +16,13 @@ import argparse
 views = 20
 timeout = 10
 factor = 2
-faults = 1
+Protocol = "achillies"
 numctran = 1
 sleeptime = 0
 exen = 'exen1'
-
 no_cache = False
 no_stash = True
-payloadsize_list = [0, 256, 512]
-numtrans_list = [200,400, 600]
+
 
 
 # 读取 IP 列表
@@ -734,16 +732,25 @@ def main():
         f.write(f"Start, views: {views}\n")
 
     parser = argparse.ArgumentParser(description='Start one experiment with given parameters.')
-    parser.add_argument('--protocol', type=str, required=True, help='Protocol to use')
-    parser.add_argument("--p1",       action="store_true",   help="run Achilles")
-    parser.add_argument('--batchsize', type=int, required=True, help='Batch size')
-    parser.add_argument('--payload', type=int, required=True, help='Payload size')
-    parser.add_argument('--faults', type=int, required=True, help='Number of faults')
-    parser.add_argument('--pct', type=float, required=True, help='Percentage')
-
+    # parser.add_argument('--protocol', type=str, required=True, help='Protocol to use')
+    parser.add_argument("--p1",        action="store_true",    help="run Achilles")
+    parser.add_argument("--p2",        action="store_true",    help="run FlexiBFT")
+    parser.add_argument("--p3",        action="store_true",    help="run Damysus")
+    parser.add_argument('--batchsize', type=int,  default=400, help='Batch size')
+    parser.add_argument('--payload',   type=int,  default=256, help='Payload size')
+    parser.add_argument('--faults',    type=int,  default=1,   help='Number of faults')
+    parser.add_argument('--pct',       type=int,  default=0,   help='Percentage')
     args = parser.parse_args()
 
-    start_one_exp(args.protocol, args.batchsize, args.payload, args.faults, args.pct)
+    if args.p1:
+        Protocol = "achillies"
+    elif args.p2:
+        Protocol = "flex"
+    elif args.p3:
+        Protocol = "damysus"
+
+
+    start_one_exp(Protocol, args.batchsize, args.payload, args.faults, args.pct)
 
 
 if __name__ == "__main__":

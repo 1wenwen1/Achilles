@@ -1,7 +1,7 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 
-#define CHAINED_CHEAP_AND_QUICK
+#define ACHILLES
 #define MAX_NUM_NODES 33
 #define MAX_NUM_SIGNATURES 17
 #define MAX_NUM_TRANSACTIONS 400

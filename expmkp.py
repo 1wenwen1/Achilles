@@ -335,10 +335,10 @@ class Protocol(Enum):
     FREE      = "BASIC_FREE"               # hash & signature-free Damysus
     ONEP      = "BASIC_ONEP"               # 1+1/2 phase Damysus
     CHBASE    = "CHAINED_BASELINE"         # chained baseline
-    CHCOMB    = "CHAINED_CHEAP_AND_QUICK"  # chained Damysus
+    CHCOMB    = "ACHILLES"  # chained Damysus
     ## Debug versions
     QUICKDBG  = "BASIC_QUICK_DEBUG"
-    CHCOMBDBG = "CHAINED_CHEAP_AND_QUICK_DEBUG" # chained Damysus - debug version
+    CHCOMBDBG = "ACHILLES_C" # chained Damysus - debug version
 
 
 ## generates a local config file
@@ -2032,11 +2032,11 @@ def createPlot(pFile):
                     (val,num) = dictTVChBase.get(numFaults,([],0))
                     val.append(float(pointVal))
                     dictTVChBase.update({numFaults:(val,num+1)})
-                if pointTag == "throughput-view" and protVal == "CHAINED_CHEAP_AND_QUICK":
+                if pointTag == "throughput-view" and protVal == "ACHILLES":
                     (val,num) = dictTVChComb.get(numFaults,([],0))
                     val.append(float(pointVal))
                     dictTVChComb.update({numFaults:(val,num+1)})
-                if pointTag == "throughput-view" and protVal == "CHAINED_CHEAP_AND_QUICK_DEBUG":
+                if pointTag == "throughput-view" and protVal == "ACHILLES_C":
                     (val,num) = dictTVChComb.get(numFaults,([],0))
                     val.append(float(pointVal))
                     dictTVChComb.update({numFaults:(val,num+1)})
@@ -2073,11 +2073,11 @@ def createPlot(pFile):
                     (val,num) = dictLVChBase.get(numFaults,([],0))
                     val.append(float(pointVal))
                     dictLVChBase.update({numFaults:(val,num+1)})
-                if pointTag == "latency-view" and protVal == "CHAINED_CHEAP_AND_QUICK":
+                if pointTag == "latency-view" and protVal == "ACHILLES":
                     (val,num) = dictLVChComb.get(numFaults,([],0))
                     val.append(float(pointVal))
                     dictLVChComb.update({numFaults:(val,num+1)})
-                if pointTag == "latency-view" and protVal == "CHAINED_CHEAP_AND_QUICK_DEBUG":
+                if pointTag == "latency-view" and protVal == "ACHILLES_C":
                     (val,num) = dictLVChComb.get(numFaults,([],0))
                     val.append(float(pointVal))
                     dictLVChComb.update({numFaults:(val,num+1)})
@@ -2114,11 +2114,11 @@ def createPlot(pFile):
                     (val,num) = dictHChBase.get(numFaults,([],0))
                     val.append(float(pointVal) / numViews)
                     dictHChBase.update({numFaults:(val,num+1)})
-                if (pointTag == "handle" or pointTag == "latency-handle") and protVal == "CHAINED_CHEAP_AND_QUICK":
+                if (pointTag == "handle" or pointTag == "latency-handle") and protVal == "ACHILLES":
                     (val,num) = dictHChComb.get(numFaults,([],0))
                     val.append(float(pointVal) / numViews)
                     dictHChComb.update({numFaults:(val,num+1)})
-                if (pointTag == "handle" or pointTag == "latency-handle") and protVal == "CHAINED_CHEAP_AND_QUICK_DEBUG":
+                if (pointTag == "handle" or pointTag == "latency-handle") and protVal == "ACHILLES_C":
                     (val,num) = dictHChComb.get(numFaults,([],0))
                     val.append(float(pointVal) / numViews)
                     dictHChComb.update({numFaults:(val,num+1)})
@@ -2155,11 +2155,11 @@ def createPlot(pFile):
                     (val,num) = dictCSChBase.get(numFaults,([],0))
                     val.append(float(pointVal) / numViews)
                     dictCSChBase.update({numFaults:(val,num+1)})
-                if pointTag == "crypto-sign" and protVal == "CHAINED_CHEAP_AND_QUICK":
+                if pointTag == "crypto-sign" and protVal == "ACHILLES":
                     (val,num) = dictCSChComb.get(numFaults,([],0))
                     val.append(float(pointVal) / numViews)
                     dictCSChComb.update({numFaults:(val,num+1)})
-                if pointTag == "crypto-sign" and protVal == "CHAINED_CHEAP_AND_QUICK_DEBUG":
+                if pointTag == "crypto-sign" and protVal == "ACHILLES_C":
                     (val,num) = dictCSChComb.get(numFaults,([],0))
                     val.append(float(pointVal) / numViews)
                     dictCSChComb.update({numFaults:(val,num+1)})
@@ -2196,11 +2196,11 @@ def createPlot(pFile):
                     (val,num) = dictCVChBase.get(numFaults,([],0))
                     val.append(float(pointVal) / numViews)
                     dictCVChBase.update({numFaults:(val,num+1)})
-                if pointTag == "crypto-verif" and protVal == "CHAINED_CHEAP_AND_QUICK":
+                if pointTag == "crypto-verif" and protVal == "ACHILLES":
                     (val,num) = dictCVChComb.get(numFaults,([],0))
                     val.append(float(pointVal) / numViews)
                     dictCVChComb.update({numFaults:(val,num+1)})
-                if pointTag == "crypto-verif" and protVal == "CHAINED_CHEAP_AND_QUICK_DEBUG":
+                if pointTag == "crypto-verif" and protVal == "ACHILLES_C":
                     (val,num) = dictCVChComb.get(numFaults,([],0))
                     val.append(float(pointVal) / numViews)
                     dictCVChComb.update({numFaults:(val,num+1)})
@@ -2993,11 +2993,11 @@ def createTVLplot(cFile,instances):
                 TChBase.append(throughput)
                 LChBase.append(latency)
                 aChBase.append(sleep)
-            if protVal == "CHAINED_CHEAP_AND_QUICK":
+            if protVal == "ACHILLES":
                 TChComb.append(throughput)
                 LChComb.append(latency)
                 aChComb.append(sleep)
-            if protVal == "CHAINED_CHEAP_AND_QUICK_DEBUG":
+            if protVal == "ACHILLES_C":
                 TChComb.append(throughput)
                 LChComb.append(latency)
                 aChComb.append(sleep)

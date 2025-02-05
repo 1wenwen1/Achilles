@@ -21,13 +21,13 @@
 
 // ------------------------------------
 // SGX related stuff
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(CHAINED_CHEAP_AND_QUICK)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
 //
 #include "Enclave_u.h"
 #include "sgx_urts.h"
 #include "sgx_utils/sgx_utils.h"
 //
-#else // i.e.,  defined(BASIC_BASELINE) || defined(CHAINED_BASELINE) || defined(BASIC_QUICK_DEBUG) || defined(CHAINED_CHEAP_AND_QUICK_DEBUG)
+#else // i.e.,  defined(BASIC_BASELINE) || defined(CHAINED_BASELINE) || defined(BASIC_QUICK_DEBUG) || defined(ACHILLES_C)
 //
 #include "TrustedFun.h"
 #include "TrustedAccum.h"

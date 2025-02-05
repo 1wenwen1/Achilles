@@ -155,7 +155,7 @@ int main(int argc, char const *argv[]) {
                    sizeof(MsgNewViewCh),
                    sizeof(MsgLdrPrepareCh),
                    sizeof(MsgPrepareCh)});
-  #elif defined(CHAINED_CHEAP_AND_QUICK) || defined(CHAINED_CHEAP_AND_QUICK_DEBUG)
+  #elif defined(ACHILLES) || defined(ACHILLES_C)
   size = std::max({size,
                    sizeof(MsgNewViewChComb),
                    sizeof(MsgLdrPrepareChComb),

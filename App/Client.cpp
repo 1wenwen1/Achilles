@@ -71,7 +71,7 @@ std::string debugThroughputLatency;
 
 
 // In the chained versions, as we start with node 1 as the leader, we also send the first transaction to 1
-#if defined(CHAINED_BASELINE) || defined(CHAINED_CHEAP_AND_QUICK) || defined(CHAINED_CHEAP_AND_QUICK_DEBUG)
+#if defined(CHAINED_BASELINE) || defined(ACHILLES) || defined(ACHILLES_C)
 bool skipFirst = true;
 #else
 bool skipFirst = false;
@@ -374,7 +374,7 @@ int main(int argc, char const *argv[]) {
                    sizeof(MsgNewViewCh),
                    sizeof(MsgLdrPrepareCh),
                    sizeof(MsgPrepareCh)});
-  #elif defined(CHAINED_CHEAP_AND_QUICK) || defined(CHAINED_CHEAP_AND_QUICK_DEBUG)
+  #elif defined(ACHILLES) || defined(ACHILLES_C)
   size = std::max({size,
                    sizeof(MsgNewViewChComb),
                    sizeof(MsgLdrPrepareChComb),
