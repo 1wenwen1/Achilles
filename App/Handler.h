@@ -104,7 +104,7 @@ class Handler {
   std::list<Transaction> transactions; // current waiting to be processed
   std::map<View,Block> blocks; // blocks received in each view
   std::map<View,JBlock> jblocks; // blocks received in each view (Chained baseline)
-  std::map<View,CBlock> cblocks; // blocks received in each view (Chained Cheap&Quick)
+  std::map<View,CBlock> cblocks; // blocks received in each view (Achilles)
   Log log; // log of messages
 
   // Used for the accumulator version
@@ -503,7 +503,7 @@ class Handler {
 
 
   // ------------------------------------------------------------
-  // Chained Cheap&Quick
+  // Achilles
   // ------
 
   CA caprep;

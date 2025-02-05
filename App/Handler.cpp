@@ -5296,7 +5296,7 @@ void Handler::handle_prepare_ch(MsgPrepareCh msg, const PeerNet::conn_t &conn) {
 
 
 /////////////////////////////////////////////////////////
-// ---- Chained Cheap&Quick
+// ---- Achilles-----------
 
 
 // The justification will have a view this->view-1 if things went well,
