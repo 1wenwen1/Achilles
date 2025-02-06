@@ -13,3 +13,11 @@ stats.txt
 exe/
 scripts/
 deployment/
+clients
+out0
+out1
+out2
+expmkp.py
+ip_list
+server
+servers
