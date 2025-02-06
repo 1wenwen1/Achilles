@@ -36,3 +36,4 @@ Enclave/*.o
 clients
 experiments.py
 expbase.py
+App/params.h
