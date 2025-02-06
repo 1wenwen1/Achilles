@@ -9,3 +9,4 @@ App/*.o
 Enclave/*.o
 params.h
 clients
+scripts/
