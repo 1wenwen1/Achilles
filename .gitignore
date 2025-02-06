@@ -37,3 +37,6 @@ clients
 experiments.py
 expbase.py
 App/params.h
+Scripts/
+Enclave/Enclave_t.c
+Enclave/Enclave_t.h
