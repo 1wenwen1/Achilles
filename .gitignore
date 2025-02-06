@@ -8,3 +8,8 @@ openssl-1.1.1t/
 App/params.h
 App/*.o
 Enclave/*.o
+run.py
+stats.txt
+exe/
+scripts/
+deployment/

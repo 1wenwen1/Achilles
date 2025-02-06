@@ -1,0 +1,133 @@
+[49m[33m[id=2][0m
+[49m[33m[2]#faults=10[0m
+[49m[33m[2]constFactor=2[0m
+[49m[33m[2]#views=20[0m
+[49m[33m[2]timeout=500[0m
+[2]ENCLAVE:set up id-2
+[2]ENCLAVE:loaded private key
+[2]ENCLAVE:loaded public keys:0-21
+03:04:15.530272: startExecTime1
+03:04:15.571004: sent vote as backup1
+03:04:15.571029: sent vote1
+03:04:15.571037: send new view (or store) 1
+view++ -------J
+03:04:15.731448:  ---  leader create block2
+03:04:15.731586: startExecTime2
+03:04:15.772662: sent vote as leader2
+03:04:15.772691: sent vote2
+03:04:15.772700: send new view (or store) 2
+03:04:15.772777: endExecTime 0
+this->maxViews: 20 this->view: 2 timetostop ret: 0
+view++ -------M
+03:04:16.023705: startExecTime3
+03:04:16.064266: sent vote as backup3
+03:04:16.064298: sent vote3
+03:04:16.064312: send new view (or store) 3
+03:04:16.064466: endExecTime 1
+this->maxViews: 20 this->view: 3 timetostop ret: 0
+view++ -------M
+03:04:16.271831: startExecTime4
+03:04:16.313281: sent vote as backup4
+03:04:16.313320: sent vote4
+03:04:16.313328: send new view (or store) 4
+03:04:16.313446: endExecTime 2
+this->maxViews: 20 this->view: 4 timetostop ret: 0
+view++ -------M
+03:04:16.655174: startExecTime5
+03:04:16.695615: sent vote as backup5
+03:04:16.695647: sent vote5
+03:04:16.695658: send new view (or store) 5
+03:04:16.695816: endExecTime 3
+this->maxViews: 20 this->view: 5 timetostop ret: 0
+view++ -------M
+03:04:16.900227: startExecTime6
+03:04:16.940641: sent vote as backup6
+03:04:16.940700: sent vote6
+03:04:16.941088: send new view (or store) 6
+03:04:16.941304: endExecTime 4
+this->maxViews: 20 this->view: 6 timetostop ret: 0
+view++ -------M
+03:04:17.145498: startExecTime7
+03:04:17.185902: sent vote as backup7
+03:04:17.185951: sent vote7
+03:04:17.185959: send new view (or store) 7
+03:04:17.186090: endExecTime 5
+this->maxViews: 20 this->view: 7 timetostop ret: 0
+view++ -------M
+03:04:17.391168: startExecTime8
+03:04:17.432496: sent vote as backup8
+03:04:17.432546: sent vote8
+03:04:17.432554: send new view (or store) 8
+03:04:17.432682: endExecTime 6
+this->maxViews: 20 this->view: 8 timetostop ret: 0
+view++ -------M
+03:04:17.635519: startExecTime9
+03:04:17.675961: sent vote as backup9
+03:04:17.676006: sent vote9
+03:04:17.676016: send new view (or store) 9
+03:04:17.676205: endExecTime 7
+this->maxViews: 20 this->view: 9 timetostop ret: 0
+view++ -------M
+03:04:17.880460: startExecTime10
+03:04:17.921791: sent vote as backup10
+03:04:17.921841: sent vote10
+03:04:17.921850: send new view (or store) 10
+03:04:17.921977: endExecTime 8
+this->maxViews: 20 this->view: 10 timetostop ret: 0
+view++ -------M
+03:04:18.125485: startExecTime11
+03:04:18.165880: sent vote as backup11
+03:04:18.165912: sent vote11
+03:04:18.165919: send new view (or store) 11
+03:04:18.166055: endExecTime 9
+this->maxViews: 20 this->view: 11 timetostop ret: 0
+view++ -------M
+03:04:18.370120: startExecTime12
+03:04:18.411696: sent vote as backup12
+03:04:18.411719: sent vote12
+03:04:18.411729: send new view (or store) 12
+03:04:18.411885: endExecTime 10
+this->maxViews: 20 this->view: 12 timetostop ret: 0
+view++ -------M
+03:04:18.614520: startExecTime13
+03:04:18.654916: sent vote as backup13
+03:04:18.654966: sent vote13
+03:04:18.654975: send new view (or store) 13
+03:04:18.655113: endExecTime 11
+this->maxViews: 20 this->view: 13 timetostop ret: 0
+view++ -------M
+03:04:18.859058: startExecTime14
+03:04:18.900106: sent vote as backup14
+03:04:18.900153: sent vote14
+03:04:18.900161: send new view (or store) 14
+03:04:18.900302: endExecTime 12
+this->maxViews: 20 this->view: 14 timetostop ret: 0
+view++ -------M
+03:04:19.103558: startExecTime15
+03:04:19.145368: sent vote as backup15
+03:04:19.145420: sent vote15
+03:04:19.145431: send new view (or store) 15
+03:04:19.145609: endExecTime 13
+this->maxViews: 20 this->view: 15 timetostop ret: 0
+view++ -------M
+03:04:19.347386: startExecTime16
+03:04:19.387755: sent vote as backup16
+03:04:19.387811: sent vote16
+03:04:19.387820: send new view (or store) 16
+03:04:19.387956: endExecTime 14
+this->maxViews: 20 this->view: 16 timetostop ret: 0
+view++ -------M
+03:04:19.592072: startExecTime17
+03:04:19.632514: sent vote as backup17
+03:04:19.632542: sent vote17
+03:04:19.632551: send new view (or store) 17
+03:04:19.632671: endExecTime 15
+this->maxViews: 20 this->view: 17 timetostop ret: 0
+view++ -------M
+03:04:19.839156: startExecTime18
+03:04:19.880226: sent vote as backup18
+03:04:19.880258: sent vote18
+03:04:19.880266: send new view (or store) 18
+03:04:19.880392: endExecTime 16
+this->maxViews: 20 this->view: 18 timetostop ret: 0
+view++ -------M

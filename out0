@@ -1,0 +1,411 @@
+[49m[33m[id=0][0m
+[49m[33m[0]#faults=10[0m
+[49m[33m[0]constFactor=2[0m
+[49m[33m[0]#views=20[0m
+[49m[33m[0]timeout=500[0m
+[49m[33mchecking private key[0m
+[49m[33mchecked private key (sign size=72)[0m
+[49m[33m[0]starting handler[0m
+[49m[34m[0]starting handler[0m
+[49m[34m[0]qsize=11[0m
+[0]ENCLAVE:set up id-0
+[0]qsize=11
+[0]ENCLAVE:loaded private key
+[0]ENCLAVE:loaded public keys:0-21
+[49m[34m[0]enclave variables are initialized[0m
+[49m[34m[0]connecting...[0m
+[49m[34m[0]added peer:1[0m
+[49m[34m[0]added peer:2[0m
+[49m[34m[0]added peer:3[0m
+[49m[34m[0]added peer:4[0m
+[49m[34m[0]added peer:5[0m
+[49m[34m[0]added peer:6[0m
+[49m[34m[0]added peer:7[0m
+[49m[34m[0]added peer:8[0m
+[49m[34m[0]added peer:9[0m
+[49m[34m[0]added peer:10[0m
+[49m[34m[0]added peer:11[0m
+[49m[34m[0]added peer:12[0m
+[49m[34m[0]added peer:13[0m
+[49m[34m[0]added peer:14[0m
+[49m[34m[0]added peer:15[0m
+[49m[34m[0]added peer:16[0m
+[49m[34m[0]added peer:17[0m
+[49m[34m[0]added peer:18[0m
+[49m[34m[0]added peer:19[0m
+[49m[34m[0]added peer:20[0m
+[49m[34m[0]initial just:JUST[1,RDATA[#0,0,#1,0,PH_NEWVIEW],SIGNS[-1-:S[1,0]:]][0m
+[49m[34m[0]starting with:NEWVIEW[RDATA[#0,0,#1,0,PH_NEWVIEW],S[1,0]][0m
+[49m[34m[0]initial block is:JBLOCK[1,0,0,CERT[0,#0,SIGNS[-0-:]],0,{}][0m
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,0,#1,0,PH_NEWVIEW],S[1,0]]->1;[0m
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,1,ACCUM[1,0,0,#1,11,S[1,1]],1,{TR[0,1,-]}],S[1,1]][0m
+[49m[34m[0]voting for JBLOCK[1,0,1,ACCUM[1,0,0,#1,11,S[1,1]],1,{TR[0,1,-]}][0m
+03:36:26.461489: startExecTime1
+[49m[34m[0]retriving block for view 0[0m
+[49m[34m[0]block for view 0 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,0,CERT[0,#0,SIGNS[-0-:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:26.501999: sent vote as backup1
+[49m[34m[0]sending:PREPARE[RDATA[#1,1,#1,0,PH_PREPARE],S[1,0]]->2;[0m
+03:36:26.502030: sent vote1
+[49m[34m[0]sent vote[0m
+03:36:26.502039: send new view (or store) 1
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,1,#1,0,PH_NEWVIEW],S[1,0]]->2;[0m
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,2,CERT[1,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,2]:S[1,3]:S[1,4]:S[1,5]:S[1,9]:S[1,12]:S[1,15]:S[1,19]:S[1,20]:]],0,{}],S[1,2]][0m
+[49m[34m[0]voting for JBLOCK[1,0,2,CERT[1,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,2]:S[1,3]:S[1,4]:S[1,5]:S[1,9]:S[1,12]:S[1,15]:S[1,19]:S[1,20]:]],0,{}][0m
+03:36:26.709248: startExecTime2
+[49m[34m[0]retriving block for view 1[0m
+[49m[34m[0]block for view 1 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,1,ACCUM[1,0,0,#1,11,S[1,1]],1,{TR[0,1,-]}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:26.749639: sent vote as backup2
+[49m[34m[0]sending:PREPARE[RDATA[#1,2,#1,0,PH_PREPARE],S[1,0]]->3;[0m
+03:36:26.749660: sent vote2
+[49m[34m[0]sent vote[0m
+03:36:26.749668: send new view (or store) 2
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,2,#1,1,PH_NEWVIEW],S[1,0]]->3;[0m
+[49m[34m[0]checking whether 0 can be executed[0m
+[49m[34m[0]found block at view 0[0m
+03:36:26.749796: endExecTime 0
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 2 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,3,CERT[2,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,2]:S[1,3]:S[1,4]:S[1,5]:S[1,7]:S[1,13]:S[1,14]:S[1,15]:S[1,20]:]],0,{}],S[1,3]][0m
+[49m[34m[0]voting for JBLOCK[1,0,3,CERT[2,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,2]:S[1,3]:S[1,4]:S[1,5]:S[1,7]:S[1,13]:S[1,14]:S[1,15]:S[1,20]:]],0,{}][0m
+03:36:26.955742: startExecTime3
+[49m[34m[0]retriving block for view 2[0m
+[49m[34m[0]block for view 2 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,2,CERT[1,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,2]:S[1,3]:S[1,4]:S[1,5]:S[1,9]:S[1,12]:S[1,15]:S[1,19]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:26.996081: sent vote as backup3
+[49m[34m[0]sending:PREPARE[RDATA[#1,3,#1,0,PH_PREPARE],S[1,0]]->4;[0m
+03:36:26.996102: sent vote3
+[49m[34m[0]sent vote[0m
+03:36:26.996110: send new view (or store) 3
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,3,#1,2,PH_NEWVIEW],S[1,0]]->4;[0m
+[49m[34m[0]checking whether 1 can be executed[0m
+[49m[34m[0]found block at view 1[0m
+[49m[34m[0]checking whether 0 can be executed[0m
+[49m[34m[0]found block at view 0[0m
+03:36:26.996299: endExecTime 1
+[49m[34m[0]sending reply to 0:REPLY[1][0m
+[49m[34m[0]sending reply to 0:1[0m
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 3 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,4,CERT[3,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,2]:S[1,3]:S[1,4]:S[1,5]:S[1,8]:S[1,9]:S[1,14]:S[1,16]:S[1,20]:]],0,{}],S[1,4]][0m
+[49m[34m[0]voting for JBLOCK[1,0,4,CERT[3,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,2]:S[1,3]:S[1,4]:S[1,5]:S[1,8]:S[1,9]:S[1,14]:S[1,16]:S[1,20]:]],0,{}][0m
+03:36:27.205114: startExecTime4
+[49m[34m[0]retriving block for view 3[0m
+[49m[34m[0]block for view 3 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,3,CERT[2,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,2]:S[1,3]:S[1,4]:S[1,5]:S[1,7]:S[1,13]:S[1,14]:S[1,15]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:27.246302: sent vote as backup4
+[49m[34m[0]sending:PREPARE[RDATA[#1,4,#1,0,PH_PREPARE],S[1,0]]->5;[0m
+03:36:27.246329: sent vote4
+[49m[34m[0]sent vote[0m
+03:36:27.246339: send new view (or store) 4
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,4,#1,3,PH_NEWVIEW],S[1,0]]->5;[0m
+[49m[34m[0]checking whether 2 can be executed[0m
+[49m[34m[0]found block at view 2[0m
+[49m[34m[0]checking whether 1 can be executed[0m
+[49m[34m[0]found block at view 1[0m
+03:36:27.246443: endExecTime 2
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 4 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,5,CERT[4,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,2]:S[1,3]:S[1,4]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,15]:]],0,{}],S[1,5]][0m
+[49m[34m[0]voting for JBLOCK[1,0,5,CERT[4,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,2]:S[1,3]:S[1,4]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,15]:]],0,{}][0m
+03:36:27.589324: startExecTime5
+[49m[34m[0]retriving block for view 4[0m
+[49m[34m[0]block for view 4 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,4,CERT[3,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,2]:S[1,3]:S[1,4]:S[1,5]:S[1,8]:S[1,9]:S[1,14]:S[1,16]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:27.630718: sent vote as backup5
+[49m[34m[0]sending:PREPARE[RDATA[#1,5,#1,0,PH_PREPARE],S[1,0]]->6;[0m
+03:36:27.630744: sent vote5
+[49m[34m[0]sent vote[0m
+03:36:27.630753: send new view (or store) 5
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,5,#1,4,PH_NEWVIEW],S[1,0]]->6;[0m
+[49m[34m[0]checking whether 3 can be executed[0m
+[49m[34m[0]found block at view 3[0m
+[49m[34m[0]checking whether 2 can be executed[0m
+[49m[34m[0]found block at view 2[0m
+03:36:27.632271: endExecTime 3
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 5 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,6,CERT[5,#1,SIGNS[-11-:S[1,1]:S[1,2]:S[1,3]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,16]:S[1,17]:S[1,20]:]],0,{}],S[1,6]][0m
+[49m[34m[0]voting for JBLOCK[1,0,6,CERT[5,#1,SIGNS[-11-:S[1,1]:S[1,2]:S[1,3]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,16]:S[1,17]:S[1,20]:]],0,{}][0m
+03:36:27.834682: startExecTime6
+[49m[34m[0]retriving block for view 5[0m
+[49m[34m[0]block for view 5 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,5,CERT[4,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,2]:S[1,3]:S[1,4]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,15]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:27.874988: sent vote as backup6
+[49m[34m[0]sending:PREPARE[RDATA[#1,6,#1,0,PH_PREPARE],S[1,0]]->7;[0m
+03:36:27.875008: sent vote6
+[49m[34m[0]sent vote[0m
+03:36:27.875016: send new view (or store) 6
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,6,#1,5,PH_NEWVIEW],S[1,0]]->7;[0m
+[49m[34m[0]checking whether 4 can be executed[0m
+[49m[34m[0]found block at view 4[0m
+[49m[34m[0]checking whether 3 can be executed[0m
+[49m[34m[0]found block at view 3[0m
+03:36:27.875114: endExecTime 4
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 6 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,7,CERT[6,#1,SIGNS[-11-:S[1,0]:S[1,4]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,10]:S[1,12]:S[1,16]:S[1,20]:]],0,{}],S[1,7]][0m
+[49m[34m[0]voting for JBLOCK[1,0,7,CERT[6,#1,SIGNS[-11-:S[1,0]:S[1,4]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,10]:S[1,12]:S[1,16]:S[1,20]:]],0,{}][0m
+03:36:28.080198: startExecTime7
+[49m[34m[0]retriving block for view 6[0m
+[49m[34m[0]block for view 6 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,6,CERT[5,#1,SIGNS[-11-:S[1,1]:S[1,2]:S[1,3]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,16]:S[1,17]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:28.120511: sent vote as backup7
+[49m[34m[0]sending:PREPARE[RDATA[#1,7,#1,0,PH_PREPARE],S[1,0]]->8;[0m
+03:36:28.120558: sent vote7
+[49m[34m[0]sent vote[0m
+03:36:28.120569: send new view (or store) 7
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,7,#1,6,PH_NEWVIEW],S[1,0]]->8;[0m
+[49m[34m[0]checking whether 5 can be executed[0m
+[49m[34m[0]found block at view 5[0m
+[49m[34m[0]checking whether 4 can be executed[0m
+[49m[34m[0]found block at view 4[0m
+03:36:28.120694: endExecTime 5
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 7 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,8,CERT[7,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,11]:S[1,12]:S[1,15]:S[1,20]:]],0,{}],S[1,8]][0m
+[49m[34m[0]voting for JBLOCK[1,0,8,CERT[7,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,11]:S[1,12]:S[1,15]:S[1,20]:]],0,{}][0m
+03:36:28.325436: startExecTime8
+[49m[34m[0]retriving block for view 7[0m
+[49m[34m[0]block for view 7 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,7,CERT[6,#1,SIGNS[-11-:S[1,0]:S[1,4]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,10]:S[1,12]:S[1,16]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:28.365811: sent vote as backup8
+[49m[34m[0]sending:PREPARE[RDATA[#1,8,#1,0,PH_PREPARE],S[1,0]]->9;[0m
+03:36:28.365851: sent vote8
+[49m[34m[0]sent vote[0m
+03:36:28.365867: send new view (or store) 8
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,8,#1,7,PH_NEWVIEW],S[1,0]]->9;[0m
+[49m[34m[0]checking whether 6 can be executed[0m
+[49m[34m[0]found block at view 6[0m
+[49m[34m[0]checking whether 5 can be executed[0m
+[49m[34m[0]found block at view 5[0m
+03:36:28.366004: endExecTime 6
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 8 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,9,CERT[8,#1,SIGNS[-11-:S[1,0]:S[1,3]:S[1,4]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,13]:S[1,15]:S[1,20]:]],0,{}],S[1,9]][0m
+[49m[34m[0]voting for JBLOCK[1,0,9,CERT[8,#1,SIGNS[-11-:S[1,0]:S[1,3]:S[1,4]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,13]:S[1,15]:S[1,20]:]],0,{}][0m
+03:36:28.571216: startExecTime9
+[49m[34m[0]retriving block for view 8[0m
+[49m[34m[0]block for view 8 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,8,CERT[7,#1,SIGNS[-11-:S[1,0]:S[1,1]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,11]:S[1,12]:S[1,15]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:28.614262: sent vote as backup9
+[49m[34m[0]sending:PREPARE[RDATA[#1,9,#1,0,PH_PREPARE],S[1,0]]->10;[0m
+03:36:28.614281: sent vote9
+[49m[34m[0]sent vote[0m
+03:36:28.614289: send new view (or store) 9
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,9,#1,8,PH_NEWVIEW],S[1,0]]->10;[0m
+[49m[34m[0]checking whether 7 can be executed[0m
+[49m[34m[0]found block at view 7[0m
+[49m[34m[0]checking whether 6 can be executed[0m
+[49m[34m[0]found block at view 6[0m
+03:36:28.614380: endExecTime 7
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 9 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,10,CERT[9,#1,SIGNS[-11-:S[1,1]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:]],0,{}],S[1,10]][0m
+[49m[34m[0]voting for JBLOCK[1,0,10,CERT[9,#1,SIGNS[-11-:S[1,1]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:]],0,{}][0m
+03:36:28.815216: startExecTime10
+[49m[34m[0]retriving block for view 9[0m
+[49m[34m[0]block for view 9 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,9,CERT[8,#1,SIGNS[-11-:S[1,0]:S[1,3]:S[1,4]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,13]:S[1,15]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:28.856392: sent vote as backup10
+[49m[34m[0]sending:PREPARE[RDATA[#1,10,#1,0,PH_PREPARE],S[1,0]]->11;[0m
+03:36:28.856440: sent vote10
+[49m[34m[0]sent vote[0m
+03:36:28.856450: send new view (or store) 10
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,10,#1,9,PH_NEWVIEW],S[1,0]]->11;[0m
+[49m[34m[0]checking whether 8 can be executed[0m
+[49m[34m[0]found block at view 8[0m
+[49m[34m[0]checking whether 7 can be executed[0m
+[49m[34m[0]found block at view 7[0m
+03:36:28.856584: endExecTime 8
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 10 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,11,CERT[10,#1,SIGNS[-11-:S[1,0]:S[1,4]:S[1,5]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,15]:S[1,19]:S[1,20]:]],0,{}],S[1,11]][0m
+[49m[34m[0]voting for JBLOCK[1,0,11,CERT[10,#1,SIGNS[-11-:S[1,0]:S[1,4]:S[1,5]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,15]:S[1,19]:S[1,20]:]],0,{}][0m
+03:36:29.060429: startExecTime11
+[49m[34m[0]retriving block for view 10[0m
+[49m[34m[0]block for view 10 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,10,CERT[9,#1,SIGNS[-11-:S[1,1]:S[1,5]:S[1,6]:S[1,7]:S[1,8]:S[1,9]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:29.103772: sent vote as backup11
+[49m[34m[0]sending:PREPARE[RDATA[#1,11,#1,0,PH_PREPARE],S[1,0]]->12;[0m
+03:36:29.103820: sent vote11
+[49m[34m[0]sent vote[0m
+03:36:29.103831: send new view (or store) 11
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,11,#1,10,PH_NEWVIEW],S[1,0]]->12;[0m
+[49m[34m[0]checking whether 9 can be executed[0m
+[49m[34m[0]found block at view 9[0m
+[49m[34m[0]checking whether 8 can be executed[0m
+[49m[34m[0]found block at view 8[0m
+03:36:29.103942: endExecTime 9
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 11 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,12,CERT[11,#1,SIGNS[-11-:S[1,3]:S[1,4]:S[1,6]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,15]:S[1,16]:S[1,20]:]],0,{}],S[1,12]][0m
+[49m[34m[0]voting for JBLOCK[1,0,12,CERT[11,#1,SIGNS[-11-:S[1,3]:S[1,4]:S[1,6]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,15]:S[1,16]:S[1,20]:]],0,{}][0m
+03:36:29.304392: startExecTime12
+[49m[34m[0]retriving block for view 11[0m
+[49m[34m[0]block for view 11 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,11,CERT[10,#1,SIGNS[-11-:S[1,0]:S[1,4]:S[1,5]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,15]:S[1,19]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:29.344709: sent vote as backup12
+[49m[34m[0]sending:PREPARE[RDATA[#1,12,#1,0,PH_PREPARE],S[1,0]]->13;[0m
+03:36:29.344729: sent vote12
+[49m[34m[0]sent vote[0m
+03:36:29.344738: send new view (or store) 12
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,12,#1,11,PH_NEWVIEW],S[1,0]]->13;[0m
+[49m[34m[0]checking whether 10 can be executed[0m
+[49m[34m[0]found block at view 10[0m
+[49m[34m[0]checking whether 9 can be executed[0m
+[49m[34m[0]found block at view 9[0m
+03:36:29.344846: endExecTime 10
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 12 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,13,CERT[12,#1,SIGNS[-11-:S[1,0]:S[1,2]:S[1,5]:S[1,6]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,15]:S[1,20]:]],0,{}],S[1,13]][0m
+[49m[34m[0]voting for JBLOCK[1,0,13,CERT[12,#1,SIGNS[-11-:S[1,0]:S[1,2]:S[1,5]:S[1,6]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,15]:S[1,20]:]],0,{}][0m
+03:36:29.550050: startExecTime13
+[49m[34m[0]retriving block for view 12[0m
+[49m[34m[0]block for view 12 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,12,CERT[11,#1,SIGNS[-11-:S[1,3]:S[1,4]:S[1,6]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,15]:S[1,16]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:29.593094: sent vote as backup13
+[49m[34m[0]sending:PREPARE[RDATA[#1,13,#1,0,PH_PREPARE],S[1,0]]->14;[0m
+03:36:29.593113: sent vote13
+[49m[34m[0]sent vote[0m
+03:36:29.593122: send new view (or store) 13
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,13,#1,12,PH_NEWVIEW],S[1,0]]->14;[0m
+[49m[34m[0]checking whether 11 can be executed[0m
+[49m[34m[0]found block at view 11[0m
+[49m[34m[0]checking whether 10 can be executed[0m
+[49m[34m[0]found block at view 10[0m
+03:36:29.593216: endExecTime 11
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 13 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,14,CERT[13,#1,SIGNS[-11-:S[1,1]:S[1,3]:S[1,6]:S[1,9]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,17]:S[1,20]:]],0,{}],S[1,14]][0m
+[49m[34m[0]voting for JBLOCK[1,0,14,CERT[13,#1,SIGNS[-11-:S[1,1]:S[1,3]:S[1,6]:S[1,9]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,17]:S[1,20]:]],0,{}][0m
+03:36:29.794237: startExecTime14
+[49m[34m[0]retriving block for view 13[0m
+[49m[34m[0]block for view 13 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,13,CERT[12,#1,SIGNS[-11-:S[1,0]:S[1,2]:S[1,5]:S[1,6]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,15]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:29.834568: sent vote as backup14
+[49m[34m[0]sending:PREPARE[RDATA[#1,14,#1,0,PH_PREPARE],S[1,0]]->15;[0m
+03:36:29.834587: sent vote14
+[49m[34m[0]sent vote[0m
+03:36:29.834595: send new view (or store) 14
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,14,#1,13,PH_NEWVIEW],S[1,0]]->15;[0m
+[49m[34m[0]checking whether 12 can be executed[0m
+[49m[34m[0]found block at view 12[0m
+[49m[34m[0]checking whether 11 can be executed[0m
+[49m[34m[0]found block at view 11[0m
+03:36:29.834700: endExecTime 12
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 14 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,15,CERT[14,#1,SIGNS[-11-:S[1,0]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,15]:S[1,16]:S[1,17]:S[1,18]:S[1,19]:]],0,{}],S[1,15]][0m
+[49m[34m[0]voting for JBLOCK[1,0,15,CERT[14,#1,SIGNS[-11-:S[1,0]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,15]:S[1,16]:S[1,17]:S[1,18]:S[1,19]:]],0,{}][0m
+03:36:30.038179: startExecTime15
+[49m[34m[0]retriving block for view 14[0m
+[49m[34m[0]block for view 14 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,14,CERT[13,#1,SIGNS[-11-:S[1,1]:S[1,3]:S[1,6]:S[1,9]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,17]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:30.078517: sent vote as backup15
+[49m[34m[0]sending:PREPARE[RDATA[#1,15,#1,0,PH_PREPARE],S[1,0]]->16;[0m
+03:36:30.078537: sent vote15
+[49m[34m[0]sent vote[0m
+03:36:30.078546: send new view (or store) 15
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,15,#1,14,PH_NEWVIEW],S[1,0]]->16;[0m
+[49m[34m[0]checking whether 13 can be executed[0m
+[49m[34m[0]found block at view 13[0m
+[49m[34m[0]checking whether 12 can be executed[0m
+[49m[34m[0]found block at view 12[0m
+03:36:30.078641: endExecTime 13
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 15 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,16,CERT[15,#1,SIGNS[-11-:S[1,0]:S[1,3]:S[1,4]:S[1,10]:S[1,12]:S[1,15]:S[1,16]:S[1,17]:S[1,18]:S[1,19]:S[1,20]:]],0,{}],S[1,16]][0m
+[49m[34m[0]voting for JBLOCK[1,0,16,CERT[15,#1,SIGNS[-11-:S[1,0]:S[1,3]:S[1,4]:S[1,10]:S[1,12]:S[1,15]:S[1,16]:S[1,17]:S[1,18]:S[1,19]:S[1,20]:]],0,{}][0m
+03:36:30.283516: startExecTime16
+[49m[34m[0]retriving block for view 15[0m
+[49m[34m[0]block for view 15 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,15,CERT[14,#1,SIGNS[-11-:S[1,0]:S[1,10]:S[1,11]:S[1,12]:S[1,13]:S[1,14]:S[1,15]:S[1,16]:S[1,17]:S[1,18]:S[1,19]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:30.323857: sent vote as backup16
+[49m[34m[0]sending:PREPARE[RDATA[#1,16,#1,0,PH_PREPARE],S[1,0]]->17;[0m
+03:36:30.323876: sent vote16
+[49m[34m[0]sent vote[0m
+03:36:30.323885: send new view (or store) 16
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,16,#1,15,PH_NEWVIEW],S[1,0]]->17;[0m
+[49m[34m[0]checking whether 14 can be executed[0m
+[49m[34m[0]found block at view 14[0m
+[49m[34m[0]checking whether 13 can be executed[0m
+[49m[34m[0]found block at view 13[0m
+03:36:30.323982: endExecTime 14
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 16 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,17,CERT[16,#1,SIGNS[-11-:S[1,0]:S[1,3]:S[1,4]:S[1,10]:S[1,11]:S[1,15]:S[1,16]:S[1,17]:S[1,18]:S[1,19]:S[1,20]:]],0,{}],S[1,17]][0m
+[49m[34m[0]voting for JBLOCK[1,0,17,CERT[16,#1,SIGNS[-11-:S[1,0]:S[1,3]:S[1,4]:S[1,10]:S[1,11]:S[1,15]:S[1,16]:S[1,17]:S[1,18]:S[1,19]:S[1,20]:]],0,{}][0m
+03:36:30.529297: startExecTime17
+[49m[34m[0]retriving block for view 16[0m
+[49m[34m[0]block for view 16 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,16,CERT[15,#1,SIGNS[-11-:S[1,0]:S[1,3]:S[1,4]:S[1,10]:S[1,12]:S[1,15]:S[1,16]:S[1,17]:S[1,18]:S[1,19]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:30.569888: sent vote as backup17
+[49m[34m[0]sending:PREPARE[RDATA[#1,17,#1,0,PH_PREPARE],S[1,0]]->18;[0m
+03:36:30.569911: sent vote17
+[49m[34m[0]sent vote[0m
+03:36:30.569920: send new view (or store) 17
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,17,#1,16,PH_NEWVIEW],S[1,0]]->18;[0m
+[49m[34m[0]checking whether 15 can be executed[0m
+[49m[34m[0]found block at view 15[0m
+[49m[34m[0]checking whether 14 can be executed[0m
+[49m[34m[0]found block at view 14[0m
+03:36:30.570035: endExecTime 15
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 17 timetostop ret: 0
+view++ -------M
+[49m[34m[0]handling:LDRPREPARE[JBLOCK[1,0,18,CERT[17,#1,SIGNS[-11-:S[1,2]:S[1,6]:S[1,7]:S[1,11]:S[1,12]:S[1,15]:S[1,16]:S[1,17]:S[1,18]:S[1,19]:S[1,20]:]],0,{}],S[1,18]][0m
+[49m[34m[0]voting for JBLOCK[1,0,18,CERT[17,#1,SIGNS[-11-:S[1,2]:S[1,6]:S[1,7]:S[1,11]:S[1,12]:S[1,15]:S[1,16]:S[1,17]:S[1,18]:S[1,19]:S[1,20]:]],0,{}][0m
+03:36:30.773213: startExecTime18
+[49m[34m[0]retriving block for view 17[0m
+[49m[34m[0]block for view 17 retrieved[0m
+[49m[34m[0]block is: JBLOCK[1,0,17,CERT[16,#1,SIGNS[-11-:S[1,0]:S[1,3]:S[1,4]:S[1,10]:S[1,11]:S[1,15]:S[1,16]:S[1,17]:S[1,18]:S[1,19]:S[1,20]:]],0,{}][0m
+[49m[34m[0]prepared & signed[0m
+03:36:30.813565: sent vote as backup18
+[49m[34m[0]sending:PREPARE[RDATA[#1,18,#1,0,PH_PREPARE],S[1,0]]->19;[0m
+03:36:30.813613: sent vote18
+[49m[34m[0]sent vote[0m
+03:36:30.813627: send new view (or store) 18
+[49m[34m[0]sending:NEWVIEW[RDATA[#0,18,#1,17,PH_NEWVIEW],S[1,0]]->19;[0m
+[49m[34m[0]checking whether 16 can be executed[0m
+[49m[34m[0]found block at view 16[0m
+[49m[34m[0]checking whether 15 can be executed[0m
+[49m[34m[0]found block at view 15[0m
+03:36:30.813775: endExecTime 16
+[49m[34m[0]sent replies[0m
+this->maxViews: 20 this->view: 18 timetostop ret: 0
+view++ -------M
