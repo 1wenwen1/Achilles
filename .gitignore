@@ -31,7 +31,7 @@ close.sh
 close.py
 close_noTEE.py
 conn.sh
-
+App/*.o
 Enclave/*.o
 clients
 experiments.py
