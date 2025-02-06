@@ -32,6 +32,7 @@ close.py
 close_noTEE.py
 conn.sh
 App/*.o
+App/sgx_utils/*.o
 Enclave/*.o
 clients
 experiments.py
