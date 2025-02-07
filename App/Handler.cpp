@@ -38,6 +38,7 @@ Time startView = std::chrono::steady_clock::now();
 std::string statsVals;             // Throuput + latency + handle + crypto
 std::string statsDone;             // done recording the stats
 std::string statsRtt;             // done recording the stats
+std::string statsRecover;             // done recording the stats
 
 Time curTime;
 
@@ -699,6 +700,12 @@ pnet(pec,pconf), cnet(cec,cconf) {
       }
     }
   }
+
+
+Time timenow = std::chrono::steady_clock::now();
+InitTime = std::chrono::duration_cast<std::chrono::microseconds>(timenow - StartRecTime).count() /1000.0;
+std::cout << "InitTime: " << InitTime << std::endl;
+
 #if defined(BASIC_FREE)
   this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_newviewfree,    this, _1, _2));
   this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_ldrpreparefree, this, _1, _2));
@@ -748,8 +755,6 @@ pnet(pec,pconf), cnet(cec,cconf) {
   this->cnet.reg_handler(salticidae::generic_bind(&Handler::handle_transaction, this, _1, _2));
   this->cnet.reg_handler(salticidae::generic_bind(&Handler::handle_start, this, _1, _2));
   
-  auto timenow = std::chrono::steady_clock::now();
-  InitTime = std::chrono::duration_cast<std::chrono::microseconds>(timenow - StartRecTime).count();
   //this->cnet.reg_handler(salticidae::generic_bind(&Handler::handle_stop, this, _1, _2));
 
   // If we lose the connection with a client, we remove it from our list of clients,
@@ -798,6 +803,7 @@ pnet(pec,pconf), cnet(cec,cconf) {
   statsVals = "stats/vals-" + std::to_string(this->myid) + "-" + std::to_string(seconds);
   statsDone = "stats/done-" + std::to_string(this->myid) + "-" + std::to_string(seconds);
   statsRtt = "stats/rtt-" + std::to_string(this->myid) + "-" + std::to_string(seconds);
+  statsRecover = "stats/Rec-" + std::to_string(this->myid) + "-" + std::to_string(seconds);
   stats.setId(this->myid);
 
 
@@ -2071,6 +2077,10 @@ void Handler::recordStats() {
            << " " << std::to_string(stats.getCryptoVerifNum())
            << " " << std::to_string(cryptoV);
   fileVals.close();
+  std::ofstream fileRecover(statsRecover);
+  fileRecover << std::to_string(InitTime) 
+           << " " << std::to_string(RecoverTime);
+  fileRecover.close();
 #else
   std::ofstream fileVals(statsVals);
   fileVals << std::to_string(throughputView)
@@ -3189,6 +3199,11 @@ void Handler::respondToLdrPrepareComb(Block block, Accum acc) {
     PID leader = getCurrentLeader();
     Peers recipients = keep_from_peers(leader);
     sendMsgPrepareComb(msgPrep,recipients);
+    if (this->view == 0){
+      Time timenow = std::chrono::steady_clock::now();
+      RecoverTime = std::chrono::duration_cast<std::chrono::microseconds>(timenow - startTime).count() /1000.0;
+      std::cout << "RecoverTime: " << RecoverTime << std::endl;
+    }
   }
 }
 
@@ -3274,6 +3289,11 @@ void Handler::handlePrepareComb(MsgPrepareComb msg) {
   View v = data.getPropv();
   if (v == this->view) {
     if (amLeaderOf(v)) {
+      if (this->view == 0){
+        Time timenow = std::chrono::steady_clock::now();
+        RecoverTime = std::chrono::duration_cast<std::chrono::microseconds>(timenow - startTime).count() /1000.0;
+        std::cout << "RecoverTime: " << RecoverTime << std::endl;
+      }
       // Beginning of pre-commit phase, we store messages until we get enough of them to start pre-committing
       if (this->log.storePrepComb(msg) == this->qsize) {
         dlog("ph 3: leader sends precommit");
