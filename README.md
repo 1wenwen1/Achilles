@@ -127,7 +127,12 @@ In case something goes wrong, you can stop all instances as follows:
   ```
 
 If you want to conduct a group of experiments, the scrips in `scripts/` will help.
-
+For example, if you run:
+  ```
+    cd scripts
+    bash batchsize_LAN.sh
+  ```
+then you will run the replicas, test the  Achilles, FlexiBFT, and Damysus with batchsize varing [200, 400, 600].
 
 
 
