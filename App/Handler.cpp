@@ -30,8 +30,10 @@ bool hardStop = true;
 
 std::mutex mu_trans;
 std::mutex mu_handle;
-
 Time startTime = std::chrono::steady_clock::now();
+double InitTime = 0;
+Time StartRecTime = std::chrono::steady_clock::now();
+double RecoverTime = 0;
 Time startView = std::chrono::steady_clock::now();
 std::string statsVals;             // Throuput + latency + handle + crypto
 std::string statsDone;             // done recording the stats
@@ -607,7 +609,7 @@ pnet(pec,pconf), cnet(cec,cconf) {
   if (DEBUG1) { std::cout << KBLU << nfo() << "starting handler" << KNRM << std::endl; }
   if (DEBUG1) { std::cout << KBLU << nfo() << "qsize=" << this->qsize << KNRM << std::endl; }
 
-
+  StartRecTime = std::chrono::steady_clock::now();
   // Trusted Functions
 #if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   if (DEBUG0) { std::cout << KBLU << nfo() << "initializing TEE" << KNRM << std::endl; }
@@ -745,6 +747,9 @@ pnet(pec,pconf), cnet(cec,cconf) {
 
   this->cnet.reg_handler(salticidae::generic_bind(&Handler::handle_transaction, this, _1, _2));
   this->cnet.reg_handler(salticidae::generic_bind(&Handler::handle_start, this, _1, _2));
+  
+  auto timenow = std::chrono::steady_clock::now();
+  InitTime = std::chrono::duration_cast<std::chrono::microseconds>(timenow - StartRecTime).count();
   //this->cnet.reg_handler(salticidae::generic_bind(&Handler::handle_stop, this, _1, _2));
 
   // If we lose the connection with a client, we remove it from our list of clients,
