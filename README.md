@@ -93,7 +93,7 @@ For example, if you run:
 
 `python3 run.py  --local --p1  --faults 1 --payload 256 --batchsize 400`
 
-then you will run the replicas, test the Achilles (`--p1`), test for number of faults is 1 (`--faults 1`), payload size is 256 (`--payload 256`), and batchsize is 400 (`--batchsize 400`).
+then you will run the replicas locally, test the Achilles (`--p1`), test for number of faults is 1 (`--faults 1`), payload size is 256 (`--payload 256`), and batchsize is 400 (`--batchsize 400`).
 
 
 
@@ -103,7 +103,9 @@ The Ali Clould experiments are more adhoc. They require starting instance and co
   ```
     cd deployment
     bash cloud_deploy.sh
+    bash cloud_config.sh
   ```
+Then you can check the process of configuration by run `tmux a`, and exit the tmux terminal by `exit`
 The IPs of all the instance are listed in `servers`
 
 Then conduct one experiment by run `run.py`.
