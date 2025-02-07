@@ -111,8 +111,9 @@ Besides, if you want to change the number of servers addresses, please run `pyth
 
 
 Then, config the SGX environments for all instances:
+```
     bash cloud_config.sh
-
+```
 Then you can check the process of configuration by runing `tmux a`, and exit the tmux terminal by `exit`.
 Close the tmux terminal by runing `bash close.sh`.
 
