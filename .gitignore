@@ -21,3 +21,6 @@ expmkp.py
 ip_list
 server
 servers
+App/Enclave_u.c
+App/Enclave_u.h
+close.py
