@@ -65,7 +65,6 @@ If you haven't installed those modules yet, run:
 
 `python3 -m pip install subprocess pathlib matplotlib time math os glob datetime argparse enum json multiprocessing random shutil re scp threading`
 
-## Usage
 
 ### Default command
 
