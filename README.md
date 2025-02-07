@@ -111,6 +111,7 @@ The IPs of all the instance are listed in `servers`
 Then conduct one experiment by run `run.py`.
   ```
     cd ..
+    python3 run.py  --p1  --faults 1 --payload 256 --batchsize 400
   ```
 For example, if you run:
 
