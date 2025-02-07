@@ -65,7 +65,6 @@ If you haven't installed those modules yet, run:
 
 `python3 -m pip install subprocess pathlib matplotlib time math os glob datetime argparse enum json multiprocessing random shutil re scp threading`
 
-## Usage
 
 ### Default command
 
@@ -93,20 +92,40 @@ For example, if you run:
 
 `python3 run.py  --local --p1  --faults 1 --payload 256 --batchsize 400`
 
-then you will run the replicas, test the Achilles (`--p1`), test for number of faults is 1 (`--faults 1`), payload size is 256 (`--payload 256`), and batchsize is 400 (`--batchsize 400`).
+then you will run the replicas locally, test the Achilles (`--p1`), test for number of faults is 1 (`--faults 1`), payload size is 256 (`--payload 256`), and batchsize is 400 (`--batchsize 400`).
 
 
 
 ### Ali Clould Service
 
-The Ali Clould experiments are more adhoc. They require starting instance and configing the SGX environments:
+The Ali Clould experiments are more adhoc. They require starting instance:
   ```
     cd deployment
-    bash clould_deploy.sh
+    bash cloud_deploy.sh
   ```
-The IPs of all the instance are listed in `servers`
+Then you can check that the servers addresses are listed in `/damysus_updated/servers`.
+By default, 7 instances are deployed and 31 servers addresses are generated (5 times for each IP).
 
-Then conduct one experiment by run `run.py`.
+If you want to change the number of instances, please modify the "instance_count" in file`config.json`.
+Besides, if you want to change the number of servers addresses, please run `python3 /root/damysus_updated/deployment/gen_ip.py {m} {n}` to generate m servers addresses with every IP using n times.
+
+
+Then, config the SGX environments for all instances:
+```
+    bash cloud_config.sh
+```
+Then you can check the process of configuration by runing `tmux a`, and exit the tmux terminal by `exit`.
+When the configuration finished, close the tmux terminal by runing:
+```
+    bash close.sh
+```
+
+
+Then conduct one experiment by run `run.py`:
+  ```
+    cd ..
+    python3 run.py  --p1  --faults 1 --payload 256 --batchsize 400
+  ```
 For example, if you run:
 
 `python3 run.py  --p1  --faults 1 --payload 256 --batchsize 400`
@@ -120,6 +139,14 @@ In case something goes wrong, you can stop all instances as follows:
 
 If you want to conduct a group of experiments, the scrips in `scripts/` will help.
 
+For example, if you run:
+  ```
+    cd scripts
+    bash batchsize_LAN.sh
+  ```
+then you will run the replicas, test the  Achilles, FlexiBFT, and Damysus with batchsize varing [200, 400, 600].
+
+After finished the experiments, use `python3 deployment/delete_instance.py` to terminate all the instances.
 
 
 
