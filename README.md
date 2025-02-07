@@ -146,7 +146,7 @@ For example, if you run:
   ```
 then you will run the replicas, test the  Achilles, FlexiBFT, and Damysus with batchsize varing [200, 400, 600].
 
-After finished the experiments, use `python3 deployment/delete_instance.py` to terminate all the instances.
+After finished the experiments, use `python3 deployment/delete_instances.py` to terminate all the instances.
 
 
 
