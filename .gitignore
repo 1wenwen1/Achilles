@@ -24,3 +24,4 @@ servers
 App/Enclave_u.c
 App/Enclave_u.h
 close.py
+stats/
