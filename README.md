@@ -105,10 +105,12 @@ The Ali Clould experiments are more adhoc. They require starting instance and co
     bash cloud_deploy.sh
     bash cloud_config.sh
   ```
-Then you can check the process of configuration by run `tmux a`, and exit the tmux terminal by `exit`
-The IPs of all the instance are listed in `servers`
+Then you can check the process of configuration by runing `tmux a`, and exit the tmux terminal by `exit`.
+Close the tmux terminal by runing `bash close.sh`.
 
-Then conduct one experiment by run `run.py`.
+Check that the IPs of all the instance are listed in `servers`.
+
+Then conduct one experiment by run `run.py`:
   ```
     cd ..
     python3 run.py  --p1  --faults 1 --payload 256 --batchsize 400
