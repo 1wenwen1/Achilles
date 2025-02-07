@@ -102,11 +102,14 @@ then you will run the replicas, test the Achilles (`--p1`), test for number of f
 The Ali Clould experiments are more adhoc. They require starting instance and configing the SGX environments:
   ```
     cd deployment
-    bash clould_deploy.sh
+    bash cloud_deploy.sh
   ```
 The IPs of all the instance are listed in `servers`
 
 Then conduct one experiment by run `run.py`.
+  ```
+    cd ..
+  ```
 For example, if you run:
 
 `python3 run.py  --p1  --faults 1 --payload 256 --batchsize 400`
