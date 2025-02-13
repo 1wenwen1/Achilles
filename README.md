@@ -64,6 +64,7 @@ If you haven't installed those modules yet, run:
 
 `python3 -m pip install subprocess pathlib matplotlib time math os glob datetime argparse enum json multiprocessing random shutil re scp threading`
 
+## Experiments
 
 ### Default command
 
@@ -107,23 +108,21 @@ latency-view: 15.088674666666668 out of 3
 this indicates that the experiment executed successfully, with an average throughput of 175.84K TPS and an average latency of 15.08 ms across 3 nodes.
 
 
-### Ali Clould Experiemnts
+## Ali Clould Experiemnts
 
-#### Launch Instances:
+### Launch Instances
 
-The Ali Clould experiments are more adhoc. They require starting instance:
+Starting instances:
   ```
     cd deployment
     bash cloud_deploy.sh
   ```
-Then you can check that the servers addresses are listed in `/damysus_updated/servers`.
 By default, 7 instances are deployed and 31 servers addresses are generated (5 times for each IP).
-
 If you want to change the number of instances, please modify the "instance_count" in file`config.json`.
 Besides, if you want to change the number of servers addresses, please run `python3 /root/damysus_updated/deployment/gen_ip.py {m} {n}` to generate m servers addresses with every IP using n times.
 
 
-Then, config the SGX environments for all instances:
+Config the SGX environments for all instances:
 ```
     bash cloud_config.sh
 ```
@@ -133,7 +132,7 @@ When the configuration finished, close the tmux terminal by runing:
     bash close.sh
 ```
 
-#### Conduct Experiments:
+### Conduct Experiments:
 
 Then conduct one experiment by run `run.py`:
   ```
@@ -160,7 +159,7 @@ For example, if you run:
   ```
 then you will run the replicas, test the  Achilles, FlexiBFT, and Damysus with batchsize varing [200, 400, 600].
 
-#### Analysis Results:
+### Analysis Results:
 
 All the execution results of Ali Cloud experiments can be found in file damysus_updated/stats.txt.
 For example, 
@@ -170,7 +169,7 @@ Achilles\_1\_\\256\_400\_0, 18.1715414, 26.598315
 indicates that the throughput and latency for the \sysname protocol, with 1 fault, 400 transactions per block, and a 256 B payload per transaction, are 18.1715414K TPS and 26.598315ms, respectively.
 
 
-#### Shutdown Instances:
+### Shutdown Instances:
 
 After finished the experiments, use `python3 deployment/delete_instances.py` to terminate all the instances.
 
