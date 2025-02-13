@@ -171,6 +171,7 @@ indicates that the throughput and latency for the \sysname protocol, with 1 faul
 
 
 #### Shutdown Instances:
+
 After finished the experiments, use `python3 deployment/delete_instances.py` to terminate all the instances.
 
 
