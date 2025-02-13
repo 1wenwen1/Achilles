@@ -1,0 +1,17 @@
+{
+  "region_id": "cn-hongkong",
+  "access_key_id": "xx",
+  "access_key_secret": "xx",
+  "instance_type": "ecs.g7t.large",
+  "instance_count": 7,
+  "image_id2": "ubuntu_20_04_uefi_x64_20G_alibase_20210609.vhd",
+  "image_id": "ubuntu_20_04_uefi_x64_20G_alibase_20220324.vhd",
+  "security_group_id": "sg-j6c53wagsezqnxkt0cmr",
+  "instance_name_prefix": "Achilles",
+  "internet_max_bandwidth_out": "200",
+  "key_pair_name": "TShard",
+  "vpc_id": "vpc-j6c5izllp7pjiwgbhzzle",
+  "vswitch_id": "vsw-j6c60wvgrw7lss6hjx4mr",
+  "eip_allocation_id": "eip-j6c9u70odd453dtt2449b",
+  "network_interface_id": "eni-j6c2i234etqrdl59gi6p"
+}
