@@ -109,6 +109,8 @@ this indicates that the experiment executed successfully, with an average throug
 
 ### Ali Clould Experiemnts
 
+#### Launch Instances:
+
 The Ali Clould experiments are more adhoc. They require starting instance:
   ```
     cd deployment
@@ -131,6 +133,7 @@ When the configuration finished, close the tmux terminal by runing:
     bash close.sh
 ```
 
+#### Conduct Experiments:
 
 Then conduct one experiment by run `run.py`:
   ```
@@ -157,6 +160,8 @@ For example, if you run:
   ```
 then you will run the replicas, test the  Achilles, FlexiBFT, and Damysus with batchsize varing [200, 400, 600].
 
+#### Analysis Results:
+
 All the execution results of Ali Cloud experiments can be found in file damysus_updated/stats.txt.
 For example, 
 ```
@@ -165,7 +170,7 @@ Achilles\_1\_\\256\_400\_0, 18.1715414, 26.598315
 indicates that the throughput and latency for the \sysname protocol, with 1 fault, 400 transactions per block, and a 256 B payload per transaction, are 18.1715414K TPS and 26.598315ms, respectively.
 
 
-
+#### Shutdown Instances:
 After finished the experiments, use `python3 deployment/delete_instances.py` to terminate all the instances.
 
 
