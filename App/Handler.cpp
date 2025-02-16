@@ -27,6 +27,8 @@
 // To stop the processes once they have delivered enough messages
 // - deprecated as processes are now stopped from the Python script
 bool hardStop = true;
+// To process the recover after restart
+bool Recover = false;
 
 std::mutex mu_trans;
 std::mutex mu_handle;
@@ -82,7 +84,7 @@ void incCounter() {
 }
 
 
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
 // These versions use trusted components
 #else
 // Trusted Component (would have to be executed in a TEE):
@@ -105,6 +107,13 @@ void setHash(Hash hash, hash_t *h) {
   memcpy(h->hash,hash.getHash(),SHA256_DIGEST_LENGTH);
 }
 
+// stores [nonce] in [n]
+void setNonce(Nonce nonce, nonce_t *n) {
+  n->set=nonce.getSet();
+memcpy(n->nonce,nonce.getNonce(),RANDOM_NUMBER_LENGTH);
+}
+
+
 
 void setPayload(std::string s, payload_t *p) {
   p->size=s.size();
@@ -126,6 +135,23 @@ void setRData(RData data, rdata_t *d) {
   d->phase=data.getPhase();
 }
 
+// stores [rcdata] in [r]
+void setRCData(RCData data, rcdata_t *r) {
+  // preph
+  setHash(data.getPreph(),&(r->preph));
+  // prepv
+  r->prepv=data.getPrepv();
+  // view
+  r->view=data.getView();
+  // nonce
+  setNonce(data.getNonce(), &(r->nonce));
+}
+
+void setSign(Sign sign, sign_t *s) {
+  s->set = sign.isSet();
+  s->signer = sign.getSigner();
+  memcpy(s->sign, sign.getSign(), SIGN_LEN);
+}
 
 // stores [data] in [d]
 void setFData(FData data, fdata_t *d) {
@@ -235,6 +261,15 @@ Hash getHash(hash_t *h) {
   return Hash(h->set,h->hash);
 }
 
+//loads a nonce from [n]
+Nonce getNonce(nonce_t *n) {
+  return Nonce(n->set,n->nonce);
+}
+
+Sign getSign(sign_t *s){
+  return Sign(s->set,s->signer, s->sign);
+}
+
 FData getFData (fdata_t *d) {
   Hash   justh = getHash(&(d->justh));
   View   justv = d->justv;
@@ -251,6 +286,21 @@ RData getRData (rdata_t *d) {
   Phase1 phase = (Phase1)d->phase;
   RData  data(proph,propv,justh,justv,phase);
   return data;
+}
+//loads a RCData from [d]
+RCData getRCData (rcdata_t *d) {
+  Hash   preph = getHash(&(d->preph));
+  View   prepv = d->prepv;
+  View   view = d->view;
+  Nonce  nonce = getNonce(&(d->nonce));
+  RCData  data(preph,prepv,view, nonce);
+  return data;
+}
+//loads a Rpy from [r]
+Rpy getRpy (rpy_t *r){
+  RCData rcdata = getRCData(&(r->rcdata));
+  Sign  sign= getSign(&(r->sign));
+  return Rpy((bool)r->set,rcdata,sign);
 }
 
 // loads a Just from [j]
@@ -449,7 +499,7 @@ void setCBlock(CBlock block, cblock_t *b) {
 
 // ------------------------------------
 // SGX related stuff
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
 /* Global EID shared by multiple threads */
 sgx_enclave_id_t global_eid = 0;
 
@@ -528,7 +578,7 @@ void Handler::startNewViewOnTimeout() {
   startNewView();
 #elif defined (BASIC_QUICK)
   startNewViewAcc();
-#elif defined (BASIC_CHEAP_AND_QUICK)
+#elif defined (RECOVER)
   startNewViewComb();
 #elif defined (BASIC_FREE)
   startNewViewFree();
@@ -562,7 +612,7 @@ const uint8_t MsgBckPrepareOP::opcode;
 const uint8_t MsgPreCommitOP::opcode;
 const uint8_t MsgLdrAddOP::opcode;
 const uint8_t MsgBckAddOP::opcode;
-#elif defined(BASIC_CHEAP_AND_QUICK)
+#elif defined(RECOVER)
 const uint8_t MsgNewViewComb::opcode;
 const uint8_t MsgLdrPrepareComb::opcode;
 const uint8_t MsgPrepareComb::opcode;
@@ -612,7 +662,7 @@ pnet(pec,pconf), cnet(cec,cconf) {
 
   StartRecTime = std::chrono::steady_clock::now();
   // Trusted Functions
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   if (DEBUG0) { std::cout << KBLU << nfo() << "initializing TEE" << KNRM << std::endl; }
   initializeSGX();
   if (DEBUG0) { std::cout << KBLU << nfo() << "initialized TEE" << KNRM << std::endl; }
@@ -724,11 +774,14 @@ std::cout << "InitTime: " << InitTime << std::endl;
   this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_bckaddop,      this, _1, _2));
   /*this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_preparefree, this, _1, _2));
   this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_precommitfree, this, _1, _2));*/
-#elif defined(BASIC_CHEAP_AND_QUICK)
+#elif defined(RECOVER)
   this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_newviewcomb,    this, _1, _2));
   this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_ldrpreparecomb, this, _1, _2));
   this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_preparecomb,    this, _1, _2));
   this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_precommitcomb,  this, _1, _2));
+
+  this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_replyrecover,   this, _1, _2));
+  this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_recover,        this, _1, _2));
 #elif defined(BASIC_QUICK) || defined(BASIC_QUICK_DEBUG)
   this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_newviewacc,    this, _1, _2));
   this->pnet.reg_handler(salticidae::generic_bind(&Handler::handle_ldrprepareacc, this, _1, _2));
@@ -991,6 +1044,19 @@ void Handler::sendMsgPreCommitComb(MsgPreCommitComb msg, Peers recipients) {
 }
 
 
+void Handler::sendMsgRequestRecover(MsgRequestRecover msg, Peers recipients) {
+  if (DEBUGR) std::cout << KBLU << nfo() << "sending:" << msg.prettyPrint() << "->" << recipients2string(recipients) << KNRM << std::endl;
+  this->pnet.multicast_msg(msg, getPeerids(recipients));
+  if (DEBUGT) printNowTime("sending MsgRequestRecover");
+}
+
+void Handler::sendMsgReplyRecover(MsgReplyRecover msg, Peers recipients) {
+  if (DEBUGR) std::cout << KBLU << nfo() << "sending:" << msg.prettyPrint() << "->" << recipients2string(recipients) << KNRM << std::endl;
+  this->pnet.multicast_msg(msg, getPeerids(recipients));
+  if (DEBUGT) printNowTime("sending MsgReplyRecover");
+}
+
+
 void Handler::sendMsgNewViewFree(MsgNewViewFree msg, Peers recipients) {
   if (DEBUG1) std::cout << KBLU << nfo() << "sending:" << msg.prettyPrint() << "->" << recipients2string(recipients) << KNRM << std::endl;
   this->pnet.multicast_msg(msg, getPeerids(recipients));
@@ -1115,7 +1181,7 @@ void Handler::sendMsgLdrPrepareChComb(MsgLdrPrepareChComb msg, Peers recipients)
 Just Handler::callTEEsign() {
   //incCounter();
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   just_t jout;
   sgx_status_t ret;
   sgx_status_t status = TEEsign(global_eid, &ret, &jout);
@@ -1134,7 +1200,7 @@ Just Handler::callTEEsign() {
 Just Handler::callTEEprepare(Hash h, Just j) {
   //incCounter();
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   just_t jout;
   just_t jin;
   setJust(j,&jin);
@@ -1157,7 +1223,7 @@ Just Handler::callTEEprepare(Hash h, Just j) {
 Just Handler::callTEEstore(Just j) {
   //incCounter();
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   just_t jout;
   just_t jin;
   setJust(j,&jin);
@@ -1177,7 +1243,7 @@ Just Handler::callTEEstore(Just j) {
 
 /*bool Handler::callTEEverify(Just j) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER)
   unsigned int bout;
   just_t jin;
   setJust(j,&jin);
@@ -1197,7 +1263,7 @@ Just Handler::callTEEstore(Just j) {
 
 Accum Handler::callTEEaccum(Vote<Void,Cert> votes[MAX_NUM_SIGNATURES]) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   accum_t aout;
   votes_t vin;
   setVotes(votes,&vin);
@@ -1221,7 +1287,7 @@ Accum Handler::callTEEaccum(Vote<Void,Cert> votes[MAX_NUM_SIGNATURES]) {
 // a simpler version of callTEEaccum for when all votes are for the same payload
 Accum Handler::callTEEaccumSp(uvote_t vote) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   accum_t aout;
   sgx_status_t ret;
   sgx_status_t status = TEEaccumSp(global_eid, &ret, &vote, &aout);
@@ -1239,7 +1305,7 @@ Accum Handler::callTEEaccumSp(uvote_t vote) {
 
 Accum Handler::callTEEaccumComb(Just justs[MAX_NUM_SIGNATURES]) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   accum_t aout;
   onejusts_t jin;
   setOneJusts(justs,&jin);
@@ -1259,7 +1325,7 @@ Accum Handler::callTEEaccumComb(Just justs[MAX_NUM_SIGNATURES]) {
 // a simpler version of callTEEaccum for when all votes are for the same payload
 Accum Handler::callTEEaccumCombSp(just_t just) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   accum_t aout;
   sgx_status_t ret;
   sgx_status_t status = COMB_TEEaccumSp(global_eid, &ret, &just, &aout);
@@ -1276,7 +1342,7 @@ Accum Handler::callTEEaccumCombSp(just_t just) {
 
 Just Handler::callTEEsignComb() {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   just_t jout;
   sgx_status_t ret;
   incCounter();
@@ -1294,7 +1360,7 @@ Just Handler::callTEEsignComb() {
 
 Just Handler::callTEEprepareComb(Hash h, Accum acc) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   incCounter();
   just_t jout;
   accum_t ain;
@@ -1316,7 +1382,7 @@ Just Handler::callTEEprepareComb(Hash h, Accum acc) {
 
 Just Handler::callTEEstoreComb(Just j) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   incCounter();
   just_t jout;
   just_t jin;
@@ -1335,10 +1401,45 @@ Just Handler::callTEEstoreComb(Just j) {
 }
 
 
+// ----------------Recovery--------------
+Rpy Handler::callTEEreplyrecover(Nonce n, Sign s) {
+  auto start = std::chrono::steady_clock::now();
+#if defined(RECOVER) || defined(ACHILLES)
+  rpy_t rout;
+  nonce_t nonce;
+  setNonce(n,&nonce);
+  sign_t sign;
+  setSign(s,&sign);
+  sgx_status_t ret;
+  sgx_status_t status = RE_TEEreply(global_eid, &ret, &nonce, &sign, &rout);
+  Rpy rpy = getRpy(&rout);
+#endif
+  auto end = std::chrono::steady_clock::now();
+  double time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+  stats.addTEEprepare(time);
+  stats.addTEEtime(time);
+  return rpy;
+}
+
+Just Handler::callTEErecover(const std::vector<rpy_t> &rpy_array) {
+  auto start = std::chrono::steady_clock::now();
+#if defined(RECOVER) || defined(ACHILLES)
+  sgx_status_t ret;
+  just_t jout;
+  sgx_status_t status = RE_TEErecover(global_eid, &ret, rpy_array.data(), rpy_array.size(), &jout, this->total);
+  Just just = getJust(&jout);
+#endif
+  auto end = std::chrono::steady_clock::now();
+  double time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+  stats.addTEEprepare(time);
+  stats.addTEEtime(time);
+  return just;
+}
+
 bool Handler::callTEEverifyFree(Auths auths, std::string s) {
   auto start = std::chrono::steady_clock::now();
   bool b = false;
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE)
   payload_t pin;
   setPayload(s,&pin);
   auths_t ain;
@@ -1361,7 +1462,7 @@ bool Handler::callTEEverifyFree(Auths auths, std::string s) {
 bool Handler::callTEEverifyFree2(Auths auths1, std::string s1, Auths auths2, std::string s2) {
   auto start = std::chrono::steady_clock::now();
   bool b = false;
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE)
   payload_t pin1;
   setPayload(s1,&pin1);
   auths_t ain1;
@@ -1388,7 +1489,7 @@ bool Handler::callTEEverifyFree2(Auths auths1, std::string s1, Auths auths2, std
 Auth Handler::callTEEauthFree(std::string s) {
   auto start = std::chrono::steady_clock::now();
   Auth a;
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE)
   payload_t pin;
   setPayload(s,&pin);
   auth_t aout;
@@ -1427,7 +1528,7 @@ std::string h2sx(hash_t hash) {
 /*
 HJust Handler::callTEEprepareFree(Hash h) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   hjust_t jout;
   hash_t hin;
   setHash(h,&hin);
@@ -1451,7 +1552,7 @@ HJust Handler::callTEEprepareFree(Hash h) {
 
 FVJust Handler::callTEEstoreFree(PJust j) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   fvjust_t jout;
   pjust_t jin;
   setPJust(j,&jin);
@@ -1472,7 +1573,7 @@ FVJust Handler::callTEEstoreFree(PJust j) {
 
 HAccum Handler::callTEEaccumFree(FJust high, FJust justs[MAX_NUM_SIGNATURES-1], Hash hash) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   haccum_t aout;
   fjust_t jin;
   fjusts_t jsin;
@@ -1498,7 +1599,7 @@ HAccum Handler::callTEEaccumFree(FJust high, FJust justs[MAX_NUM_SIGNATURES-1], 
 // a simpler version of callTEEaccum for when all votes are for the same payload
 HAccum Handler::callTEEaccumFreeSp(ofjust_t just, Hash hash) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   haccum_t aout;
   hash_t hin;
   setHash(hash,&hin);
@@ -1662,7 +1763,7 @@ OPvote Handler::callTEEvoteOP(Hash h) {
 
 Just Handler::callTEEsignCh() {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   just_t jout;
   sgx_status_t ret;
   sgx_status_t status = CH_TEEsign(global_eid, &ret, &jout);
@@ -1680,7 +1781,7 @@ Just Handler::callTEEsignCh() {
 
 Just Handler::callTEEprepareCh(JBlock block, JBlock block0, JBlock block1) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   just_t jout;
   // 1st block
   jblock_t jin;
@@ -1708,7 +1809,7 @@ Just Handler::callTEEprepareCh(JBlock block, JBlock block0, JBlock block1) {
 
 Just Handler::callTEEsignChComb() {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   just_t jout;
   sgx_status_t ret;
   incCounter();
@@ -1728,7 +1829,7 @@ Just Handler::callTEEsignChComb() {
 
 Just Handler::callTEEprepareChComb(CBlock block, Hash hash) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   just_t jout;
   incCounter();
   // 1st block
@@ -1758,7 +1859,7 @@ Just Handler::callTEEprepareChComb(CBlock block, Hash hash) {
 
 Accum Handler::callTEEaccumChComb(Just justs[MAX_NUM_SIGNATURES]) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   accum_t aout;
   onejusts_t jin;
   setOneJusts(justs,&jin);
@@ -1779,7 +1880,7 @@ Accum Handler::callTEEaccumChComb(Just justs[MAX_NUM_SIGNATURES]) {
 // a simpler version of callTEEaccumChComb for when all votes are for the same payload
 Accum Handler::callTEEaccumChCombSp(just_t just) {
   auto start = std::chrono::steady_clock::now();
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
   accum_t aout;
   sgx_status_t ret;
   sgx_status_t status = CH_COMB_TEEaccumSp(global_eid, &ret, &just, &aout);
@@ -1838,15 +1939,28 @@ void Handler::getStarted() {
   // We start the timer
   //setTimer();
 
-#if defined(BASIC_CHEAP_AND_QUICK)
-  Just j = callTEEsignComb();
-  if (j.getSigns().getSize() == 1) {
-    MsgNewViewComb msg(j.getRData(),j.getSigns().get(0));
-    if (DEBUG1) std::cout << KBLU << nfo() << "starting with:" << msg.prettyPrint() << KNRM << std::endl;
-    if (amCurrentLeader()) { handleNewviewComb(msg); }
-    else { sendMsgNewViewComb(msg,recipients); }
+#if defined(RECOVER)
+  nonce_t n;
+  sign_t s;
+  sgx_status_t ret;
+  sgx_status_t status = RE_TEErequest(global_eid, &ret ,&n, &s);
+  Nonce nonce = getNonce(&n);
+  Sign sign = getSign(&s);
+  MsgRequestRecover msg(nonce,sign);
+  Peers reps = remove_from_peers(leader);
+  if (amCurrentLeader()) { 
+    Recover = true;
+    sendMsgRequestRecover(msg,reps); 
   }
-  if (DEBUG) std::cout << KBLU << nfo() << "sent new-view to leader(" << leader << ")" << KNRM << std::endl;
+
+  // Just j = callTEEsignComb();
+  // if (j.getSigns().getSize() == 1) {
+  //   MsgNewViewComb msg(j.getRData(),j.getSigns().get(0));
+  //   if (DEBUG1) std::cout << KBLU << nfo() << "starting with:" << msg.prettyPrint() << KNRM << std::endl;
+  //   if (amCurrentLeader()) { handleNewviewComb(msg); }
+  //   else { sendMsgNewViewComb(msg,recipients); }
+  // }
+  // if (DEBUG) std::cout << KBLU << nfo() << "sent new-view to leader(" << leader << ")" << KNRM << std::endl;
 #elif defined(BASIC_FREE)
   // we still need more messages to get started
   this->prepjust=PJust(Hash(false),0,Auth(false),Auths());
@@ -2066,7 +2180,7 @@ void Handler::recordStats() {
   fileRtt.close();
 
 
-#if defined (BASIC_CHEAP_AND_QUICK)
+#if defined (RECOVER)
   std::ofstream fileVals(statsVals);
   fileVals << std::to_string(throughputView)
            << " " << std::to_string(latencyView)
@@ -3199,11 +3313,6 @@ void Handler::respondToLdrPrepareComb(Block block, Accum acc) {
     PID leader = getCurrentLeader();
     Peers recipients = keep_from_peers(leader);
     sendMsgPrepareComb(msgPrep,recipients);
-    if (this->view == 0){
-      Time timenow = std::chrono::steady_clock::now();
-      RecoverTime = std::chrono::duration_cast<std::chrono::microseconds>(timenow - startTime).count() /1000.0;
-      std::cout << "RecoverTime: " << RecoverTime << std::endl;
-    }
   }
 }
 
@@ -3289,11 +3398,6 @@ void Handler::handlePrepareComb(MsgPrepareComb msg) {
   View v = data.getPropv();
   if (v == this->view) {
     if (amLeaderOf(v)) {
-      if (this->view == 0){
-        Time timenow = std::chrono::steady_clock::now();
-        RecoverTime = std::chrono::duration_cast<std::chrono::microseconds>(timenow - startTime).count() /1000.0;
-        std::cout << "RecoverTime: " << RecoverTime << std::endl;
-      }
       // Beginning of pre-commit phase, we store messages until we get enough of them to start pre-committing
       if (this->log.storePrepComb(msg) == this->qsize) {
         dlog("ph 3: leader sends precommit");
@@ -3493,9 +3597,74 @@ void Handler::handle_precommitcomb(MsgPreCommitComb msg, const PeerNet::conn_t &
   handlePreCommitComb(msg);
 }
 
+//------------------------------------------------
+//---Recovery
+//--
+
+void Handler::handleReplyRecover(MsgRequestRecover msg) {
+  auto start = std::chrono::steady_clock::now();
+  if (DEBUGR) std::cout << KBLU << nfo() << "handling:" << msg.prettyPrint() << KNRM << std::endl;
+  // if (DEBUGR) std::cout << KBLU << "nonce:"<< msg.nonce.toString()<< KNRM << std::endl;
 
 
 
+  Rpy rpy = callTEEreplyrecover(msg.nonce, msg.sign);
+  if (DEBUGR) std::cout << KRED << "generating:"<< rpy.prettyPrint()<< KNRM << std::endl;
+  if (rpy.isSet() == true){
+    if (DEBUGR) std::cout << KRED << "sending:"<< rpy.prettyPrint()<< KNRM << std::endl;
+    MsgReplyRecover msgr(rpy.getRCData(), rpy.getSign());
+    Peers recipients = remove_from_peers(this->myid);
+    sendMsgReplyRecover(msgr,recipients);
+  }
+  
+
+  auto end = std::chrono::steady_clock::now();
+  double time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+  stats.addTotalHandleTime(time);
+  stats.addTotalNvTime(time);
+}
+
+
+void Handler::handle_replyrecover(MsgRequestRecover msg, const PeerNet::conn_t &conn) {
+  if (DEBUGR) std::cout << KBLU << nfo() << "Receive:" << msg.prettyPrint() << KNRM << std::endl;
+  handleReplyRecover(msg);
+}
+
+
+void Handler::handleRecover(MsgReplyRecover msg) {
+  if (Recover == true){
+    if (DEBUGR)  std::cout << KRED << nfo() << "handling " << msg.prettyPrint() << KNRM << std::endl;
+    if (this->log.storeRecover(msg) == this->qsize) {
+      //handle the reply
+      View v = msg.rcdata.getPrepv();
+      std::vector<rpy_t> rpy_array;
+      //get all the recover messages
+      std::set<MsgReplyRecover> msgs = this->log.getRecover(v, this->qsize);
+      for (const auto &stored_msg : msgs) {
+          rpy_t rpy;
+          rpy.set = true;
+          setRCData(stored_msg.rcdata, &rpy.rcdata);
+          setSign(stored_msg.sign, &rpy.sign);
+          rpy_array.push_back(rpy);
+      }
+      //call the TEE to recover the data
+
+      Just just = callTEErecover(rpy_array);
+      
+      if (DEBUGR)  std::cout << KRED << nfo() << "end recover" << KNRM << std::endl;
+      Time timenow = std::chrono::steady_clock::now();
+      RecoverTime = std::chrono::duration_cast<std::chrono::microseconds>(timenow - startTime).count() /1000.0;
+      std::cout << "RecoverTime: " << RecoverTime << std::endl;
+      Recover = false;
+    }else{
+      if (DEBUGR)  std::cout << KRED << nfo() << "store " << this->log.storeRecover(msg)<<"qsize"<< this->qsize << KNRM << std::endl;
+    }   
+  }
+}
+void Handler::handle_recover(MsgReplyRecover msg, const PeerNet::conn_t &conn) {
+  if (DEBUGR)  std::cout << KRED << nfo() << "Receive: " << msg.prettyPrint() << KNRM << std::endl;
+  handleRecover(msg);
+}
 // ----------------------------------------------
 // -- Free version
 // --

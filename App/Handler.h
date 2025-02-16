@@ -10,6 +10,7 @@
 #include "Log.h"
 #include "Stats.h"
 #include "Vote.h"
+#include "Rpy.h"
 #include "FJust.h"
 #include "PJust.h"
 #include "HJust.h"
@@ -21,7 +22,7 @@
 
 // ------------------------------------
 // SGX related stuff
-#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(BASIC_CHEAP_AND_QUICK) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
+#if defined(BASIC_CHEAP) || defined(BASIC_QUICK) || defined(RECOVER) || defined(BASIC_FREE) || defined(BASIC_ONEP) || defined(ACHILLES)
 //
 #include "Enclave_u.h"
 #include "sgx_urts.h"
@@ -182,6 +183,11 @@ class Handler {
   void sendMsgLdrPrepareComb(MsgLdrPrepareComb msg, Peers recipients);
   void sendMsgPrepareComb(MsgPrepareComb msg, Peers recipients);
   void sendMsgPreCommitComb(MsgPreCommitComb msg, Peers recipients);
+
+
+  void sendMsgRequestRecover(MsgRequestRecover msg, Peers recipients);
+  void sendMsgReplyRecover(MsgReplyRecover msg, Peers recipients);
+
 
   void sendMsgNewViewFree(MsgNewViewFree msg, Peers recipients);
   void sendMsgLdrPrepareFree(MsgLdrPrepareFree msg, Peers recipients);
@@ -355,18 +361,24 @@ class Handler {
   Just callTEEprepareComb(Hash h, Accum acc);
   Just callTEEstoreComb(Just j);
 
+  Rpy  callTEEreplyrecover(Nonce n, Sign s);
+  Just callTEErecover(const std::vector<rpy_t> &rpy_array);
+
   void handleNewviewComb(MsgNewViewComb msg);
   void handlePrepareComb(MsgPrepareComb msg);
   void handleLdrPrepareComb(MsgLdrPrepareComb msg);
   void handlePreCommitComb(MsgPreCommitComb msg);
+
+  void handleReplyRecover (MsgRequestRecover msg);
+  void handleRecover (MsgReplyRecover msg);
 
   void handle_newviewcomb(MsgNewViewComb msg, const PeerNet::conn_t &conn);
   void handle_preparecomb(MsgPrepareComb msg, const PeerNet::conn_t &conn);
   void handle_ldrpreparecomb(MsgLdrPrepareComb msg, const PeerNet::conn_t &conn);
   void handle_precommitcomb(MsgPreCommitComb msg, const PeerNet::conn_t &conn);
 
-
-
+  void handle_replyrecover(MsgRequestRecover msg, const PeerNet::conn_t &conn);
+  void handle_recover(MsgReplyRecover msg, const PeerNet::conn_t &conn);
   // ------------------------------------------------------------
   // Free
   // ------

@@ -9,6 +9,8 @@ enum unit { tt };
 
 typedef uint8_t HEADER;
 
+#define RANDOM_NUMBER_LENGTH 16
+
 #define HDR_NEWVIEW     0x0
 #define HDR_PREPARE     0x1
 #define HDR_PREPARE_LDR 0x2
@@ -24,6 +26,9 @@ typedef uint8_t HEADER;
 #define HDR_PREPARE_LDR_COMB 0x10
 #define HDR_PREPARE_COMB     0x11
 #define HDR_PRECOMMIT_COMB   0x12
+
+#define HDR_REQUESTRECOVER   0x36
+#define HDR_REPLYRECOVER     0x37
 
 #define HDR_NEWVIEW_FREE     0x13
 #define HDR_PREPARE_LDR_FREE 0x14

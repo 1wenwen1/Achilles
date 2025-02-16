@@ -1,11 +1,14 @@
 #include <set>
 #include "EnclaveShare.h"
+#include "sgx_trts.h"
 
 
 hash_t COMBpreph = newHash(); // hash of the last prepared block
 View   COMBprepv = 0;             // preph's view
 View   COMBview  = 0;             // current view
 Phase1 COMBphase = PH1_NEWVIEW;   // current phase
+bool Recover = false;
+nonce_t Nonce = newNonce();
 
 
 
@@ -151,3 +154,96 @@ sgx_status_t COMB_TEEaccumSp(just_t *just, accum_t *res) {
 
   return status;
 }
+
+
+
+//-----------Recovery-----------
+
+sgx_status_t generate_random_number(unsigned char *rand) {
+  sgx_status_t status = sgx_read_rand(rand, RANDOM_NUMBER_LENGTH); 
+  if (status != SGX_SUCCESS) {
+  return status; 
+  } 
+return SGX_SUCCESS; 
+} 
+
+sgx_status_t RE_TEErequest(nonce_t *nonce, sign_t *sign) {
+  sgx_status_t status = generate_random_number(nonce->nonce);
+  Recover = true;
+  Nonce = *nonce;
+  if (status != SGX_SUCCESS) {
+      return status;
+  }
+
+  *sign = signString(nonce2string(*nonce));
+  // sign the random number
+  // std::string rand_str(reinterpret_cast<char*>(nonce->nonce), RANDOM_NUMBER_LENGTH);
+  // *sign = signString(rand_str);
+
+  return SGX_SUCCESS;
+}
+
+
+sgx_status_t RE_TEEreply(nonce_t *nonce, sign_t *sign, rpy_t *rpy) {
+  sgx_status_t status = SGX_SUCCESS;
+ 
+  signs_t signs;
+  signs.size = 1;
+  signs.signs[0] = *sign;
+  if (verifyText(signs, nonce2string(*nonce))){  //verify the signature
+      //construct rcdata
+      rcdata_t rcdata;
+      rcdata.preph = COMBpreph;
+      rcdata.prepv = COMBprepv;
+      rcdata.view = COMBview;
+      rcdata.nonce = *nonce;
+      //sign the rcdata
+      std::string text = rcdata2string(rcdata);
+      sign_t s = signString(text);
+      //construct the response
+      rpy->set = true;
+      rpy->rcdata = rcdata;
+      rpy->sign = s;
+      return status;
+  }else{
+      rpy->set = false;
+      if(!verifyText(signs, nonce2string(*nonce))){
+          ocall_print("Signature not verified");
+      }
+      return status;
+  }
+
+}
+
+
+sgx_status_t RE_TEErecover(const rpy_t *rpys, size_t len, just_t *just, unsigned int total) {
+  sgx_status_t status = SGX_SUCCESS;
+
+  View maxview = 0;
+  rpy_t maxrpy;
+  for (size_t i = 0; i < len; i++) {
+      const rpy_t &rpy = rpys[i];
+      if(Recover && rpy.set 
+          && eqNonces(rpy.rcdata.nonce, Nonce)
+          &&verifyOneSign(rpy.sign, rcdata2string(rpy.rcdata))){
+          if(rpy.rcdata.view > maxview){
+              maxview = rpy.rcdata.view;
+              maxrpy = rpy;
+        }
+      }
+  }
+  //reset the nonce
+  Recover = false;
+  Nonce = newNonce();
+  //Update the global variables
+  COMBpreph = maxrpy.rcdata.preph;
+  COMBprepv = maxrpy.rcdata.prepv;
+  COMBview = maxrpy.rcdata.view + 1;
+
+
+  hash_t hash = noHash();
+  *just = COMB_sign(hash,COMBpreph,COMBprepv);
+  return status;
+}
+
+

@@ -19,20 +19,25 @@ sgx_status_t initialize_variables(PID *me, pids_t *others, unsigned int *q);
 
 sign_t signString(std::string text);
 bool verifyText(signs_t signs, std::string text);
+bool verifyOneSign(const sign_t &sign, const std::string &text);
 bool verifyJust(just_t *just);
 bool verifyAccum(accum_t *acc);
 
 unsigned int getQsize();
 
 std::string hash2string(hash_t hash);
+std::string nonce2string(nonce_t nonce);
 std::string ca2string(ca_t ca);
 std::string rdata2string(rdata_t rdata);
 std::string cdata2string(cdata_t cdata);
+std::string rcdata2string(rcdata_t rcdata);
 std::string cblock2string(cblock_t *block);
 std::string signs2string(signs_t signs);
 std::string sign2string(sign_t sign);
 bool eqHashes(hash_t h1, hash_t h2);
+bool eqNonces(nonce_t n1, nonce_t n2);
 hash_t newHash();
+nonce_t newNonce();
 hash_t noHash();
 
 bool WF(just_t just);

@@ -12,6 +12,7 @@
 #include "../App/key.h"
 
 
+
 typedef struct _pids_t
 {
   unsigned int num_nodes;
@@ -250,6 +251,30 @@ typedef struct _opaccum_t
   unsigned int size;
   auth_t auth;
 } opaccum_t;
+
+
+
+//-----------Recovery------------
+typedef struct _nonce_t {
+  unsigned char nonce[RANDOM_NUMBER_LENGTH];
+  bool set;
+} nonce_t;
+
+
+typedef struct _rcdata_t { 
+  hash_t preph; 
+  View prepv; 
+  View view; 
+  nonce_t nonce; 
+} rcdata_t;
+
+
+typedef struct _rpy_t
+{
+  bool set;
+  rcdata_t rcdata; 
+  sign_t sign;
+} rpy_t;
 
 
 #endif

@@ -113,6 +113,27 @@ bool verifySigns(signs_t signs, PID id, std::map<PID,KEY> pubs, std::string s) {
   return true;
 }
 
+bool verifyOneSign(const sign_t &sign, const std::string &text) {
+  if (!sign.set) {
+      ocall_print("Sign not set");
+      return false;
+  }
+
+  PID node = sign.signer;
+
+  auto it = pubs.find(node);
+  if (it == pubs.end()) {
+      ocall_print(("unknown node:" + std::to_string(node)).c_str());
+      return false;
+  }
+
+  if (!verifySign(sign, it->second, text)) {
+      ocall_print(("cannot verify signature from:" + std::to_string(node)).c_str());
+      return false;
+  }
+
+  return true;
+}
 
 bool verifyText(signs_t signs, std::string text) {
   //ocall_print((nfo() + "verifying:" + std::to_string(signs.size)).c_str());
@@ -140,6 +161,21 @@ std::string rdata2string(rdata_t rdata) {
           + std::to_string(rdata.phase));
 }
 
+std::string nonce2string(nonce_t nonce) {
+  std::string text;
+  for (int i = 0; i < RANDOM_NUMBER_LENGTH; i++) {
+      text += nonce.nonce[i];
+  }
+  text += std::to_string(nonce.set);
+  return text;
+}
+
+std::string rcdata2string(rcdata_t rcdata) {
+  return hash2string(rcdata.preph)
+         + std::to_string(rcdata.prepv)
+         + std::to_string(rcdata.view)
+         + nonce2string(rcdata.nonce);
+}
 
 std::string sign2string(sign_t sign) {
   std::string s = std::to_string(sign.set) + std::to_string(sign.signer);
@@ -309,6 +345,19 @@ hash_t newHash() {
   hash.set=true;
   return hash;
 }
+
+nonce_t newNonce() {
+  nonce_t nonce;
+  for (int i = 0; i < RANDOM_NUMBER_LENGTH; i++) { nonce.nonce[i] = '0'; }
+  nonce.set=true;
+  return nonce;
+}
+
+bool eqNonces(nonce_t n1, nonce_t n2) {
+  for (int i = 0; i < RANDOM_NUMBER_LENGTH; i++) { if (n1.nonce[i] != n2.nonce[i]) { return false; } }
+  return true;
+}
+
 
 
 hash_t noHash() {

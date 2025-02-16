@@ -18,6 +18,8 @@
 #define DEBUGE  false
 // to print client messages
 #define DEBUGC  false
+// to print recover messages
+#define DEBUGR  true
 
 
 #define NO_SOCKET          -1

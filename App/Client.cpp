@@ -25,6 +25,8 @@ using TransInfo = std::tuple<unsigned int,Clock,Transaction>; // int: number of 
 
 #ifdef COMB
 const uint8_t MsgNewViewComb::opcode;
+const uint8_t MsgRequestRecover::opcode;
+const uint8_t MsgReplyRecover::opcode;
 const uint8_t MsgLdrPrepareComb::opcode;
 const uint8_t MsgPrepareComb::opcode;
 const uint8_t MsgPreCommitComb::opcode;
@@ -348,12 +350,14 @@ int main(int argc, char const *argv[]) {
                    sizeof(MsgLdrPrepareAcc),
                    sizeof(MsgPrepareAcc),
                    sizeof(MsgPreCommitAcc)});
-  #elif defined(BASIC_CHEAP_AND_QUICK)
+  #elif defined(RECOVER)
   size = std::max({size,
                    sizeof(MsgNewViewComb),
                    sizeof(MsgLdrPrepareComb),
                    sizeof(MsgPrepareComb),
-                   sizeof(MsgPreCommitComb)});
+                   sizeof(MsgPreCommitComb),
+                   sizeof(MsgRequestRecover),
+                   sizeof(MsgReplyRecover)});
   #elif defined(BASIC_FREE)
   size = std::max({size,
                    sizeof(MsgNewViewFree),

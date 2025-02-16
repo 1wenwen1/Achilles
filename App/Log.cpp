@@ -491,7 +491,6 @@ unsigned int Log::storeNvComb(MsgNewViewComb msg) {
   return 0;
 }
 
-
 std::set<MsgNewViewComb> Log::getNewViewComb(View view, unsigned int n) {
   std::set<MsgNewViewComb> ret;
   std::map<View,std::set<MsgNewViewComb>>::iterator it1 = this->newviewsComb.find(view);
@@ -499,6 +498,53 @@ std::set<MsgNewViewComb> Log::getNewViewComb(View view, unsigned int n) {
     std::set<MsgNewViewComb> msgs = it1->second;
     for (std::set<MsgNewViewComb>::iterator it=msgs.begin(); ret.size() < n && it!=msgs.end(); ++it) {
       MsgNewViewComb msg = (MsgNewViewComb)*it;
+      ret.insert(msg);
+    }
+  }
+  return ret;
+}
+
+bool MsgRecoverFrom(std::set<MsgReplyRecover> msgs, PID signer) {
+  for (std::set<MsgReplyRecover>::iterator it=msgs.begin(); it!=msgs.end(); ++it) {
+    MsgReplyRecover msg = (MsgReplyRecover)*it;
+    PID k = msg.sign.getSigner();
+    if (signer == k) { return true; }
+  }
+  return false;
+}
+
+
+unsigned int Log::storeRecover(MsgReplyRecover msg) {
+  RCData data = msg.rcdata;
+  View v = data.getPrepv();
+  PID signer = msg.sign.getSigner();
+
+  std::map<View,std::set<MsgReplyRecover>>::iterator it1 = this->recover.find(v);
+  if (it1 != this->recover.end()) { // there is already an entry for this view
+    std::set<MsgReplyRecover> msgs = it1->second;
+
+    // We only add 'msg' to the log if the sender hasn't already sent a replyrecover message for this view
+    if (!MsgRecoverFrom(msgs,signer)) {
+      msgs.insert(msg);
+      this->recover[v]=msgs;
+      return msgs.size();
+    }
+  } else { // there is no entry for this view
+    this->recover[v]={msg};
+    if (DEBUG) { std::cout << KGRN << "no entry for this view (" << v << ") before; #=1" << KNRM << std::endl; }
+    return 1;
+  }
+
+  return 0;
+}
+
+std::set<MsgReplyRecover> Log::getRecover(View view, unsigned int n) {
+  std::set<MsgReplyRecover> ret;
+  std::map<View,std::set<MsgReplyRecover>>::iterator it1 = this->recover.find(view);
+  if (it1 != this->recover.end()) { // there is already an entry for this view
+    std::set<MsgReplyRecover> msgs = it1->second;
+    for (std::set<MsgReplyRecover>::iterator it=msgs.begin(); ret.size() < n && it!=msgs.end(); ++it) {
+      MsgReplyRecover msg = (MsgReplyRecover)*it;
       ret.insert(msg);
     }
   }

@@ -129,12 +129,14 @@ int main(int argc, char const *argv[]) {
                    sizeof(MsgLdrPrepareAcc),
                    sizeof(MsgPrepareAcc),
                    sizeof(MsgPreCommitAcc)});
-  #elif defined(BASIC_CHEAP_AND_QUICK)
+  #elif defined(RECOVER)
   size = std::max({size,
                    sizeof(MsgNewViewComb),
                    sizeof(MsgLdrPrepareComb),
                    sizeof(MsgPrepareComb),
-                   sizeof(MsgPreCommitComb)});
+                   sizeof(MsgPreCommitComb),
+                   sizeof(MsgRequestRecover),
+                   sizeof(MsgReplyRecover)});
   #elif defined(BASIC_FREE)
   size = std::max({size,
                    sizeof(MsgNewViewFree),
@@ -179,6 +181,8 @@ int main(int argc, char const *argv[]) {
               << ":ldrpreparecomb=" << sizeof(MsgLdrPrepareComb)
               << ":preparecomb="    << sizeof(MsgPrepareComb)
               << ":precommitcomb="  << sizeof(MsgPreCommitComb)
+              << ":requestrecover=" << sizeof(MsgRequestRecover)
+              << ":replyrecover="   << sizeof(MsgReplyRecover)
               << ":newviewfree="    << sizeof(MsgNewViewFree)
               << ":ldrpreparefree=" << sizeof(MsgLdrPrepareFree)
               << ":bckpreparefree=" << sizeof(MsgBckPrepareFree)

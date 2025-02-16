@@ -88,6 +88,9 @@ sgx_status_t COMB_TEEprepare(sgx_enclave_id_t eid, sgx_status_t* retval, hash_t*
 sgx_status_t COMB_TEEstore(sgx_enclave_id_t eid, sgx_status_t* retval, just_t* just, just_t* res);
 sgx_status_t COMB_TEEaccum(sgx_enclave_id_t eid, sgx_status_t* retval, onejusts_t* js, accum_t* res);
 sgx_status_t COMB_TEEaccumSp(sgx_enclave_id_t eid, sgx_status_t* retval, just_t* just, accum_t* res);
+sgx_status_t RE_TEErequest(sgx_enclave_id_t eid, sgx_status_t* retval, nonce_t* nonce, sign_t* sign);
+sgx_status_t RE_TEEreply(sgx_enclave_id_t eid, sgx_status_t* retval, nonce_t* nonce, sign_t* sign, rpy_t* rpy);
+sgx_status_t RE_TEErecover(sgx_enclave_id_t eid, sgx_status_t* retval, const rpy_t* rpys, size_t len, just_t* just, unsigned int total);
 sgx_status_t FREE_TEEauth(sgx_enclave_id_t eid, sgx_status_t* retval, payload_t* text, auth_t* res);
 sgx_status_t FREE_TEEverify(sgx_enclave_id_t eid, sgx_status_t* retval, payload_t* text, auths_t* a, bool* res);
 sgx_status_t FREE_TEEverify2(sgx_enclave_id_t eid, sgx_status_t* retval, payload_t* text1, auths_t* a1, payload_t* text2, auths_t* a2, bool* res);

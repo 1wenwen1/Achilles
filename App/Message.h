@@ -8,6 +8,8 @@
 #include "Auth.h"
 #include "Auths.h"
 #include "RData.h"
+#include "RCData.h"
+#include "Nonce.h"
 #include "FData.h"
 #include "Proposal.h"
 #include "Transaction.h"
@@ -363,8 +365,53 @@ struct MsgPreCommitComb {
   void serialize(salticidae::DataStream &s) const { s << data << signs; }
 };
 
+///////////////////////////////////////////////////////
+//Recovery
+
+struct MsgRequestRecover { 
+  static const uint8_t opcode = HDR_REQUESTRECOVER; 
+  salticidae::DataStream serialized; 
+  Nonce nonce; 
+  Sign sign; 
+  MsgRequestRecover(const Nonce &nonce, const Sign &sign) : nonce(nonce),sign(sign) { 
+    serialized << nonce << sign; 
+  } 
+  MsgRequestRecover(salticidae::DataStream &&s) { 
+    s >> nonce >> sign; 
+  } 
+  bool operator<(const MsgRequestRecover& s) const {
+     if (sign < s.sign) { return true; } 
+     return false; 
+    } 
+    std::string prettyPrint() { 
+      return "RequestRecover[" + nonce.prettyPrint() + "," + sign.prettyPrint() + "]"; 
+    } 
+    unsigned int sizeMsg() { 
+      return (sizeof(RData) + sizeof(Sign)); 
+    } 
+    void serialize(salticidae::DataStream &s) const { s << nonce << sign; } 
+  };
 
 
+
+
+  struct MsgReplyRecover {
+    static const uint8_t opcode = HDR_REPLYRECOVER;
+    salticidae::DataStream serialized;
+    RCData rcdata;
+    Sign sign;
+    MsgReplyRecover(const RCData &rcdata, const Sign &sign) : rcdata(rcdata),sign(sign) { serialized << rcdata << sign; }
+    MsgReplyRecover(salticidae::DataStream &&s) { s >> rcdata >> sign; }
+    bool operator<(const MsgReplyRecover& s) const {
+      if (sign < s.sign) { return true; }
+      return false;
+    }
+    std::string prettyPrint() {
+      return "ReplyRecover[" + rcdata.prettyPrint() + "," + sign.prettyPrint() + "]";
+    }
+    unsigned int sizeMsg() { return (sizeof(RCData) + sizeof(Sign)); }
+    //void serialize(salticidae::DataStream &s) const { s << data << sign; }
+  };
 
 /////////////////////////////////////////////////////
 // Basic version - FREE

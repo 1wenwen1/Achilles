@@ -29,6 +29,10 @@ enclave {
         public sgx_status_t COMB_TEEaccum([in] onejusts_t *js, [out] accum_t *res);
         public sgx_status_t COMB_TEEaccumSp([in] just_t *just, [out] accum_t *res);
 
+        public sgx_status_t RE_TEErequest([in, out] nonce_t *nonce, [out] sign_t *sign);
+        public sgx_status_t RE_TEEreply([in] nonce_t *nonce, [in] sign_t *sign, [out] rpy_t *rpy);
+        public sgx_status_t RE_TEErecover ([in, count=len] const rpy_t *rpys, size_t len, [out] just_t *just,unsigned int total );
+
         /* Free */
         public sgx_status_t FREE_TEEauth([in]payload_t *text, [out] auth_t *res);
         public sgx_status_t FREE_TEEverify([in]payload_t *text, [in]auths_t *a, [out] bool *res);

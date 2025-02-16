@@ -68,6 +68,27 @@ typedef struct ms_COMB_TEEaccumSp_t {
 	accum_t* ms_res;
 } ms_COMB_TEEaccumSp_t;
 
+typedef struct ms_RE_TEErequest_t {
+	sgx_status_t ms_retval;
+	nonce_t* ms_nonce;
+	sign_t* ms_sign;
+} ms_RE_TEErequest_t;
+
+typedef struct ms_RE_TEEreply_t {
+	sgx_status_t ms_retval;
+	nonce_t* ms_nonce;
+	sign_t* ms_sign;
+	rpy_t* ms_rpy;
+} ms_RE_TEEreply_t;
+
+typedef struct ms_RE_TEErecover_t {
+	sgx_status_t ms_retval;
+	const rpy_t* ms_rpys;
+	size_t ms_len;
+	just_t* ms_just;
+	unsigned int ms_total;
+} ms_RE_TEErecover_t;
+
 typedef struct ms_FREE_TEEauth_t {
 	sgx_status_t ms_retval;
 	payload_t* ms_text;
@@ -495,13 +516,49 @@ sgx_status_t COMB_TEEaccumSp(sgx_enclave_id_t eid, sgx_status_t* retval, just_t*
 	return status;
 }
 
+sgx_status_t RE_TEErequest(sgx_enclave_id_t eid, sgx_status_t* retval, nonce_t* nonce, sign_t* sign)
+{
+	sgx_status_t status;
+	ms_RE_TEErequest_t ms;
+	ms.ms_nonce = nonce;
+	ms.ms_sign = sign;
+	status = sgx_ecall(eid, 11, &ocall_table_Enclave, &ms);
+	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
+	return status;
+}
+
+sgx_status_t RE_TEEreply(sgx_enclave_id_t eid, sgx_status_t* retval, nonce_t* nonce, sign_t* sign, rpy_t* rpy)
+{
+	sgx_status_t status;
+	ms_RE_TEEreply_t ms;
+	ms.ms_nonce = nonce;
+	ms.ms_sign = sign;
+	ms.ms_rpy = rpy;
+	status = sgx_ecall(eid, 12, &ocall_table_Enclave, &ms);
+	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
+	return status;
+}
+
+sgx_status_t RE_TEErecover(sgx_enclave_id_t eid, sgx_status_t* retval, const rpy_t* rpys, size_t len, just_t* just, unsigned int total)
+{
+	sgx_status_t status;
+	ms_RE_TEErecover_t ms;
+	ms.ms_rpys = rpys;
+	ms.ms_len = len;
+	ms.ms_just = just;
+	ms.ms_total = total;
+	status = sgx_ecall(eid, 13, &ocall_table_Enclave, &ms);
+	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
+	return status;
+}
+
 sgx_status_t FREE_TEEauth(sgx_enclave_id_t eid, sgx_status_t* retval, payload_t* text, auth_t* res)
 {
 	sgx_status_t status;
 	ms_FREE_TEEauth_t ms;
 	ms.ms_text = text;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 11, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 14, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -513,7 +570,7 @@ sgx_status_t FREE_TEEverify(sgx_enclave_id_t eid, sgx_status_t* retval, payload_
 	ms.ms_text = text;
 	ms.ms_a = a;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 12, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 15, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -527,7 +584,7 @@ sgx_status_t FREE_TEEverify2(sgx_enclave_id_t eid, sgx_status_t* retval, payload
 	ms.ms_text2 = text2;
 	ms.ms_a2 = a2;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 13, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 16, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -538,7 +595,7 @@ sgx_status_t FREE_TEEstore(sgx_enclave_id_t eid, sgx_status_t* retval, pjust_t* 
 	ms_FREE_TEEstore_t ms;
 	ms.ms_just = just;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 14, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 17, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -551,7 +608,7 @@ sgx_status_t FREE_TEEaccum(sgx_enclave_id_t eid, sgx_status_t* retval, fjust_t* 
 	ms.ms_js = js;
 	ms.ms_prp = prp;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 15, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 18, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -563,7 +620,7 @@ sgx_status_t FREE_TEEaccumSp(sgx_enclave_id_t eid, sgx_status_t* retval, ofjust_
 	ms.ms_just = just;
 	ms.ms_prp = prp;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 16, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 19, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -574,7 +631,7 @@ sgx_status_t FREE_initialize_variables(sgx_enclave_id_t eid, sgx_status_t* retva
 	ms_FREE_initialize_variables_t ms;
 	ms.ms_me = me;
 	ms.ms_q = q;
-	status = sgx_ecall(eid, 17, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 20, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -586,7 +643,7 @@ sgx_status_t OP_TEEverify(sgx_enclave_id_t eid, sgx_status_t* retval, payload_t*
 	ms.ms_text = text;
 	ms.ms_a = a;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 18, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 21, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -597,7 +654,7 @@ sgx_status_t OP_TEEprepare(sgx_enclave_id_t eid, sgx_status_t* retval, hash_t* h
 	ms_OP_TEEprepare_t ms;
 	ms.ms_hash = hash;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 19, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 22, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -608,7 +665,7 @@ sgx_status_t OP_TEEvote(sgx_enclave_id_t eid, sgx_status_t* retval, hash_t* hash
 	ms_OP_TEEvote_t ms;
 	ms.ms_hash = hash;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 20, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 23, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -619,7 +676,7 @@ sgx_status_t OP_TEEstore(sgx_enclave_id_t eid, sgx_status_t* retval, opproposal_
 	ms_OP_TEEstore_t ms;
 	ms.ms_just = just;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 21, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 24, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -630,7 +687,7 @@ sgx_status_t OP_initialize_variables(sgx_enclave_id_t eid, sgx_status_t* retval,
 	ms_OP_initialize_variables_t ms;
 	ms.ms_me = me;
 	ms.ms_q = q;
-	status = sgx_ecall(eid, 22, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 25, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -640,7 +697,7 @@ sgx_status_t CH_TEEsign(sgx_enclave_id_t eid, sgx_status_t* retval, just_t* just
 	sgx_status_t status;
 	ms_CH_TEEsign_t ms;
 	ms.ms_just = just;
-	status = sgx_ecall(eid, 23, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 26, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -653,7 +710,7 @@ sgx_status_t CH_TEEprepare(sgx_enclave_id_t eid, sgx_status_t* retval, jblock_t*
 	ms.ms_block0 = block0;
 	ms.ms_block1 = block1;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 24, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 27, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -663,7 +720,7 @@ sgx_status_t CH_COMB_TEEsign(sgx_enclave_id_t eid, sgx_status_t* retval, just_t*
 	sgx_status_t status;
 	ms_CH_COMB_TEEsign_t ms;
 	ms.ms_just = just;
-	status = sgx_ecall(eid, 25, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 28, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -675,7 +732,7 @@ sgx_status_t CH_COMB_TEEprepare(sgx_enclave_id_t eid, sgx_status_t* retval, cblo
 	ms.ms_block = block;
 	ms.ms_hash = hash;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 26, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 29, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -686,7 +743,7 @@ sgx_status_t CH_COMB_TEEaccum(sgx_enclave_id_t eid, sgx_status_t* retval, onejus
 	ms_CH_COMB_TEEaccum_t ms;
 	ms.ms_js = js;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 27, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 30, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
@@ -697,7 +754,7 @@ sgx_status_t CH_COMB_TEEaccumSp(sgx_enclave_id_t eid, sgx_status_t* retval, just
 	ms_CH_COMB_TEEaccumSp_t ms;
 	ms.ms_just = just;
 	ms.ms_res = res;
-	status = sgx_ecall(eid, 28, &ocall_table_Enclave, &ms);
+	status = sgx_ecall(eid, 31, &ocall_table_Enclave, &ms);
 	if (status == SGX_SUCCESS && retval) *retval = ms.ms_retval;
 	return status;
 }
