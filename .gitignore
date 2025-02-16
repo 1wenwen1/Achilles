@@ -6,7 +6,6 @@ sgxserver
 sgxkeys
 openssl-1.1.1t/
 exe/
-stats/
 viewstats/
 deployment/
 exphot.py
