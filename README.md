@@ -67,7 +67,9 @@ If you haven't installed those modules yet, run:
 ### SGX 
 We use SGX SDK 2.23.
 
-You can install the SGX SDK environment by run "init.sh"
+followed by:
+
+`bash deployment/init.sh`
 
 
 
