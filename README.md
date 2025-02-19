@@ -8,8 +8,7 @@ The software is under ongoing development.
 
 ## Installing
 
-To tests our protocols, we provide a Python script, called
-`run.py`. We use the
+We use the
 [Salticidae](https://github.com/Determinant/salticidae) library, which
 is added here as git submodule.
 
@@ -65,10 +64,22 @@ If you haven't installed those modules yet, run:
 
 `python3 -m pip install subprocess pathlib matplotlib time math os glob datetime argparse enum json multiprocessing random shutil re scp threading`
 
+### SGX 
+We use SGX SDK 2.23.
+
+followed by:
+
+`bash deployment/init.sh`
+
+
+
+
+## Experiments
 
 ### Default command
 
-We explain the various options our Python scripts provides. You will
+To tests our protocols, we provide a Python script, called
+`run.py`. We explain the various options our Python scripts provides. You will
 run commands of the following form, followed by various options
 explained below:
 
@@ -86,7 +97,11 @@ In addition, you can use the following options to change some of the parameters:
 - `--batchsize n` to change the batch size to `n`
 - `--local` is to run the experiment locally
 
-### Examples
+
+
+### Local Experiemnts
+
+Use `--local` to conduct local experiments.
 
 For example, if you run:
 
@@ -94,23 +109,30 @@ For example, if you run:
 
 then you will run the replicas locally, test the Achilles (`--p1`), test for number of faults is 1 (`--faults 1`), payload size is 256 (`--payload 256`), and batchsize is 400 (`--batchsize 400`).
 
+The results will be printed directly to the command line. For example, if you see output:
+```
+all processes are done
+throughput-view: 175.84404966666668 out of 3
+latency-view: 15.088674666666668 out of 3
+```
+this indicates that the experiment executed successfully, with an average throughput of 175.84K TPS and an average latency of 15.08 ms across 3 nodes.
 
 
-### Ali Clould Service
+## Ali Clould Experiemnts
 
-The Ali Clould experiments are more adhoc. They require starting instance:
+### Launch Instances
+
+Starting instances:
   ```
     cd deployment
     bash cloud_deploy.sh
   ```
-Then you can check that the servers addresses are listed in `/damysus_updated/servers`.
 By default, 7 instances are deployed and 31 servers addresses are generated (5 times for each IP).
-
 If you want to change the number of instances, please modify the "instance_count" in file`config.json`.
 Besides, if you want to change the number of servers addresses, please run `python3 /root/damysus_updated/deployment/gen_ip.py {m} {n}` to generate m servers addresses with every IP using n times.
 
 
-Then, config the SGX environments for all instances:
+Config the SGX environments for all instances:
 ```
     bash cloud_config.sh
 ```
@@ -120,6 +142,7 @@ When the configuration finished, close the tmux terminal by runing:
     bash close.sh
 ```
 
+### Conduct Experiments:
 
 Then conduct one experiment by run `run.py`:
   ```
@@ -146,7 +169,19 @@ For example, if you run:
   ```
 then you will run the replicas, test the  Achilles, FlexiBFT, and Damysus with batchsize varing [200, 400, 600].
 
-After finished the experiments, use `python3 deployment/delete_instance.py` to terminate all the instances.
+### Analysis Results:
+
+All the execution results of Ali Cloud experiments can be found in file damysus_updated/stats.txt.
+For example, 
+```
+Achilles\_1\_\\256\_400\_0, 18.1715414, 26.598315
+```
+indicates that the throughput and latency for the \sysname protocol, with 1 fault, 400 transactions per block, and a 256 B payload per transaction, are 18.1715414K TPS and 26.598315ms, respectively.
+
+
+### Shutdown Instances:
+
+After finished the experiments, use `python3 deployment/delete_instances.py` to terminate all the instances.
 
 
 
