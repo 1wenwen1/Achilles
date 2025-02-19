@@ -64,6 +64,14 @@ If you haven't installed those modules yet, run:
 
 `python3 -m pip install subprocess pathlib matplotlib time math os glob datetime argparse enum json multiprocessing random shutil re scp threading`
 
+### SGX 
+We use SGX SDK 2.23.
+
+You can install the SGX SDK environment by run "init.sh"
+
+
+
+
 ## Experiments
 
 ### Default command
