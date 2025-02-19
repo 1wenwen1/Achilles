@@ -1,7 +1,9 @@
 # Achilles: Efficient TEE-Assisted BFT Consensus via Rollback Resilient Recovery
 
-This is the accompanying code to the paper "Achilles: Efficient TEE-Assisted BFT Consensus via Rollback Resilient Recovery" which was accepted to EuroSys
-2025.
+This is the accompanying code to the paper "Achilles: Efficient TEE-Assisted BFT Consensus via Rollback Resilient Recovery" which was accepted to EuroSys 2025. A technical report is available [here]()
+
+The main implementation of the project is located in the App and enclave directories. The core consensus logic is implemented in App/Handler.cpp, and the primary functionalities within SGX are implemented in Enclave/EnclaveChComb.cpp. We add a macro named ACHILLES for our protocol in the code, and its corresponding implementation is guarded by the preprocessor condition #if defined(ACHILLES). The extension includes modifications to the trusted components, namely Checker and Accumulator (see Section \ref{subsec:Trustcompon}), and reduces the normal-case three-phase operations of Damysus to a two-phase process.
+
 ## Current status
 
 The software is under ongoing development.
