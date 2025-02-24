@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Read the list of IP addresses
-IP_LIST=$(cat  /root/damysus_updated/deployment/priv_ip.txt)
+IP_LIST=$(cat  /root/Achilles/deployment/priv_ip.txt)
 
 # Use the counter to name the tmux session from 1
 count=1
@@ -15,7 +15,7 @@ do
     tmux new-session -d -s "setup$count"
     
     # Connect to the specified IP address in the new tmux session
-    tmux send-keys -t "setup$count" "ssh -i  /root/damysus_updated/TShard -o StrictHostKeyChecking=no root@$ip 'bash init.sh'" C-m
+    tmux send-keys -t "setup$count" "ssh -i  /root/Achilles/TShard -o StrictHostKeyChecking=no root@$ip 'bash init.sh'" C-m
 
     # Add a counter
     ((count++))

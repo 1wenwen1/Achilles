@@ -4,7 +4,7 @@ from aliyunsdkcore.acs_exception.exceptions import ServerException
 from aliyunsdkcore.request import CommonRequest
 
 # Read the configuration file
-with open("/root/damysus_updated/deployment/config.json", "r") as f:
+with open("/root/Achilles/deployment/config.json", "r") as f:
     config = json.load(f)
 
 region_id = config["region_id"]
@@ -13,13 +13,13 @@ access_key_secret = config["access_key_secret"]
 
 # Read the list of instance IDs
 instance_ids = []
-with open("/root/damysus_updated/deployment/instances.txt", "r") as f:
+with open("/root/Achilles/deployment/instances.txt", "r") as f:
     for line in f:
         if line.strip():  # Make sure that the line is not empty.
             instance_ids.append(line.strip())
 
 # Get the private network IP of each instance and save it to the file
-with open("/root/damysus_updated/deployment/priv_ip.txt", "w") as f:
+with open("/root/Achilles/deployment/priv_ip.txt", "w") as f:
     for instance_id in instance_ids:
         client = AcsClient(access_key_id, access_key_secret, region_id)
 

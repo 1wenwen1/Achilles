@@ -20,11 +20,11 @@ timeoutTime = 120
 Factor = 2
 numctran = 1
 sleeptime = 0
-exen = '/root/damysus_updated/exe'
+exen = '/root/Achilles/exe'
 no_cache = False
 no_stash = True
 
-params       = "/root/damysus_updated/App/params.h" # (don't change, hard coded in C++)
+params       = "/root/Achilles/App/params.h" # (don't change, hard coded in C++)
 
 # read IP list
 def read_ip_list(filename):
@@ -54,7 +54,7 @@ def scp_to_node(ip, files):
     ssh.connect(ip, username='root', key_filename='./TShard')
     with SCPClient(ssh.get_transport()) as scp:
         for file in files:
-            remote_path = f'/root/damysus_updated'  # 假设你的远程用户是 root，修改为实际的远程路径前缀
+            remote_path = f'/root/Achilles'  # 假设你的远程用户是 root，修改为实际的远程路径前缀
             scp.put(file, remote_path=remote_path)
     ssh.close()
 
@@ -63,7 +63,7 @@ def ssh_exec_server_non_blocking(id, host, port1, port2, factor, faults, complet
     ssh = SSHClient()
     ssh.set_missing_host_key_policy(AutoAddPolicy())
     ssh.connect(host, username='root', key_filename='./TShard')
-    cmd = f"export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/sgxsdk/sdk_libs && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib && cd /root/damysus_updated && rm -rf stats/* && ./sgxserver {id} {faults} {factor} {views} {timeout} > out{id}"
+    cmd = f"export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/sgxsdk/sdk_libs && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib && cd /root/Achilles && rm -rf stats/* && ./sgxserver {id} {faults} {factor} {views} {timeout} > out{id}"
     stdin, stdout, stderr = ssh.exec_command(cmd)
 
     # Non-blocking monitoring of command execution status
@@ -165,7 +165,7 @@ def start_all_sgxservers(servers, factor, faults, max_workers=6):
 # execute sgxclient locally
 def local_exec_client(factor, faults):
     cmd = f"./sgxclient 0 {faults} {factor} {numctran} {sleeptime} 0 > clientoutput"
-    process = Popen(cmd, shell=True, cwd='/root/damysus_updated', stdout=PIPE, stderr=PIPE)
+    process = Popen(cmd, shell=True, cwd='/root/Achilles', stdout=PIPE, stderr=PIPE)
     # If need to run in the background without waiting for the output, can remove stdout=PIPE and stderr=PIPE.
 
     # If want to return immediately and continue to perform other tasks, can return directly.
@@ -196,14 +196,14 @@ def stop_local_sgxclient():
     print(f"Stop sgxclient error:\n{error}")
 
 def rm_local_stats():
-    cmd = "rm -rf /root/damysus_updated/stats/*"
+    cmd = "rm -rf /root/Achilles/stats/*"
     process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
     stdout, stderr = process.communicate()
     output = stdout.decode()
     error = stderr.decode()
 
 def stop_remote_server():
-    cmd = "python3 /root/damysus_updated/close.py"
+    cmd = "python3 /root/Achilles/close.py"
     process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
     subprocess.run(cmd, shell=True, check=True)
 
@@ -230,12 +230,12 @@ def wait_for_all_sgxservers_to_finish(completion_set, lock, total_servers):
 
 
 def clear_local_stats():
-    stats_path = Path('/root/damysus_updated/stats/')
+    stats_path = Path('/root/Achilles/stats/')
     if stats_path.exists() and stats_path.is_dir():
         shutil.rmtree(stats_path)
     stats_path.mkdir(parents=True, exist_ok=True)
 
-# SCP the stats in the remote /root/damysus_updated/stats/ directory to the same local directory
+# SCP the stats in the remote /root/Achilles/stats/ directory to the same local directory
 def scp_stats_from_node(ip, local_path, remote_path):
     ssh = SSHClient()
     ssh.set_missing_host_key_policy(AutoAddPolicy())
@@ -396,8 +396,8 @@ def start_experiment(protocol, batchsize, payload, faults, pct):
     total = factor * faults + 1
 
 
-    ip_list = read_ip_list('/root/damysus_updated/ip_list')
-    servers = read_servers(total, '/root/damysus_updated/servers')
+    ip_list = read_ip_list('/root/Achilles/ip_list')
+    servers = read_servers(total, '/root/Achilles/servers')
 
    # print(ip_list)
     ip_list_set = set()
@@ -409,12 +409,12 @@ def start_experiment(protocol, batchsize, payload, faults, pct):
     make_instance(protocol, batchsize, payload, faults, pct)
 
     files_to_copy2 = [
-        os.path.expanduser('~/damysus_updated/sgxserver'), 
-        os.path.expanduser('~/damysus_updated/servers'),
-        os.path.expanduser('~/damysus_updated/sgxclient'),
-        os.path.expanduser('~/damysus_updated/enclave.so'),
-        os.path.expanduser('~/damysus_updated/enclave.signed.so'),
-        os.path.expanduser('~/damysus_updated/sgxkeys')
+        os.path.expanduser('~/Achilles/sgxserver'), 
+        os.path.expanduser('~/Achilles/servers'),
+        os.path.expanduser('~/Achilles/sgxclient'),
+        os.path.expanduser('~/Achilles/enclave.so'),
+        os.path.expanduser('~/Achilles/enclave.signed.so'),
+        os.path.expanduser('~/Achilles/sgxkeys')
     ] 
 
  
@@ -440,10 +440,10 @@ def start_experiment(protocol, batchsize, payload, faults, pct):
 
     #clear_local_stats()
 
-    # Multithreading will remotely /root/damysus_updated/stats/ content SCP in the directory to the local
-    scp_stats_from_nodes(ip_list, '/root/damysus_updated/', '/root/damysus_updated/stats/')
+    # Multithreading will remotely /root/Achilles/stats/ content SCP in the directory to the local
+    scp_stats_from_nodes(ip_list, '/root/Achilles/', '/root/Achilles/stats/')
 
-    stats_directory = '/root/damysus_updated/stats/'
+    stats_directory = '/root/Achilles/stats/'
 
     # Calculate the average value of the first and second numbers of all vals files
     r1, r2 = calculate_mean_of_values(stats_directory)
@@ -453,7 +453,7 @@ def start_experiment(protocol, batchsize, payload, faults, pct):
 
     print(pro_dir, r1, r2)
 
-    with open('/root/damysus_updated/stats.txt', 'a') as f:
+    with open('/root/Achilles/stats.txt', 'a') as f:
         # f.write(f'{pro_dir}, {r1}, {r2}, {rtt}\n')
         f.write(f'{pro_dir}, {r1}, {r2},\n')
 
@@ -544,7 +544,7 @@ def mkParams(protocol,constFactor,numFaults,numTrans,payloadSize,pct):
 
 
 def main():
-    with open('/root/damysus_updated/stats.txt', 'a') as f:
+    with open('/root/Achilles/stats.txt', 'a') as f:
         f.write(f"Start, views: {views}\n")
 
     parser = argparse.ArgumentParser(description='Start one experiment with given parameters.')

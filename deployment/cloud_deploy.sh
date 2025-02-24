@@ -5,19 +5,19 @@
 
 # Execute commands and display output in real-time
 echo "Running create_run_instances.py..."
-python3 /root/damysus_updated/deployment/create_run_instances.py
+python3 /root/Achilles/deployment/create_run_instances.py
 
 # Wait for 60 seconds
 sleep 60
 
 echo "Running get_priv_ip.py..."
-python3 /root/damysus_updated/deployment/get_priv_ip.py
+python3 /root/Achilles/deployment/get_priv_ip.py
 
 # Wait for 30 seconds
 sleep 30
 
 echo "Running gen_ip.py..."
-python3 /root/damysus_updated/deployment/gen_ip.py 31 5
+python3 /root/Achilles/deployment/gen_ip.py 31 5
 
 echo "instance creat successfully!"
 
@@ -25,7 +25,7 @@ echo "instance creat successfully!"
 sleep 30
 
 # Read the list of IP addresses
-IP_LIST=$(cat /root/damysus_updated/deployment/priv_ip.txt)
+IP_LIST=$(cat /root/Achilles/deployment/priv_ip.txt)
 
 # Remove the old SSH host key entry for this IP to avoid SSH key conflicts
 echo "Removing old SSH host key entries..."
@@ -36,6 +36,6 @@ do
 done
 sleep 30
 echo "Running transfer.py..."
-python /root/damysus_updated/deployment/transfer.py
+python /root/Achilles/deployment/transfer.py
 
 

@@ -2699,9 +2699,9 @@ def makeAliInstances(servers, protocol):
     for server_item in servers:
         server_info = server_item.split(" ")
         sshAdr = "root@" + server_info[1].split(":")[1]
-        subprocess.run(["scp","-i",pem,"-o",sshOpt1,params,sshAdr+":/root/damysus_updated/App/"])
-        subprocess.run(["scp","-i",pem,"-o",sshOpt1,"servers","clients",sshAdr+":/root/damysus_updated"])
-        cmd = "\"\"" + srcsgx + " && cd damysus_updated && make clean && " + make + "\"\""
+        subprocess.run(["scp","-i",pem,"-o",sshOpt1,params,sshAdr+":/root/Achilles/App/"])
+        subprocess.run(["scp","-i",pem,"-o",sshOpt1,"servers","clients",sshAdr+":/root/Achilles"])
+        cmd = "\"\"" + srcsgx + " && cd Achilles && make clean && " + make + "\"\""
         p      = Popen(["ssh","-i",pem,"-o",sshOpt1,"-ntt",sshAdr,cmd])
         print("the commandline is {}".format(p.args))
         procs.append(("R",sshAdr,p))
@@ -2730,7 +2730,7 @@ def executeAliInstances(servers,clients,protocol,constFactor,numClTrans,sleepTim
             time.sleep(2)
         srun2  = server + " " + str(server_id) + " " + str(numFaults) + " " + str(constFactor) + " " + str(numViews) + " " + str(newtimeout)
         srun   = "screen -d -m " + srun2
-        cmd    = "\"\"" + srcsgx + " && cd damysus_updated && rm -f stats/* && " + srun2 + "\"\""
+        cmd    = "\"\"" + srcsgx + " && cd Achilles && rm -f stats/* && " + srun2 + "\"\""
         p      = Popen(["ssh","-i",pem,"-o",sshOpt1,"-ntt",sshAdr,cmd])
         print("the commandline is {}".format(p.args))
         procsRep.append(("R",server_id,sshAdr,p))
@@ -2746,7 +2746,7 @@ def executeAliInstances(servers,clients,protocol,constFactor,numClTrans,sleepTim
         sshAdr = "root@" + client_info[1].split(":")[1]
         crun2  = client + " " + str(client_id) + " " + str(numFaults) + " " + str(constFactor) + " " + str(numClTrans) + " " + str(sleepTime) + " " + str(instance)
         crun   = "screen -d -m " + crun2
-        cmd    = "\"\"" + srcsgx + " && cd damysus_updated && rm -f stats/* && " + crun2 + "\"\""
+        cmd    = "\"\"" + srcsgx + " && cd Achilles && rm -f stats/* && " + crun2 + "\"\""
         p      = Popen(["ssh","-i",pem,"-o",sshOpt1,"-ntt",sshAdr,cmd])
         print("the commandline is {}".format(p.args))
         procsCl.append(("C",client_id,sshAdr,p))
@@ -2765,7 +2765,7 @@ def executeAliInstances(servers,clients,protocol,constFactor,numClTrans,sleepTim
             print("remaining processes at time (", totalTime, "):", remaining)
             rem = remaining.copy()
             for (tag,server_id,sshAdr,p) in rem:
-                cmdF = "find damysus_updated/" + statsdir + " -name done-" + str(server_id) + "* | wc -l"
+                cmdF = "find Achilles/" + statsdir + " -name done-" + str(server_id) + "* | wc -l"
                 addr = "root@" + sshAdr
                 outF = int(subprocess.run("ssh -i " + pem + " -o " + sshOpt1 + " -ntt " + addr + " " + cmdF, shell=True, capture_output=True, text=True).stdout)
                 #print("attempting to retrieve 'done' file for" , str(n), ":", outF)
@@ -2831,13 +2831,13 @@ def executeAli(recompile,protocol,constFactor,numClTrans,sleepTime,numViews,cutO
         # for server_item in servers:
         #    server_info = server_item.split(" ")
         #    sshAdr = "root@" + server_info[1].split(":")[1]
-        #    subprocess.run(["scp","-i",pem,"-o",sshOpt1,sshAdr+":/root/damysus_updated/stats/*","stats/"])
+        #    subprocess.run(["scp","-i",pem,"-o",sshOpt1,sshAdr+":/root/Achilles/stats/*","stats/"])
         (throughputView,latencyView,handle,cryptoSign,cryptoVerif,cryptoNumSign,cryptoNumVerif) = computeStats(protocol,numFaults,instance,repeats)
 
 def scp_from_server(server_item):
     server_info = server_item.split(" ")
     sshAdr = "root@" + server_info[1].split(":")[1]
-    subprocess.run(["scp", "-i", pem, "-o", sshOpt1, sshAdr + ":/root/damysus_updated/stats/*", "stats/"])
+    subprocess.run(["scp", "-i", pem, "-o", sshOpt1, sshAdr + ":/root/Achilles/stats/*", "stats/"])
 
 
 def runAli():

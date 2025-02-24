@@ -4,7 +4,7 @@ from aliyunsdkcore.acs_exception.exceptions import ServerException
 from aliyunsdkcore.request import CommonRequest
 
 # Read the configuration file
-with open("/root/damysus_updated/deployment/config.json", "r") as f:
+with open("/root/Achilles/deployment/config.json", "r") as f:
     config = json.load(f)
 
 region_id = config["region_id"]
@@ -52,7 +52,7 @@ def create_ecs_instances():
         print("Instances created successfully.")
         instance_ids = json.loads(response.decode('utf-8'))["InstanceIdSets"]["InstanceIdSet"]
         # Save the instance ID to the file
-        with open("/root/damysus_updated/deployment/instances.txt", "a") as f:
+        with open("/root/Achilles/deployment/instances.txt", "a") as f:
             for instance_id in instance_ids:
                 f.write(f"{instance_id}\n")
     except ServerException as e:

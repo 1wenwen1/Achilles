@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # Write "------LAN--------" to stats.txt
-echo "------ALN--------" > /root/damysus_updated/stats.txt
+echo "------ALN--------" > /root/Achilles/stats.txt
 
 # Read the list of IP addresses from the file
-IP_LIST=$(cat /root/damysus_updated/ip_list)
+IP_LIST=$(cat /root/Achilles/ip_list)
 
 for ip in $IP_LIST
 do
     # Use SSH to execute commands on the remote server
-    ssh -i /root/damysus_updated/TShard -o StrictHostKeyChecking=no root@$ip <<EOF
+    ssh -i /root/Achilles/TShard -o StrictHostKeyChecking=no root@$ip <<EOF
         # Try to remove the existing network queue configuration, but continue even if it fails
         sudo tc qdisc del dev eth0 root || true
         
@@ -18,14 +18,14 @@ do
 EOF
 done
 
-cd /root/damysus_updated/deployment
+cd /root/Achilles/deployment
 # Generate the IP addresses for the clients and servers
 python gen_ip.py 31 5
 
 
 # execute experiments
 payload=(128 256 512)
-cd /root/damysus_updated
+cd /root/Achilles
 # Loop through each fault value and run the command
 for p in "${payload[@]}"
 do

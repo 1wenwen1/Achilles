@@ -1,6 +1,6 @@
 # Achilles: Efficient TEE-Assisted BFT Consensus via Rollback Resilient Recovery
 
-This is the accompanying code to the paper "Achilles: Efficient TEE-Assisted BFT Consensus via Rollback Resilient Recovery" which was accepted to EuroSys 2025. A technical report is available [here](https://github.com/1wenwen1/damysus_updated/blob/main/doc/Achilles-%20Efficient%20TEE-Assisted%20BFT%20Consensus%20via%20Rollback%20Resilient%20Recovery.pdf)
+This is the accompanying code to the paper "Achilles: Efficient TEE-Assisted BFT Consensus via Rollback Resilient Recovery" which was accepted to EuroSys 2025. A technical report is available [here](https://github.com/1wenwen1/Achilles/blob/main/doc/Achilles-%20Efficient%20TEE-Assisted%20BFT%20Consensus%20via%20Rollback%20Resilient%20Recovery.pdf)
 
 
 ## Current status
@@ -133,7 +133,7 @@ Starting instances:
   ```
 By default, 7 instances are deployed and 31 servers addresses are generated (5 times for each IP).
 If you want to change the number of instances, please modify the "instance_count" in file`config.json`.
-Besides, if you want to change the number of servers addresses, please run `python3 /root/damysus_updated/deployment/gen_ip.py {m} {n}` to generate m servers addresses with every IP using n times.
+Besides, if you want to change the number of servers addresses, please run `python3 /root/Achilles/deployment/gen_ip.py {m} {n}` to generate m servers addresses with every IP using n times.
 
 
 Config the SGX environments for all instances:
@@ -175,7 +175,7 @@ then you will run the replicas, test the  Achilles, FlexiBFT, and Damysus with b
 
 ### Analysis Results:
 
-All the execution results of Ali Cloud experiments can be found in file damysus_updated/stats.txt.
+All the execution results of Ali Cloud experiments can be found in file Achilles/stats.txt.
 For example, 
 ```
 Achilles\_1\_\\256\_400\_0, 18.1715414, 26.598315

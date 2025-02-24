@@ -44,17 +44,11 @@ mkdir obj
 mkdir results
 
 cd ~
-git clone https://github.com/VSEJGFB/damysus_updated.git
-cd damysus_updated
+git https://github.com/1wenwen1/Achilles.git
+cd Achilles
 git submodule init
 git submodule update
 (cd salticidae; cmake . -DCMAKE_INSTALL_PREFIX=.; make; make install)
 
-cd ~
-git clone https://github.com/VSEJGFB/achillies.git
-cd achillies
-git submodule init
-git submodule update
-(cd salticidae; cmake . -DCMAKE_INSTALL_PREFIX=.; make; make install)
 
 apt install tpm2-tools

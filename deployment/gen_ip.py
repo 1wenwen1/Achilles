@@ -53,13 +53,13 @@ def main():
     n = int(sys.argv[1])
     m = int(sys.argv[2])
     
-    ip_list = read_ip_list('/root/damysus_updated/deployment/priv_ip.txt')
+    ip_list = read_ip_list('/root/Achilles/deployment/priv_ip.txt')
     
     server_lines, used_ips = generate_servers(ip_list, n, m)
     
-    write_servers('/root/damysus_updated/servers', server_lines)
-    write_ip_list('/root/damysus_updated/ip_list', used_ips)
-    write_clients('/root/damysus_updated/clients', server_lines[0])
+    write_servers('/root/Achilles/servers', server_lines)
+    write_ip_list('/root/Achilles/ip_list', used_ips)
+    write_clients('/root/Achilles/clients', server_lines[0])
 
 if __name__ == "__main__":
     main()
